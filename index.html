@@ -85,6 +85,7 @@
     .stage .predator.bird{width:160px;margin-left:-80px}
     .stage .predator.small{width:140px;margin-left:-70px}
     .stage .predator.snake.big{width:215px;margin-left:-108px}
+    .stage .predator.snake.long{width:232px;margin-left:-116px}
     .stage .predator.bird.big{width:172px;margin-left:-86px}
     .stage .food,.stage .snacktrail{font-size:42px}
     .stage .foliage{height:110px}
@@ -176,11 +177,20 @@
   .predator.bird{width:200px;margin-left:-100px}
   .predator.small{width:175px;margin-left:-88px}
   .predator.snake.big{width:280px;margin-left:-140px}
+  .predator.snake.long{width:297px;margin-left:-148px}
   .predator.bird.big{width:220px;margin-left:-110px}
   .predator .flap{transform-box:fill-box;transform-origin:50% 100%;animation:flap .22s ease-in-out infinite alternate}
   @keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(-.5)}}
-  .predator .legs{animation:gallop .18s linear infinite alternate}
-  @keyframes gallop{from{transform:translateY(0)}to{transform:translateY(-6px)}}
+  .predator .legs rect{transform-box:fill-box;transform-origin:50% 8%;animation:stride .32s ease-in-out infinite alternate}
+  .predator .legs rect:nth-child(2){animation-direction:alternate-reverse}
+  .predator .legs + .legs rect{animation-delay:-.16s}
+  @keyframes stride{from{transform:rotate(-30deg)}to{transform:rotate(30deg)}}
+  .predator.quad svg{animation:gallop .16s ease-in-out infinite alternate}
+  @keyframes gallop{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+  .monkey .mleg{transform-box:fill-box;transform-origin:50% 15%}
+  .monkey.running .mleg{animation:mstride .2s ease-in-out infinite alternate}
+  .monkey.running .mleg2{animation-direction:alternate-reverse}
+  @keyframes mstride{from{transform:rotate(-34deg) translateY(-2px)}to{transform:rotate(30deg)}}
   .predator .slither{animation:slither .35s ease-in-out infinite alternate}
   @keyframes slither{from{transform:translateY(-4px)}to{transform:translateY(4px)}}
   .predator .pmouth{opacity:0;transition:opacity .08s}
@@ -592,8 +602,8 @@ function monkeySVG(L){
   if(L.rings) s+=`<path class="${tcls}" d="${tpath}" pathLength="100" stroke-dasharray="5 7" stroke="${L.rings}" stroke-width="${tw}" fill="none"/>`;
   }
   // legs/feet
-  s+=`<ellipse cx="80" cy="226" rx="17" ry="11" fill="${fur}"/><ellipse cx="120" cy="226" rx="17" ry="11" fill="${fur}"/>`;
-  s+=`<ellipse cx="74" cy="236" rx="13" ry="7" fill="${feet}"/><ellipse cx="126" cy="236" rx="13" ry="7" fill="${feet}"/>`;
+  s+=`<g class="mleg"><ellipse cx="80" cy="226" rx="17" ry="11" fill="${fur}"/><ellipse cx="74" cy="236" rx="13" ry="7" fill="${feet}"/></g>`;
+  s+=`<g class="mleg mleg2"><ellipse cx="120" cy="226" rx="17" ry="11" fill="${fur}"/><ellipse cx="126" cy="236" rx="13" ry="7" fill="${feet}"/></g>`;
   // body
   s+=`<ellipse cx="100" cy="185" rx="40" ry="44" fill="${fur}"/><ellipse cx="100" cy="193" rx="25" ry="30" fill="${belly}"/>`;
   // left arm (resting)
@@ -955,7 +965,7 @@ function stopAll(){
   stopMusic();
   clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++;
   stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch,.react').forEach(e=>e.remove());
-  monkey.getAnimations().forEach(a=>a.cancel());
+  monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running');
   monkey.className='monkey'; monkey.innerHTML='';
   bubble.classList.remove('show','scared'); bubble.innerHTML='';
   hint.style.display='';
@@ -1114,7 +1124,7 @@ const VOICE={
 };
 const PVOICE={'Ocelot':['cat',0],'Jaguar':['cat',1],'Puma':['puma'],'Tayra':['chatter'],'Pampas fox':['yip'],'Culpeo fox':['yip'],
   'Boa constrictor':['hiss'],'Ornate hawk-eagle':['screech',0],'Forest falcon':['screech',0],'Harpy eagle':['wail'],'Crested caracara':['cackle'],'Great horned owl':['hoot'],'Margay':['cat',0],'Jaguarundi':['jchirp'],'Green anaconda':['hissDeep'],'Crested eagle':['wail'],'Black hawk-eagle':['bhe'],'Spectacled owl':['knock'],'Crowned eagle':['screech',1]};
-const VGAIN={'Ocelot':2.2,'Jaguar':3.3,'Puma':2.0,'Tayra':13,'Pampas fox':9,'Culpeo fox':9,'Boa constrictor':2.2,'Ornate hawk-eagle':5.3,'Forest falcon':6.5,'Harpy eagle':0.8,'Crested caracara':12,'Great horned owl':2.2,'Margay':1.6,'Jaguarundi':4.3,'Green anaconda':3.4,'Crested eagle':0.7,'Black hawk-eagle':2.2,'Spectacled owl':2.0,'Crowned eagle':7.2};
+const VGAIN={'Ocelot':1.83,'Jaguar':1.94,'Puma':1.59,'Tayra':28.12,'Pampas fox':28.13,'Culpeo fox':28.13,'Boa constrictor':2.5,'Ornate hawk-eagle':9.42,'Forest falcon':9.29,'Harpy eagle':0.68,'Crested caracara':54.85,'Great horned owl':4.05,'Margay':1.82,'Jaguarundi':6.89,'Green anaconda':3.52,'Crested eagle':0.68,'Black hawk-eagle':2.61,'Spectacled owl':2.67,'Crowned eagle':10.9};   // evened out to one loudness
 function predatorVoice(pname,pan){ if(!sfxReady()) return; const v=PVOICE[pname]; if(!v) return; VOICE[v[0]](sfxOut(.55*(VGAIN[pname]||1),pan),AC.currentTime+.02,v[1]); }
 const FALL=[   // the snack falling (0 – 0.5 s), picked at random
   (d,t)=>{ const o=sweepTone(d,'sine',1900,620,t+.03,.47,.09); const l=AC.createOscillator(); l.frequency.value=9; const lg=AC.createGain(); lg.gain.value=30; l.connect(lg); lg.connect(o.frequency); l.start(t); l.stop(t+.55); },   // cartoon "wheee" slide down
@@ -1421,7 +1431,7 @@ function showCountry(id,sp){
     <div class="snack" id="snack">🍽 Snack time coming…<span></span></div>
     <div class="music"><span class="notes"><i></i><i></i><i></i></span> ♪ ${MUSIC[id].label}</div></div>`;
   playMusic(id);
-  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch').forEach(f=>f.remove()); monkey.getAnimations().forEach(a=>a.cancel());
+  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch').forEach(f=>f.remove()); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running');
   foodTimer=setTimeout(()=>serveFood(id),6000);
   clearTimeout(callTimer); callTimer=setTimeout(()=>{ if(currentId===id) monkeyCall(CUR); },2500);
   monkey.className='monkey'+(c.look.tiny?' tiny':'');
@@ -1510,13 +1520,13 @@ function positionHang(){
     b.style.transformOrigin=`50% ${-50*sc}px`; });
 }
 const PLOOK={
- 'Ocelot':{kind:'quad',fur:'#d9a648',spots:'#4a3220',belly:'#f3e2bd'},
- 'Jaguar':{kind:'quad',fur:'#e0a33e',spots:'#2b1d12',belly:'#f3e2bd',big:true},
- 'Puma':{kind:'quad',fur:'#c49464',belly:'#ecd8bd',big:true},
+ 'Ocelot':{kind:'quad',cat:'ocelot',fur:'#d9a648',spots:'#3a2614',belly:'#f6ead0'},
+ 'Jaguar':{kind:'quad',cat:'jaguar',fur:'#e3a43c',spots:'#24180f',rosette:'#c88528',belly:'#f6ead0',big:true},
+ 'Puma':{kind:'quad',cat:'puma',fur:'#c79a68',belly:'#efdfc8',big:true},
  'Tayra':{kind:'quad',fur:'#3a2a20',head:'#a58a66',belly:'#3a2a20',long:true},
  'Pampas fox':{kind:'quad',fur:'#9a9188',belly:'#d8d0c4',fox:true,head:'#b88a5e'},
- 'Margay':{kind:'quad',fur:'#c99a52',spots:'#3a2614',belly:'#f1e2c0',small:true},
- 'Jaguarundi':{kind:'quad',fur:'#5e5650',belly:'#6c645d',long:true,small:true},
+ 'Margay':{kind:'quad',cat:'margay',fur:'#cf9c50',spots:'#3a2614',belly:'#f6ead0',small:true},
+ 'Jaguarundi':{kind:'quad',cat:'jaguarundi',fur:'#5e5650',belly:'#6c645d'},
  'Green anaconda':{kind:'snake',body:'#4d5a2c',spots:'#16140e',big:true},
  'Crested eagle':{kind:'bird',body:'#6e6052',head:'#cfc8bc',wing:'#3a2f28',crest:'#2a2420',belly:'#f2ece0',big:true},
  'Black hawk-eagle':{kind:'bird',body:'#1d1a18',head:'#24201d',wing:'#141210',crest:'#141210',belly:'#e9e3d6'},
@@ -1528,11 +1538,63 @@ const PLOOK={
  'Forest falcon':{kind:'bird',body:'#4a4440',head:'#4a4440',wing:'#2e2a28',belly:'#e8e2d6'},
  'Harpy eagle':{kind:'bird',body:'#3c3a3a',head:'#a7a5a3',wing:'#2a2828',crest:'#5a5858',belly:'#f4f2ee',big:true},
  'Great horned owl':{kind:'bird',body:'#8a6c4c',head:'#8a6c4c',wing:'#5c4632',belly:'#d9c6a4',owl:true},
- 'Boa constrictor':{kind:'snake',body:'#8a7a52',spots:'#5a3a24'}
+ 'Boa constrictor':{kind:'snake',body:'#8a7a52',spots:'#5a3a24',long:true}
 };
+/* ---------- individual cat drawings (side view, facing right) ---------- */
+const CATS={
+ jaguar:{body:[128,90,72,34],legs:[19,100,40],head:[200,72,33],ears:[9,'round'],eye:6,tail:'M58 92 Q30 96 26 122',tw:15,pat:'rosette'},
+ ocelot:{body:[128,92,68,27],legs:[14,100,40],head:[198,74,26],ears:[11,'spot'],eye:6,tail:'M60 88 Q28 82 22 52',tw:11,rings:true,pat:'chain',cheek:true,neck:true},
+ margay:{body:[130,96,56,23],legs:[12,104,36],head:[190,78,26],ears:[11,'round'],eye:9.5,tail:'M76 92 C30 96 4 70 16 22',tw:14,rings:true,pat:'blotch',cheek:true},
+ puma:{body:[128,88,76,27],legs:[15,96,44],head:[206,74,24],ears:[10,'dark'],eye:5.5,tail:'M54 88 Q18 100 22 128 Q26 140 42 132',tw:12,tip:'#2a1d14',muzzle:true},
+ jaguarundi:{body:[124,102,88,25],legs:[14,108,30],head:[216,94,21],ears:[6,'round'],eye:4.5,tail:'M40 104 Q18 98 4 108',tw:10,flat:true}
+};
+function catSVG(L){
+  const C=CATS[L.cat], [bx,by,brx,bry]=C.body, [lw,ly,lh]=C.legs, [hx,hy,hr]=C.head, s=hr/26, uid='c'+Math.random().toString(36).slice(2,7);
+  const fur=L.fur, dk=L.spots||'#2b1d12', belly=L.belly;
+  // markings, clipped to the body
+  let pat='';
+  if(C.pat==='rosette'){ [[88,74],[116,68],[146,70],[174,80],[100,94],[130,88],[158,96],[74,92]].forEach(([x,y],i)=>{ const r=8.5+(i%2)*1.5;
+      pat+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${L.rosette||'#c9852a'}" stroke="${dk}" stroke-width="3.2" stroke-dasharray="${r*1.4} ${r*.45}"/><circle cx="${x+1}" cy="${y}" r="1.8" fill="${dk}"/>`; }); }
+  if(C.pat==='chain'){ [[76,78,22],[106,72,26],[138,72,24],[166,78,18],[82,96,20],[112,90,26],[144,92,22],[170,96,14],[98,108,22],[132,108,22]].forEach(([x,y,w])=>{
+      pat+=`<ellipse cx="${x}" cy="${y}" rx="${w/2}" ry="5.5" fill="#bd8434" stroke="${dk}" stroke-width="2.6"/>`; });
+      pat+=`<path d="M184 70 q4 12 0 26 M192 72 q4 10 1 22" stroke="${dk}" stroke-width="3" fill="none" stroke-linecap="round"/>`; }
+  if(C.pat==='blotch'){ [[92,84],[110,78],[130,76],[150,80],[168,86],[100,100],[122,94],[144,96],[162,102],[116,110],[138,110]].forEach(([x,y],i)=>{
+      pat+=`<ellipse cx="${x}" cy="${y}" rx="${5.5+(i%2)}" ry="4.5" fill="${dk}" transform="rotate(${(i*23)%40-20} ${x} ${y})"/>`; }); }
+  const legs=(dx,op,delay)=>`<g class="legs"${delay?` style="animation-delay:${delay}"`:''}><rect x="${bx-brx*.72+dx}" y="${ly}" width="${lw}" height="${lh}" rx="${lw/2}" fill="${fur}"${op?` opacity="${op}"`:''}/><rect x="${bx+brx*.5+dx}" y="${ly}" width="${lw}" height="${lh}" rx="${lw/2}" fill="${fur}"${op?` opacity="${op}"`:''}/></g>`;
+  // tail: optional dark rings or tip
+  let tail=`<path d="${C.tail}" stroke="${fur}" stroke-width="${C.tw}" fill="none" stroke-linecap="round"/>`;
+  if(C.rings) tail+=`<path d="${C.tail}" stroke="${dk}" stroke-width="${C.tw}" fill="none" stroke-dasharray="5 9" stroke-dashoffset="-6"/>`;
+  if(C.tip) tail+=`<path d="${C.tail}" stroke="${C.tip}" stroke-width="${C.tw}" fill="none" stroke-linecap="round" pathLength="100" stroke-dasharray="0 82 18"/>`;
+  // ears
+  const ex1=hx-12*s, ex2=hx+10*s, ey=hy-hr*.82, er=C.ears[0];
+  let ears=`<circle cx="${ex1}" cy="${ey}" r="${er}" fill="${C.ears[1]==='dark'?'#5a4030':fur}"/><circle cx="${ex2}" cy="${ey}" r="${er}" fill="${fur}"/>`;
+  if(C.ears[1]==='spot') ears=`<circle cx="${ex1}" cy="${ey}" r="${er}" fill="${dk}"/><circle cx="${ex1}" cy="${ey-1}" r="${er*.42}" fill="#fff"/><circle cx="${ex2}" cy="${ey}" r="${er}" fill="${fur}"/>`;
+  if(C.ears[1]==='dark') ears+=`<circle cx="${ex2}" cy="${ey+1}" r="${er*.55}" fill="#e8c9b4"/>`;
+  else ears+=`<circle cx="${ex2}" cy="${ey+1}" r="${er*.55}" fill="#e8b4a8"/>`;
+  // head + face
+  const headShape=C.flat?`<ellipse cx="${hx}" cy="${hy}" rx="${hr*1.25}" ry="${hr*.92}" fill="${fur}"/>`:`<circle cx="${hx}" cy="${hy}" r="${hr}" fill="${fur}"/>`;
+  const mx=hx+20*s+(C.flat?6:0), my=hy+8*s, ex=hx+3*s+(C.flat?4:0), eyY=hy-7*s;
+  let face=`<ellipse cx="${mx}" cy="${my}" rx="${15*s}" ry="${11*s}" fill="${C.muzzle?'#f6efe4':belly}"/>`;
+  if(C.muzzle) face+=`<ellipse cx="${mx-3*s}" cy="${my+3*s}" rx="${4.5*s}" ry="${3.5*s}" fill="#3a2a1e"/>`;
+  if(C.pat==='rosette') face+=`<circle cx="${hx-12*s}" cy="${hy+2*s}" r="2.2" fill="${dk}"/><circle cx="${hx-6*s}" cy="${hy-14*s}" r="2" fill="${dk}"/><circle cx="${hx-16*s}" cy="${hy-6*s}" r="1.8" fill="${dk}"/>`;
+  if(C.cheek) face+=`<path d="M${hx-2*s} ${hy-2*s} q${-8*s} ${4*s} ${-16*s} ${2*s} M${hx-1*s} ${hy+5*s} q${-8*s} ${4*s} ${-15*s} ${3*s}" stroke="${dk}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+  face+=`<path d="M${mx+6*s} ${my-6*s} l${6*s} ${3*s} ${-6*s} ${3*s}z" fill="#5a2a2a"/><path class="pclosed" d="M${mx-6*s} ${my+8*s} Q${mx+2*s} ${my+14*s} ${mx+10*s} ${my+8*s}" stroke="#3a2020" stroke-width="2" fill="none"/>
+    <g class="pmouth"><ellipse cx="${mx+2*s}" cy="${my+12*s}" rx="${10*s}" ry="${7.5*s}" fill="#5a1414"/><path d="M${mx-5*s} ${my+6*s} l2 5 l2 -5 M${mx+5*s} ${my+6*s} l2 5 l2 -5" fill="#fff"/><ellipse cx="${mx+2*s}" cy="${my+16*s}" rx="${5*s}" ry="${2.5*s}" fill="#d0606a"/></g>
+    <path d="M${mx+4*s} ${my+2*s} l${18*s} ${-3*s} M${mx+4*s} ${my+4*s} l${18*s} ${3*s}" stroke="#fff" stroke-width="1.2" opacity=".8"/>`;
+  const eye=C.eye, eyes=`<circle cx="${ex}" cy="${eyY}" r="${eye}" fill="#d9f25a"/><ellipse cx="${ex+eye*.3}" cy="${eyY}" rx="${eye*.42}" ry="${eye*.62}" fill="#111"/>${eye>8?`<circle cx="${ex+eye*.55}" cy="${eyY-eye*.4}" r="${eye*.22}" fill="#fff"/>`:''}
+    <path d="M${ex-eye-3} ${eyY-eye-3} L${ex+eye+4} ${eyY-eye+1}" stroke="#111" stroke-width="3" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 0 260 150"><defs><clipPath id="${uid}"><ellipse cx="${bx}" cy="${by}" rx="${brx}" ry="${bry}"/></clipPath></defs>${tail}
+    ${legs(0,0,0)}${legs(20,.85,'.09s')}
+    <ellipse cx="${bx}" cy="${by}" rx="${brx}" ry="${bry}" fill="${fur}"/><ellipse cx="${bx+6}" cy="${by+bry*.42}" rx="${brx-22}" ry="${bry*.36}" fill="${belly}"/>
+    <path d="M${bx+brx*.62} ${by-bry*.15} L${hx-hr*.35} ${hy+hr*.25}" stroke="${fur}" stroke-width="${hr*1.35}" stroke-linecap="round"/>
+    <g clip-path="url(#${uid})">${pat}</g>
+    ${ears}${headShape}${face}${eyes}</svg>`;
+}
 function predatorSVG(L){
+  if(L.cat) return catSVG(L);
   if(L.kind==='snake'){
-    return `<svg viewBox="0 0 240 120"><g class="slither"><path d="M10 90 C40 50 70 110 100 80 S160 50 190 80" stroke="${L.body}" stroke-width="22" fill="none" stroke-linecap="round"/>
+    const tl=L.long?`<path d="M14 88 C-6 104 -26 108 -44 98" stroke="${L.body}" stroke-width="17" fill="none" stroke-linecap="round"/><path d="M-40 100 C-52 92 -60 94 -66 102" stroke="${L.body}" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M14 88 C-6 104 -26 108 -44 98" stroke="${L.spots}" stroke-width="8" fill="none" stroke-dasharray="8 16" stroke-linecap="round"/>`:'';
+    return `<svg viewBox="${L.long?'-70 0 310 120':'0 0 240 120'}"><g class="slither">${tl}<path d="M10 90 C40 50 70 110 100 80 S160 50 190 80" stroke="${L.body}" stroke-width="22" fill="none" stroke-linecap="round"/>
       <path d="M10 90 C40 50 70 110 100 80 S160 50 190 80" stroke="${L.spots}" stroke-width="10" fill="none" stroke-dasharray="8 16" stroke-linecap="round"/>
       <g class="pmouth"><path d="M206 82 L236 70 L236 96Z" fill="#5a1414"/><path d="M226 74 l2 7 l2 -8 M226 92 l2 -7 l2 8" fill="#fff"/></g><ellipse cx="200" cy="80" rx="24" ry="15" fill="${L.body}"/><circle cx="208" cy="73" r="5" fill="#ffd23a"/><rect x="207" y="70" width="2" height="7" fill="#111"/>
       <path d="M222 84 l14 2 m-14 -2 l13 -5" stroke="#c22" stroke-width="2.5" stroke-linecap="round"/></g></svg>`;
@@ -1578,12 +1640,12 @@ async function chase(id){
   // dir=+1: predator from left, monkey flees right; dir=-1: mirror
   async function pass(dir,pname){
     const L=PLOOK[pname];
-    const p=document.createElement('div'); p.className='predator '+L.kind+(L.small?' small':'')+(L.big?' big':'');
+    const p=document.createElement('div'); p.className='predator '+L.kind+(L.small?' small':'')+(L.big?' big':'')+(L.long&&L.kind==='snake'?' long':'');
     p.innerHTML=`<div style="transform:scaleX(${dir})">${predatorSVG(L)}</div>`;
     p.style.bottom=(L.kind==='bird'? mb+150 : mb-10)+'px';
     stage.appendChild(p);
     const startY=L.kind==='bird'?-200:0, midY=L.kind==='bird'?-40:0;
-    const gap = L.kind==='bird' ? Math.min(W*.33, W/2 - p.offsetWidth/2 - 8) : Math.max(W*.33, (isPhone()?215:280) + (L.kind==='snake'?10:0));  // birds hover fully in frame  // keep ground predators clear of the monkey
+    const gap = L.kind==='bird' ? Math.min(W*.33, W/2 - p.offsetWidth/2 - 8) : Math.max(W*.33, (isPhone()?215:280) + (L.kind==='snake'?10:0) + (L.long&&L.kind==='snake'?(isPhone()?26:33):0));  // birds hover fully in frame  // keep ground predators clear of the monkey
     const pin=p.animate([{transform:`translate(${-dir*W}px,${startY}px)`},{transform:`translate(${-dir*gap}px,${midY}px)`}],{duration:1300,easing:'ease-out',fill:'forwards'});
     await wait(L.kind==='bird'?1300:450); if(!ok()) return false;   // birds land fully in view before calling
     p.classList.add('speak'); predatorVoice(pname,-dir*.5); setTimeout(()=>p.classList.remove('speak'),700);
@@ -1591,7 +1653,7 @@ async function chase(id){
     monkey.classList.add('scared'); bubble.classList.add('scared');
     const a=document.createElement('div'); a.className='alert'; a.textContent='❗'; a.style.bottom=(mb+monkey.offsetHeight*0.62)+'px'; a.style.marginLeft=(monkey.offsetWidth*0.32)+'px'; stage.appendChild(a);
     await wait(600); if(!ok()) return false; a.remove();
-    monkey.classList.remove('pop','hop');
+    monkey.classList.remove('pop','hop'); monkey.classList.add('running');
     const r=8*dir;
     monkey.animate([{transform:'translate(0,0) rotate(0)'},{transform:`translate(${dir*W*.18}px,-30px) rotate(${r}deg)`},{transform:`translate(${dir*W*.36}px,0) rotate(${r}deg)`},{transform:`translate(${dir*W*.54}px,-30px) rotate(${r}deg)`},{transform:`translate(${dir*W*.8}px,0) rotate(${r}deg)`}],{duration:1000,easing:'ease-out',fill:'forwards'});
     pin.cancel();
@@ -1601,7 +1663,7 @@ async function chase(id){
     sfxSwish(dir);
     const back=monkey.animate([{transform:`translate(${-dir*W*.8}px,0)`},{transform:`translate(${-dir*W*.4}px,-24px)`},{transform:'translate(0,0)'}],{duration:1200,easing:'ease-out',fill:'forwards'});
     await back.finished.catch(()=>{}); if(!ok()) return false;
-    back.cancel(); monkey.getAnimations().forEach(x=>x.cancel());
+    back.cancel(); monkey.getAnimations().forEach(x=>x.cancel()); monkey.classList.remove('running');
     monkey.classList.remove('scared'); bubble.classList.remove('scared');
     escapeReaction(dir>0, dir);   // second escape: visual only (the phew sigh plays)
     return true;

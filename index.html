@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monkey Map: Central &amp; South America</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ocean1:#0e4d6e; --ocean2:#0a3550;
+    --land:#4f9a5b; --land2:#5aa866; --landHover:#78c27f; --stroke:#e9f5df;
+    --hi:#ffc93c; --hiStroke:#fff4c9; --bad:#e8584a;
+    --ink:#1f2a1f; --panel:#fffaf0;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:'Fredoka',system-ui,sans-serif; color:var(--ink);
+    background:radial-gradient(ellipse at 30% 20%, #145f86 0%, var(--ocean1) 45%, var(--ocean2) 100%);
+    min-height:100vh; overflow-x:hidden;
+  }
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 20px 4px;color:#fff}
+  h1{margin:0;font-size:clamp(22px,3.2vw,32px);font-weight:700;letter-spacing:.3px}
+  h1 span{color:var(--hi)}
+  .modes{display:flex;gap:6px;background:rgba(255,255,255,.12);padding:4px;border-radius:999px}
+  .modes button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:8px 16px;cursor:pointer;background:transparent;color:#fff}
+  .modes button.on{background:var(--hi);color:#3a2a00}
+  .quizbar{color:#fff;padding:4px 20px 0;min-height:34px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:18px}
+  .quizbar .target{background:#fff;color:var(--ink);padding:4px 14px;border-radius:12px;font-weight:700}
+  .quizbar .score{opacity:.9}
+  .quizbar button{font:inherit;font-weight:600;border:0;border-radius:10px;padding:5px 14px;cursor:pointer;background:var(--hi);color:#3a2a00}
+  main{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,440px);gap:12px;padding:6px 16px 16px;align-items:start}
+  @media (max-width:820px){main{grid-template-columns:1fr}}
+  .mapwrap{position:relative}
+  svg#map{width:100%;height:auto;max-height:calc(100vh - 120px);display:block;margin:auto}
+  .country{fill:var(--land);stroke:var(--stroke);stroke-width:1.1;stroke-linejoin:round;cursor:pointer;transition:fill .18s}
+  .country:nth-child(odd){fill:var(--land2)}
+  .context{fill:#5d7f72;opacity:.55;stroke:#c9d9cc;stroke-width:.8}
+  .ctxlbl{font-size:9px;fill:#dfeee3;opacity:.8;font-weight:600;text-anchor:middle;letter-spacing:1px}
+  .cgroup:hover .country{fill:var(--landHover)}
+  .cgroup.sel .country{fill:var(--hi);stroke:var(--hiStroke);stroke-width:2}
+  .cgroup.bad .country{fill:var(--bad)}
+  .cgroup.sel{filter:drop-shadow(0 0 8px rgba(255,201,60,.8))}
+  .lbl{font-size:10px;font-weight:600;fill:#123018;pointer-events:none;text-anchor:middle;paint-order:stroke;stroke:rgba(255,255,255,.55);stroke-width:2.5px}
+  .quiz .lbl{display:none}
+  .palette{position:absolute;left:0;top:14%;width:28%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:6px}
+  .ptitle{color:#fff;font-weight:600;font-size:13px;text-align:center;margin:2px 0 6px}
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+  .pbtn{display:flex;flex-direction:column;align-items:center;border:0;background:transparent;border-radius:10px;padding:3px 1px;cursor:pointer;color:#fff;font:inherit;font-size:9.5px;line-height:1.1;text-align:center}
+  .pbtn svg{width:40px;height:38px;flex:none}
+  .pbtn:hover{background:rgba(255,255,255,.14)}
+  .pbtn.on{background:var(--hi);color:#3a2a00}
+  @media (max-width:820px){
+    .palette{position:static;width:100%;margin-top:6px;padding:6px 4px}
+    .pgrid{grid-template-columns:repeat(6,1fr);gap:1px}
+    .pbtn{font-size:8.5px;padding:2px 0}
+    .pbtn svg{width:34px;height:32px}
+    .modes{flex-wrap:nowrap}
+    .modes button{padding:7px 11px;font-size:14px;white-space:nowrap}
+    .modes .long{display:none}
+    .onleft{display:none}
+    .quizbar{font-size:15px}
+  }
+  @media (min-width:821px){ .below,.modes .short{display:none} }
+  @media (max-width:820px){
+    .stage{height:calc(100vh - 12px);height:calc(100svh - 12px);min-height:0 !important}
+    .bubble{left:10px;right:10px;top:10px;padding:10px 12px 8px;border-radius:18px}
+    .bscroll{max-height:calc(100vh - 12px - 430px);max-height:calc(100svh - 12px - 430px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+    .bubble h2{font-size:18px}
+    .btitle .sub{font-size:13px}
+    .bflag{width:42px;height:28px}
+    .bface{width:44px;height:44px}
+    .bubble .sub{font-size:12px;margin-bottom:4px}
+    .stat{font-size:13.5px;padding:3px 0}
+    .stat .k{font-size:12px}
+    .fact,.famtxt{font-size:12.5px;padding:5px 8px}
+    .music,.snack{font-size:11px}
+    .famstrip{gap:3px;margin:2px 0}
+    .fm{font-size:9px}
+    .famtxt{font-size:12px;line-height:1.3}
+    .ftype{font-size:10px}
+    .monkey{width:160px;margin-left:-80px}
+    .monkey.tiny{width:118px;margin-left:-59px}
+    .predator{width:180px;margin-left:-90px}
+    .predator.bird{width:160px;margin-left:-80px}
+    .food{font-size:42px}
+    .foliage{height:110px}
+  }
+  @media (max-width:820px) and (max-height:720px){
+    .bscroll{max-height:calc(100vh - 12px - 400px);max-height:calc(100svh - 12px - 400px)}
+    .monkey{width:136px;margin-left:-68px}
+  }
+  .quiz .palette{display:none}
+  .cgroup.range .country{fill:#ff9f2e;animation:glow 1.2s ease-in-out infinite alternate}
+  @keyframes glow{from{fill:#ffb347}to{fill:#ff8a1c}}
+  .cgroup.range.sel .country{fill:var(--hi);animation:none}
+  .picking .cgroup:not(.range) .country{opacity:.45}
+  .picking .cgroup:not(.range){cursor:default}
+  .tip{position:absolute;pointer-events:none;background:#fff;color:var(--ink);padding:3px 10px;border-radius:8px;font-weight:600;font-size:14px;box-shadow:0 3px 10px rgba(0,0,0,.25);opacity:0;transition:opacity .12s;white-space:nowrap}
+  .quiz .tip{display:none}
+
+  /* stage */
+  .stage{position:sticky;top:10px;background:linear-gradient(#bfe6f5 0%,#e3f4d9 70%);border-radius:22px;overflow:hidden;min-height:560px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .stage .hint{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;color:#2c5130;font-size:20px;font-weight:500}
+  .stage .hint b{font-size:44px;display:block;margin-bottom:6px}
+  .foliage{position:absolute;left:-10px;width:calc(100% + 20px);bottom:-20px;height:150px;z-index:1;pointer-events:none}
+  .vine{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  .monkey{position:absolute;left:50%;bottom:60px;width:210px;margin-left:-105px;z-index:3;transform-origin:50% 100%}
+  .monkey.pop{animation:pop .75s cubic-bezier(.25,1.6,.45,1) both}
+  @keyframes pop{0%{transform:translateY(110%) scale(.7)}100%{transform:translateY(0) scale(1)}}
+  .monkey.tiny{width:150px;margin-left:-75px}
+  .tail{transform-box:fill-box;transform-origin:0% 100%;animation:sway 1.6s ease-in-out infinite alternate}
+  @keyframes sway{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+  .tailh{transform-box:fill-box;transform-origin:0% 0%;animation:swayh 2s ease-in-out infinite alternate}
+  @keyframes swayh{from{transform:rotate(-5deg)}to{transform:rotate(6deg)}}
+  .wave{transform-box:fill-box;transform-origin:10% 90%;animation:wave .55s ease-in-out infinite alternate}
+  @keyframes wave{from{transform:rotate(-25deg)}to{transform:rotate(18deg)}}
+  .eyes{transform-box:fill-box;transform-origin:50% 50%;animation:blink 3.8s infinite}
+  @keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+  .bob{animation:bob 2.2s ease-in-out .8s infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+  .bubble{position:absolute;left:14px;right:14px;top:14px;z-index:4;background:var(--panel);border:3px solid #2b2b2b;border-radius:22px;padding:14px 16px 12px;box-shadow:0 6px 0 rgba(0,0,0,.15);opacity:0;transform:scale(.6);transform-origin:50% 100%}
+  .bubble.show{animation:bub .45s cubic-bezier(.3,1.6,.5,1) .45s both}
+  @keyframes bub{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+  .bubble:after,.bubble:before{content:"";position:absolute;left:50%;border-style:solid}
+  .bubble:before{bottom:-26px;margin-left:-14px;border-width:26px 14px 0 14px;border-color:#2b2b2b transparent transparent}
+  .bubble:after{bottom:-20px;margin-left:-10px;border-width:20px 10px 0 10px;border-color:var(--panel) transparent transparent}
+  .bhead{display:flex;align-items:center;gap:10px;padding-bottom:6px;margin-bottom:4px;border-bottom:2px solid #e6dcc0}
+  .btitle{min-width:0;flex:1}
+  .bflag{flex:none;width:54px;height:36px;border-radius:4px;overflow:hidden;box-shadow:0 0 0 1.5px #2b2b2b,0 2px 4px rgba(0,0,0,.2)}
+  .bflag svg{width:100%;height:100%;display:block}
+  .btitle h2{line-height:1.1}
+  .btitle .sub{font-size:14px;color:#3d4a3d;margin:2px 0 0}
+  .bface{width:54px;height:54px;flex:none;background:#eef7e6;border-radius:50%;overflow:hidden;border:2px solid #2b2b2b}
+  .bface svg{width:100%;height:100%;display:block}
+  .bface *{animation:none !important}
+  .bface .wave,.bface .holdArm{display:none}
+  .bubble h2{margin:0 0 2px;font-size:24px;line-height:1.1}
+  .bubble .sub{font-size:13px;color:#5d6b5d;margin-bottom:8px}
+  .stat{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:4px 0;border-top:1px dashed #d9d2bd;font-size:15px}
+  .stat .k{color:#5d6b5d;font-size:13px;flex:none}
+  .stat .v{font-weight:600;text-align:right}
+  .stat .v i{font-weight:400;color:#5d6b5d}
+  .bar{height:10px;background:#ece3c9;border-radius:6px;overflow:hidden;margin:2px 0 6px}
+  .bar div{height:100%;background:linear-gradient(90deg,#f0a92b,#e86a2b);border-radius:6px;width:0;transition:width .9s ease .7s}
+  .badge{display:inline-block;padding:1px 9px;border-radius:999px;font-size:12px;font-weight:700;color:#fff}
+  .fact{margin-top:6px;font-size:14px;line-height:1.35;background:#fff3cf;border-radius:12px;padding:7px 10px}
+  .fact b{color:#b25d00}
+  .music{margin-top:7px;font-size:12px;color:#5d6b5d;display:flex;align-items:center;gap:6px}
+  .music .notes{display:inline-flex;gap:2px;align-items:flex-end;height:12px}
+  .music .notes i{width:3px;background:#e86a2b;border-radius:2px;animation:eq .8s ease-in-out infinite alternate}
+  .music .notes i:nth-child(2){animation-delay:.2s}.music .notes i:nth-child(3){animation-delay:.4s}
+  .muted .music .notes i{animation:none;height:3px}
+  @keyframes eq{from{height:3px}to{height:12px}}
+  .food{position:absolute;z-index:3;font-size:54px;line-height:1;left:-4%;top:30%;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25));animation:drop .9s cubic-bezier(.3,1.5,.5,1) both}
+  .food:after{content:"✨";position:absolute;font-size:22px;right:-18px;top:-10px;animation:spark 1s ease-in-out infinite alternate}
+  @keyframes drop{0%{transform:translateY(-420px) rotate(-90deg);opacity:0}60%{opacity:1}100%{transform:translateY(0) rotate(0)}}
+  @keyframes spark{from{opacity:.2;transform:scale(.7)}to{opacity:1;transform:scale(1.1)}}
+  .monkey.hop{animation:hop .5s ease-in-out 2}
+  @keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-26px)}}
+  .stat.new{animation:flash 1.6s ease-out}
+  @keyframes flash{0%{background:#ffd76a}100%{background:transparent}}
+  .snack{font-size:12px;color:#5d6b5d;margin-top:4px}
+  .snack span{display:inline-block;height:6px;width:0;background:#7bc26f;border-radius:4px;vertical-align:middle;margin-left:6px;animation:fill 6s linear forwards}
+  @keyframes fill{to{width:120px}}
+  .predator{position:absolute;z-index:6;width:230px;left:50%;margin-left:-115px;pointer-events:none}
+  .predator.bird{width:200px;margin-left:-100px}
+  .predator .flap{transform-box:fill-box;transform-origin:50% 100%;animation:flap .22s ease-in-out infinite alternate}
+  @keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(-.5)}}
+  .predator .legs{animation:gallop .18s linear infinite alternate}
+  @keyframes gallop{from{transform:translateY(0)}to{transform:translateY(-6px)}}
+  .predator .slither{animation:slither .35s ease-in-out infinite alternate}
+  @keyframes slither{from{transform:translateY(-4px)}to{transform:translateY(4px)}}
+  .predator .pmouth{opacity:0;transition:opacity .08s}
+  .predator.speak .pmouth{opacity:1}
+  .predator.speak .pclosed{opacity:0}
+  .alert,.phew{position:absolute;z-index:5;left:50%;font-weight:700;pointer-events:none;animation:pop .4s cubic-bezier(.3,1.6,.5,1) both}
+  .alert{font-size:46px;margin-left:-14px}
+  .phew{background:#fff;border:3px solid #2b2b2b;border-radius:16px;padding:4px 12px;font-size:20px;margin-left:40px}
+  .baby{position:absolute;z-index:2;width:127px;left:50%;pointer-events:none}
+  .baby.pop{animation:pop .6s cubic-bezier(.25,1.6,.45,1) both}
+  .branch{position:absolute;left:-10px;width:calc(100% + 20px);z-index:2;pointer-events:none;animation:brin .6s ease-out both}
+  @keyframes brin{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+  .baby.hang{z-index:3;animation:lower .9s ease-out backwards,swing 2.4s ease-in-out .9s infinite alternate}
+  .baby.hang .flip{transform:rotate(180deg)}
+  .baby.hang .hfood{left:62%;top:40%}
+  @keyframes lower{from{transform:translateY(-24px) scaleY(.7);opacity:0}60%{opacity:1}to{transform:none}}
+  @keyframes swing{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+  .baby .bfood{position:absolute;font-size:41px;left:4%;top:32%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+  .monkey svg,.baby svg{overflow:visible;display:block}
+  .scaredFace{display:none}
+  .scared .scaredFace{display:inline}
+  .scared .calm{display:none}
+  .famrow{display:block}
+  .famstrip{display:flex;align-items:flex-end;justify-content:center;gap:6px;flex-wrap:wrap;margin:4px 0 2px}
+  .fm{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#5d6b5d;opacity:0;animation:fmpop .5s cubic-bezier(.25,1.6,.45,1) forwards}
+  @keyframes fmpop{0%{opacity:0;transform:translateY(20px) scale(.6)}100%{opacity:1;transform:none}}
+  .fm svg{display:block;width:100%;height:auto;overflow:visible}
+  .ftype{display:inline-block;background:#2f6f30;color:#fff;font-size:11px;font-weight:600;border-radius:999px;padding:1px 9px;margin-left:4px}
+  .sx{font-size:12px;margin-right:2px}
+  .sx.m{color:#2a6fdb}
+  .sx.f{color:#d0457a}
+  .famtxt{font-size:13px;line-height:1.35;background:#e8f4e0;border-radius:10px;padding:6px 9px;margin-top:4px}
+  .holdArm{display:none}
+  .holding .holdArm{display:inline}
+  .holding .restArm{display:none}
+  .food:after{right:auto;left:-18px}
+  footer{color:rgba(255,255,255,.7);font-size:12px;padding:0 20px 16px;line-height:1.5}
+  footer a{color:#ffe08a}
+  .confetti{position:absolute;width:9px;height:9px;z-index:5;border-radius:2px;pointer-events:none;animation:fall 1.2s ease-out forwards}
+  @keyframes fall{from{transform:translate(0,0) rotate(0)}to{transform:translate(var(--dx),var(--dy)) rotate(540deg);opacity:0}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🐒 Monkey Map: <span>Central &amp; South America</span></h1>
+  <div class="modes">
+    <button id="mExplore" class="on">Explore</button>
+    <button id="mQuiz"><span class="long">Find-the-country quiz</span><span class="short">Quiz</span></button>
+    <button id="mute" title="Music on/off">🔊 Music</button>
+    <button id="stopBtn" title="Stop everything (Esc)">⏹ Stop</button>
+  </div>
+</header>
+<noscript><div style="margin:10px 16px;padding:14px 16px;background:#fff3cf;color:#3a2a00;border:3px solid #2b2b2b;border-radius:16px;font-size:17px;line-height:1.4">
+  <b>⚠️ You're seeing a preview, so the game can't run here.</b><br>
+  Open this file in a web browser such as Chrome, Safari or Edge to play.
+  On a phone, ask the sender for the web link instead, because phone file previews can't run games.
+</div></noscript>
+<div class="quizbar" id="quizbar"><span style="opacity:.85">Click any country to meet its monkey, or pick a monkey <span class="onleft">on the left</span><span class="below">below the map</span>.</span></div>
+
+<main>
+  <div class="mapwrap" id="mapwrap">
+    <svg id="map" role="img" aria-label="Map of Central and South America"></svg>
+    <div class="palette" id="palette"><div class="ptitle">Pick a monkey 🐒</div><div class="pgrid" id="pgrid"></div></div>
+    <div class="tip" id="tip"></div>
+  </div>
+
+  <div class="stage" id="stage">
+    <svg class="vine" viewBox="0 0 400 560" preserveAspectRatio="none">
+      <path d="M-10 40 C 80 70, 160 20, 230 55 S 360 40, 420 70" stroke="#6b8f3a" stroke-width="8" fill="none"/>
+      <g fill="#7fb14a"><ellipse cx="60" cy="58" rx="16" ry="7" transform="rotate(25 60 58)"/><ellipse cx="150" cy="44" rx="16" ry="7" transform="rotate(-20 150 44)"/><ellipse cx="270" cy="58" rx="16" ry="7" transform="rotate(30 270 58)"/><ellipse cx="350" cy="52" rx="16" ry="7" transform="rotate(-25 350 52)"/></g>
+      <path d="M90 50 C 95 120, 80 160, 92 220" stroke="#6b8f3a" stroke-width="4" fill="none"/>
+      <path d="M320 58 C 330 110, 312 150, 324 190" stroke="#6b8f3a" stroke-width="4" fill="none"/>
+    </svg>
+    <div class="hint" id="hint"><b>👆</b>Pick a country on the map and a local monkey will pop up with its primate stats.</div>
+    <div class="bubble" id="bubble"></div>
+    <div class="monkey" id="monkey"></div>
+    <svg class="foliage" viewBox="0 0 420 150" preserveAspectRatio="none">
+      <g fill="#3f8a3c">
+        <ellipse cx="30" cy="110" rx="70" ry="55"/><ellipse cx="140" cy="125" rx="80" ry="50"/>
+        <ellipse cx="270" cy="120" rx="85" ry="55"/><ellipse cx="390" cy="105" rx="70" ry="60"/>
+      </g>
+      <g fill="#56a34e">
+        <ellipse cx="80" cy="130" rx="60" ry="40"/><ellipse cx="210" cy="140" rx="70" ry="38"/><ellipse cx="335" cy="135" rx="65" ry="40"/>
+      </g>
+      <g fill="#2f6f30"><path d="M10 150 Q 40 70 70 150Z"/><path d="M180 150 Q 200 80 225 150Z"/><path d="M350 150 Q 380 75 405 150Z"/></g>
+    </svg>
+  </div>
+</main>
+
+<footer>
+  Music is synthesized live in your browser: short original loops built around each country's traditional and Indigenous instruments. They aren't recordings of real performances.<br>
+  Species counts are approximate and shift with taxonomy (they count species; Brazil's figure includes subspecies). Sources: IUCN Primate fact sheet; IUCN/SSC Primate Specialist Group via Primate Conservation (Peru); ((o))eco 2026 (Brazil); lists of primates by country. Map borders are simplified for play.
+</footer>
+
+<script>
+/* ---------------- borders (lon,lat), shared so neighbours line up ---------------- */
+const col_ven=[[-71.15,11.8],[-72.25,11.1],[-72.9,9.8],[-73.0,9.2],[-72.4,7.4],[-70.1,7.0],[-67.8,6.2],[-67.5,5.5],[-67.8,4.5],[-67.3,2.0],[-66.85,1.2]];
+const col_bra=[[-66.85,1.2],[-69.4,1.1],[-69.8,-0.1],[-69.5,-1.1],[-69.95,-4.2]];
+const col_per=[[-69.95,-4.2],[-72.0,-2.4],[-73.6,-1.3],[-75.3,-0.1]];
+const col_ecu=[[-75.3,-0.1],[-76.6,0.3],[-77.4,0.8],[-78.8,1.4]];
+const ven_guy=[[-60.0,8.5],[-60.6,7.3],[-61.4,5.9],[-60.7,5.2]];
+const ven_bra=[[-60.7,5.2],[-62.8,4.0],[-64.6,4.1],[-64.0,2.3],[-65.5,0.9],[-66.85,1.2]];
+const guy_sur=[[-57.1,5.9],[-57.6,4.5],[-58.0,3.6],[-57.4,2.5],[-56.5,1.9]];
+const guy_bra=[[-56.5,1.9],[-58.8,1.2],[-59.7,1.8],[-59.8,2.8],[-59.5,3.9],[-60.1,4.5],[-60.7,5.2]];
+const sur_fg=[[-54.0,5.7],[-54.2,5.0],[-54.5,4.1],[-54.0,3.6],[-54.2,2.8],[-54.1,2.1]];
+const sur_bra=[[-54.1,2.1],[-55.0,2.5],[-56.0,1.9],[-56.5,1.9]];
+const fg_bra=[[-51.6,4.2],[-51.9,3.0],[-52.6,2.4],[-53.4,2.2],[-54.1,2.1]];
+const ecu_per=[[-75.3,-0.1],[-75.6,-1.6],[-76.6,-2.6],[-77.8,-3.0],[-78.4,-3.8],[-79.0,-5.0],[-79.8,-4.4],[-80.4,-3.9],[-80.3,-3.4]];
+const per_bra=[[-69.95,-4.2],[-72.9,-5.2],[-73.9,-7.3],[-72.4,-9.5],[-70.5,-9.5],[-70.6,-11.0],[-69.6,-10.9]];
+const per_bol=[[-69.6,-10.9],[-68.9,-12.9],[-69.4,-15.3],[-69.5,-17.5]];
+const per_chi=[[-69.5,-17.5],[-70.4,-18.35]];
+const bol_chi=[[-69.5,-17.5],[-69.1,-18.5],[-68.4,-19.4],[-68.6,-20.9],[-68.2,-21.5],[-67.2,-22.8]];
+const bol_arg=[[-67.2,-22.8],[-66.3,-21.8],[-64.4,-22.4],[-62.65,-22.2]];
+const bol_par=[[-62.65,-22.2],[-62.3,-20.6],[-61.7,-19.6],[-60.0,-19.3],[-58.2,-19.8]];
+const bol_bra=[[-58.2,-19.8],[-57.5,-18.2],[-58.4,-16.3],[-60.2,-16.3],[-60.5,-13.8],[-63.2,-12.5],[-65.4,-10.7],[-66.6,-9.9],[-68.0,-10.7],[-69.6,-10.9]];
+const par_bra=[[-58.2,-19.8],[-58.0,-20.6],[-57.8,-22.1],[-55.7,-22.6],[-55.4,-23.9],[-54.3,-24.0],[-54.6,-25.6]];
+const par_arg=[[-54.6,-25.6],[-54.8,-26.7],[-55.9,-27.3],[-58.6,-27.3],[-57.6,-25.4],[-59.6,-24.1],[-61.0,-23.2],[-62.65,-22.2]];
+const bra_arg=[[-54.6,-25.6],[-53.8,-25.7],[-53.7,-26.9],[-55.0,-27.4],[-56.0,-28.5],[-57.6,-30.2]];
+const bra_uru=[[-57.6,-30.2],[-55.6,-30.9],[-53.8,-32.0],[-53.4,-32.6],[-53.4,-33.75]];
+const uru_arg=[[-57.6,-30.2],[-57.8,-31.3],[-58.2,-32.5],[-58.4,-33.9]];
+const arg_chi=[[-67.2,-22.8],[-68.2,-25.0],[-68.4,-27.0],[-69.7,-28.5],[-70.5,-31.0],[-69.9,-33.0],[-70.4,-35.0],[-71.0,-37.0],[-71.9,-40.0],[-71.4,-42.0],[-71.8,-44.0],[-71.7,-46.0],[-72.5,-47.5],[-73.4,-49.0],[-72.3,-50.5],[-71.9,-52.0],[-68.4,-52.3]];
+const col_pan=[[-77.9,7.2],[-77.2,7.9],[-77.4,8.67]];
+const cr_pan=[[-82.56,9.57],[-82.9,9.0],[-82.87,8.03]];
+const nic_cr=[[-83.7,10.93],[-84.7,11.08],[-85.7,11.07]];
+const hon_nic=[[-83.15,15.0],[-84.0,14.8],[-85.1,14.3],[-86.0,13.9],[-86.7,13.3],[-87.3,12.98]];
+const hon_gua=[[-88.2,15.72],[-88.7,15.2],[-89.15,14.6],[-89.35,14.42]];
+const hon_sal=[[-89.35,14.42],[-88.5,14.0],[-87.75,13.9],[-87.8,13.4]];
+const sal_gua=[[-90.1,13.73],[-89.7,14.2],[-89.35,14.42]];
+const gua_bel=[[-88.9,15.89],[-89.15,15.9],[-89.15,17.82]];
+const R=a=>a.slice().reverse();
+
+const SHAPES={
+  colombia:[[...col_ven,...col_bra,...col_per,...col_ecu,[-77.4,3.9],[-77.4,5.8],...col_pan,[-76.8,8.6],[-75.6,9.5],[-75.2,10.8],[-74.2,11.3],[-72.3,11.9],[-71.3,12.4]]],
+  panama:[[...cr_pan,[-81.7,8.1],[-80.9,7.25],[-80.0,7.45],[-80.5,8.2],[-79.6,8.95],[-78.8,8.6],[-78.2,8.0],...col_pan,[-78.4,9.4],[-79.6,9.6],[-80.4,9.1],[-81.4,8.8],[-82.2,9.0]]],
+  costarica:[[[-82.56,9.57],[-83.0,10.0],...nic_cr,[-85.9,10.6],[-85.8,9.9],[-85.1,9.6],[-84.9,9.9],[-84.6,9.6],[-83.7,9.0],[-83.6,8.5],[-83.3,8.4],...R(cr_pan)]],
+  nicaragua:[[[-83.7,10.93],[-83.6,12.0],[-83.5,13.0],[-83.3,14.0],...hon_nic,[-87.0,12.4],[-86.6,12.2],[-85.9,11.4],...R(nic_cr)]],
+  honduras:[[[-83.15,15.0],[-84.0,15.8],[-85.0,16.0],[-86.4,15.8],[-87.6,15.9],...hon_gua,...hon_sal,...R(hon_nic)]],
+  elsalvador:[[...hon_sal,[-88.5,13.2],[-89.4,13.5],...sal_gua]],
+  guatemala:[[[-92.2,14.53],[-91.4,13.95],[-90.6,13.9],...sal_gua,...R(hon_gua),[-88.6,15.85],...gua_bel,[-90.98,17.82],[-90.98,17.25],[-91.43,17.25],[-90.4,16.4],[-90.45,16.07],[-91.73,16.07],[-92.2,15.25]]],
+  belize:[[[-89.15,17.82],[-88.85,17.95],[-88.3,18.48],[-88.1,18.0],[-88.2,17.3],[-88.3,16.5],...gua_bel]],
+  venezuela:[[[-71.15,11.8],[-70.2,11.6],[-70.0,12.2],[-69.8,11.4],[-68.3,10.8],[-66.2,10.6],[-64.2,10.6],[-61.9,10.7],[-61.0,9.6],...ven_guy,...ven_bra,...R(col_ven)]],
+  guyana:[[[-60.0,8.5],[-59.1,8.0],[-58.2,6.8],...guy_sur,...guy_bra,...R(ven_guy)]],
+  suriname:[[[-57.1,5.9],[-55.9,5.9],...sur_fg,...sur_bra,...R(guy_sur)]],
+  frenchguiana:[[[-54.0,5.7],[-52.9,5.4],...fg_bra,...R(sur_fg)]],
+  ecuador:[[[-78.8,1.4],[-80.0,0.8],[-80.4,-0.6],[-80.9,-2.2],[-79.8,-2.6],[-80.3,-3.4],...R(ecu_per),...col_ecu]],
+  peru:[[...R(col_per),...per_bra,...per_bol,...per_chi,[-71.4,-17.7],[-72.5,-16.7],[-75.2,-15.3],[-76.3,-13.4],[-77.1,-12.0],[-78.7,-9.0],[-79.6,-7.2],[-81.0,-6.0],[-81.3,-4.7],...R(ecu_per)]],
+  bolivia:[[...per_bol,...bol_chi,...bol_arg,...bol_par,...bol_bra]],
+  paraguay:[[...par_bra,...par_arg,...bol_par]],
+  brazil:[[[-53.4,-33.75],[-52.3,-32.2],[-51.1,-31.5],[-50.0,-30.0],[-48.7,-28.5],[-48.5,-26.0],[-46.9,-24.4],[-44.6,-23.4],[-42.0,-22.9],[-40.9,-21.9],[-39.1,-17.6],[-38.5,-13.0],[-37.1,-11.0],[-35.6,-9.6],[-34.8,-7.5],[-35.2,-5.4],[-38.5,-3.7],[-41.8,-2.8],[-44.9,-1.5],[-48.4,-1.0],[-50.0,-0.2],[-50.4,1.8],...fg_bra,...sur_bra,...guy_bra,...ven_bra,...col_bra,...per_bra,...R(bol_bra),...par_bra,...bra_arg,...bra_uru]],
+  uruguay:[[...bra_uru,[-53.8,-34.4],[-54.9,-34.95],[-56.2,-34.9],[-57.2,-34.45],...R(uru_arg)]],
+  argentina:[[...bol_arg,...R(par_arg),...bra_arg,...uru_arg,[-58.5,-34.5],[-57.2,-35.8],[-56.7,-36.5],[-57.6,-38.2],[-59.0,-38.8],[-62.3,-38.8],[-62.1,-40.2],[-63.0,-41.1],[-65.1,-41.0],[-64.3,-42.4],[-63.6,-42.7],[-64.9,-43.2],[-65.3,-44.5],[-67.3,-45.8],[-65.9,-47.8],[-67.6,-49.0],[-68.5,-50.2],[-69.2,-51.6],...R(arg_chi)],
+             [[-68.6,-52.6],[-67.5,-53.6],[-65.3,-54.8],[-66.8,-55.0],[-68.6,-54.9]]],
+  chile:[[[-70.4,-18.35],[-70.2,-20.0],[-70.4,-23.5],[-70.6,-26.0],[-71.3,-29.0],[-71.6,-32.5],[-72.0,-34.5],[-73.2,-37.0],[-73.5,-39.5],[-73.8,-41.5],[-74.2,-43.4],[-73.6,-44.5],[-75.5,-46.5],[-75.4,-48.5],[-75.0,-51.0],[-74.5,-52.5],[-72.5,-53.5],[-71.0,-53.6],[-70.4,-52.8],[-69.5,-52.4],...R(arg_chi),...R(bol_chi),...per_chi],
+         [[-68.6,-52.6],[-69.8,-52.6],[-70.5,-53.4],[-72.5,-54.0],[-71.0,-54.8],[-68.6,-54.9]]]
+};
+
+/* ---------------- primate data ---------------- */
+const STATUS={LC:['Least Concern','#4a9b4f'],NT:['Near Threatened','#9aa63a'],VU:['Vulnerable','#e3a21a'],EN:['Endangered','#e2702b'],CR:['Critically Endangered','#c8352b'],NONE:['No wild primates','#8a8a8a']};
+const MAXSP=151;
+const C={
+ belize:{name:'Belize',lbl:[-88.65,17.1],sp:2,spTxt:'2',
+   m:'Yucatán black howler',sci:'Alouatta pigra',st:'EN',size:'about 13–24 lb',
+   fact:'Belizeans call howler monkeys "baboons." The Community Baboon Sanctuary was started by local farmers who agreed to keep forest along their land so the monkeys could travel, and it now holds more than 1,000 howlers.',
+   food:'🍃',foodTxt:"Leaves, plus figs & flowers",alt:['🍈','🌸'],altTxt:"Fruit & flowers",pred:'Jaguar',predE:'🐆',
+   baby:{fur:'#6b4a30',belly:'#7a5a3e',hand:'#6b4a30',face:'#2e221b'},babyNote:"Babies are born brown and turn black as they grow.",
+   pred2:'Harpy eagle',pred2E:'🦅',
+   look:{fur:'#1d1a18',face:'#6e5a4b',belly:'#2a2522',beard:true,hand:'#1d1a18',roar:true}},
+ guatemala:{name:'Guatemala',lbl:[-90.3,15.6],sp:3,spTxt:'3',
+   m:"Geoffroy's spider monkey",sci:'Ateles geoffroyi',st:'EN',size:'about 13–20 lb',
+   fact:"Spider monkeys swing through the treetops around Tikal's ancient Maya temples. They have almost no thumbs, which turns their hands into perfect swinging hooks.",
+   food:'🍑',foodTxt:"Ripe fruit, especially figs",alt:['🍃','🌸'],altTxt:"Young leaves & flowers",pred:'Jaguar',predE:'🐆',
+   baby:{fur:'#1d1a18',belly:'#2a2522',hand:'#1d1a18'},babyNote:"Babies are born all black and lighten over their first 5 months.",
+   pred2:'Harpy eagle',pred2E:'🦅',
+   look:{lanky:true,goggles:'#e2c9a2',fur:'#9a6a3c',face:'#2a201a',belly:'#d9b585',hand:'#2a201a',longtail:true}},
+ elsalvador:{name:'El Salvador',lbl:[-89.0,13.75],sp:2,spTxt:'1–2',
+   m:"Geoffroy's spider monkey",sci:'Ateles geoffroyi',st:'EN',size:'about 13–20 lb',
+   fact:'El Salvador is the most crowded country in Central America, and its last wild monkeys hang on in just a few small patches of forest.',
+   food:'🍑',foodTxt:"Ripe fruit, especially figs",alt:['🍃','🌸'],altTxt:"Young leaves & flowers",pred:'Ocelot',predE:'🐆',
+   baby:{fur:'#1d1a18',belly:'#2a2522',hand:'#1d1a18'},babyNote:"Babies are born all black and lighten over their first 5 months.",
+   pred2:'Boa constrictor',pred2E:'🐍',
+   look:{lanky:true,goggles:'#e2c9a2',fur:'#6e4a2c',face:'#2a201a',belly:'#c9a477',hand:'#2a201a',longtail:true}},
+ honduras:{name:'Honduras',lbl:[-86.6,14.8],sp:3,spTxt:'3',
+   m:'White-faced capuchin',sci:'Cebus imitator',st:'VU',size:'about 5.5–9 lb',
+   fact:'Capuchins are clever foragers: they bash open hard nuts and rub crushed plants into their fur, possibly as a bug repellent.',
+   food:'🍈',foodTxt:"Ripe fruit",alt:['🦗','🥚'],altTxt:"Insects & bird eggs",pred:'Boa constrictor',predE:'🐍',
+   pred2:'Harpy eagle',pred2E:'🦅',
+   look:{tailType:'semi',fur:'#1d1a18',head:'#f1e6d2',face:'#e7b9a0',belly:'#f1e6d2',cap:'#1d1a18',hand:'#1d1a18'}},
+ nicaragua:{name:'Nicaragua',lbl:[-85.0,12.9],sp:3,spTxt:'3',
+   m:'Mantled howler',sci:'Alouatta palliata',st:'VU',size:'about 10–22 lb',
+   fact:'Named for the golden "mantle" of long fur on its sides. On Ometepe, an island made of two volcanoes in Lake Nicaragua, its roars echo through the forest.',
+   food:'🍃',foodTxt:"Leaves — it spends hours resting to digest them",alt:['🍈','🌸'],altTxt:"Fruit & flowers",pred:'Harpy eagle',predE:'🦅',
+   baby:{fur:'#b39a78',belly:'#c9b08a',hand:'#b39a78'},babyNote:"Babies are born silvery-gold and darken by about 3 months.",
+   pred2:'Jaguar',pred2E:'🐆',
+   look:{fur:'#2a2420',face:'#6e5a4b',belly:'#b8862e',beard:true,hand:'#2a2420',roar:true}},
+ costarica:{name:'Costa Rica',lbl:[-84.2,10.0],sp:4,spTxt:'4',
+   m:'Central American squirrel monkey',sci:'Saimiri oerstedii',st:'VU',size:'about 1.7 lb',
+   fact:"It lives only along the Pacific coast of Costa Rica and western Panama, and it's the star of Manuel Antonio and Corcovado national parks.",
+   food:'🦗',foodTxt:"Insects, especially grasshoppers",alt:['🍈','🌺'],altTxt:"Fruit & nectar",pred:'Ornate hawk-eagle',predE:'🦅',
+   pred2:'Boa constrictor',pred2E:'🐍',
+   look:{tailType:'hang',longtail:true,tailTip:'#1d1a18',fur:'#e07a2a',face:'#f6f1e2',muzzle:'#2a2522',belly:'#f0c27a',hand:'#e0a33a',cap:'#2a2522'}},
+ panama:{name:'Panama',lbl:[-80.6,8.6],sp:9,spTxt:'about 9',note:'most in Central America',
+   m:"Geoffroy's tamarin",sci:'Saguinus geoffroyi',st:'NT',size:'about 1.1 lb',
+   fact:"The only tamarin in Central America and Panama's smallest monkey. You can even spot one in Metropolitan Natural Park, right inside Panama City.",
+   food:'🍇',foodTxt:"Small fruits & berries",alt:['🦗','🍯'],altTxt:"Insects & tree sap",pred:'Tayra',predE:'🦡',
+   pred2:'Ornate hawk-eagle',pred2E:'🦅',
+   look:{tailType:'hang',tail:'#1d1a18',fur:'#3a3530',face:'#2a2420',belly:'#f2efe8',hand:'#f2efe8',cap:'#9a4a2a'}},
+ brazil:{name:'Brazil',lbl:[-52,-11],sp:151,spTxt:'about 151',note:'#1 in the world',
+   m:'Golden lion tamarin',sci:'Leontopithecus rosalia',st:'EN',size:'about 1.3 lb',
+   fact:'Brazil has more primates than any other country on Earth, and about 80 of them live nowhere else. The golden lion tamarin once fell to a few hundred wild animals; decades of conservation in the Atlantic Forest brought it back to the thousands.',
+   food:'🍌',foodTxt:"Sweet ripe fruit — plus insects and the odd lizard",
+   pred:'Ocelot',predE:'🐆',
+   alt:['🦗','🦎'],altTxt:"Insects & small lizards",
+   pred2:'Boa constrictor',pred2E:'🐍',
+   look:{tailType:'hang',tail:'#c96f1c',fur:'#ec8a24',face:'#6a3a1c',belly:'#f4a443',mane:'#f39a2a',hand:'#d9761a'}},
+ peru:{name:'Peru',lbl:[-75,-9.5],sp:44,spTxt:'about 44',note:'top-6 worldwide',
+   m:'Emperor tamarin',sci:'Saguinus imperator',st:'LC',size:'about 1 lb',
+   fact:'That huge white mustache supposedly reminded people of German Emperor Wilhelm II, which is how it got its name.',
+   food:'🍇',foodTxt:"Sticky tree gum, fruit & nectar",
+   pred:'Ornate hawk-eagle',predE:'🦅',
+   alt:['🌺','🐞'],altTxt:"Flower nectar & insects",
+   pred2:'Tayra',pred2E:'🦡',
+   look:{tailType:'hang',fur:'#5b4c44',face:'#2b2321',belly:'#7a6a5c',tail:'#a8532a',mustache:true,hand:'#a8532a'}},
+ colombia:{name:'Colombia',lbl:[-73,4],sp:41,spTxt:'about 41',
+   m:'Cotton-top tamarin',sci:'Saguinus oedipus',st:'CR',size:'about 15 oz',
+   fact:'Found only in northwest Colombia. Its wild white crest makes it look permanently surprised, and it\'s one of the rarest primates in the world.',
+   food:'🦗',foodTxt:"Insects — and ripe fruit for dessert",
+   pred:'Boa constrictor',predE:'🐍',
+   alt:['🍑','🍯'],altTxt:"Ripe fruit & tree gum",
+   pred2:'Ornate hawk-eagle',pred2E:'🦅',
+   look:{tailType:'hang',tail:'#3a2a1e',fur:'#5a4330',face:'#24201c',belly:'#f4efe4',crest:true,hand:'#f4efe4'}},
+ bolivia:{name:'Bolivia',lbl:[-64.5,-16.5],sp:25,spTxt:'about 25',
+   m:'Bolivian squirrel monkey',sci:'Saimiri boliviensis',st:'LC',size:'about 1.8 lb',
+   fact:'Squirrel monkeys travel in big, chattery troops that can number in the dozens, and they can\'t grip with their long tails.',
+   food:'🐛',foodTxt:"Insects & caterpillars, with fruit on the side",
+   pred:'Tayra',predE:'🦡',
+   alt:['🍊','🌼'],altTxt:"Fruit & flowers",
+   pred2:'Ornate hawk-eagle',pred2E:'🦅',
+   look:{tailType:'hang',longtail:true,tailTip:'#1d1a18',fur:'#c7a63e',face:'#f6f1e2',muzzle:'#2a2522',belly:'#e9dca8',hand:'#e3a33a',cap:'#55524a'}},
+ ecuador:{name:'Ecuador',lbl:[-78.3,-1.5],sp:20,spTxt:'about 20',
+   m:'Pygmy marmoset',sci:'Cebuella pygmaea',st:'VU',size:'about 4 oz',
+   fact:'The world\'s smallest monkey. It weighs about as much as a stick of butter and gnaws tree bark to drink the sap.',
+   food:'🍯',foodTxt:"Tree sap & gum it gnaws out of bark",
+   pred:'Forest falcon',predE:'🦅',
+   alt:['🐛','🌼'],altTxt:"Insects & nectar",
+   pred2:'Boa constrictor',pred2E:'🐍',
+   look:{tailType:'hang',rings:'#5a4a30',fur:'#9c8a55',face:'#4a3c2c',belly:'#c6b07a',tiny:true,hand:'#7a6a44'}},
+ venezuela:{name:'Venezuela',lbl:[-66,7],sp:20,spTxt:'about 20',
+   m:'Red howler monkey',sci:'Alouatta seniculus',st:'LC',size:'about 13–18 lb',
+   fact:'An enlarged throat bone works like an amplifier, so its dawn roar can carry for kilometres through the forest.',
+   food:'🍃',foodTxt:"Leaves — lots of them — plus fruit",
+   pred:'Harpy eagle',predE:'🦅',
+   alt:['🍈','🌸'],altTxt:"Fruit & flowers",
+   pred2:'Jaguar',pred2E:'🐆',
+   look:{fur:'#a8381e',face:'#2a1a14',belly:'#c4512c',beard:true,hand:'#2a1a14',roar:true}},
+ guyana:{name:'Guyana',lbl:[-59,5],sp:8,spTxt:'about 8',
+   m:'Golden-handed tamarin',sci:'Saguinus midas',st:'LC',size:'about 1.2 lb',
+   fact:'A jet-black tamarin that looks like it\'s wearing bright golden gloves and socks.',
+   food:'🍒',foodTxt:"Juicy fruit, insects & nectar",
+   pred:'Ocelot',predE:'🐆',
+   alt:['🦗','🌺'],altTxt:"Insects & nectar",
+   pred2:'Ornate hawk-eagle',pred2E:'🦅',
+   look:{tailType:'hang',fur:'#1f1a17',face:'#4e4038',belly:'#2c2420',hand:'#f0a52d',feet:'#f0a52d'}},
+ suriname:{name:'Suriname',lbl:[-55.6,3.6],sp:8,spTxt:'about 8',
+   m:'White-faced saki',sci:'Pithecia pithecia',st:'LC',size:'about 4 lb',
+   fact:'Only the males have the bright white face mask. Females are a plain grey-brown, so for a long time people thought they were two species.',
+   food:'🌰',foodTxt:"Hard seeds cracked from unripe fruit",
+   pred:'Harpy eagle',predE:'🦅',
+   alt:['🍇','🐜'],altTxt:"Fruit pulp & insects",
+   pred2:'Boa constrictor',pred2E:'🐍',
+   look:{tailType:'bushy',fur:'#1c1917',face:'#f3ead8',belly:'#2a2522',bigface:true,hand:'#1c1917',muzzle:'#3a2a24'}},
+ frenchguiana:{name:'French Guiana',lbl:[-52.9,4.3],sp:8,spTxt:'about 8',
+   m:'Red-faced spider monkey',sci:'Ateles paniscus',st:'VU',size:'about 20 lb',
+   fact:'Its long prehensile tail has a bare, fingerprint-like pad at the tip and works like a fifth hand.',
+   food:'🍑',foodTxt:"Ripe fruit, especially figs",
+   pred:'Jaguar',predE:'🐆',
+   alt:['🍃','🌸'],altTxt:"Young leaves & flowers",
+   pred2:'Harpy eagle',pred2E:'🦅',
+   look:{lanky:true,fur:'#1a1716',face:'#d26a5a',belly:'#232020',hand:'#1a1716',longtail:true}},
+ paraguay:{name:'Paraguay',lbl:[-58.5,-23.2],sp:6,spTxt:'about 6',
+   m:"Azara's night monkey",sci:'Aotus azarae',st:'LC',size:'about 2.6 lb',
+   fact:'Unusually for a "night monkey", it\'s active by day too. The dads do most of the baby-carrying.',
+   food:'🌸',foodTxt:"Fruit, flowers, leaves & insects",
+   pred:'Great horned owl',predE:'🦉',
+   alt:['🍊','🐞'],altTxt:"Fruit & insects",
+   pred2:'Ocelot',pred2E:'🐆',
+   look:{tailType:'bushy',tailTip:'#1d1a18',fur:'#8a7c6c',face:'#efe4cc',belly:'#d9a066',bigeyes:true,stripes:true,hand:'#6a5d50'}},
+ argentina:{name:'Argentina',lbl:[-65,-36],sp:5,spTxt:'about 5',
+   m:'Black-and-gold howler',sci:'Alouatta caraya',st:'NT',size:'about 9–15 lb',
+   fact:'Adult males are black and females are golden, so a couple looks like two different species. Argentina\'s monkeys stick to the subtropical forests of the far north.',
+   food:'🌿',foodTxt:"Leaves, with fruit and flowers in season",
+   pred:'Puma',predE:'🐈',
+   alt:['🍈','🌼'],altTxt:"Fruit & flowers",
+   baby:{fur:'#d9a441',belly:'#e8c06a',hand:'#d9a441'},babyNote:"Babies are born golden; boys turn black at about 2½ years.",
+   pred2:'Jaguar',pred2E:'🐆',
+   look:{fur:'#1d1a18',face:'#6e5a4b',belly:'#2a2522',beard:true,hand:'#1d1a18',roar:true}},
+ chile:{name:'Chile',lbl:[-69.9,-26],sp:0,spTxt:'0',lblRot:-80,
+   m:'No wild monkeys',sci:'',st:'NONE',size:'—',
+   fact:'The Andes and the Atacama Desert keep monkeys out. Around 20 million years ago, though, a little fossil monkey called <i>Chilecebus</i> lived here.',
+   food:'🥪',foodTxt:"A packed lunch — no wild monkey snacks grow here!",
+   pred:'Puma',predE:'🐈',
+   alt:['🍎','🧃'],altTxt:"Apple slices & juice boxes",
+   pred2:'Culpeo fox',pred2E:'🦊',
+   look:{fur:'#8b6a4e',face:'#e6c9a8',belly:'#b08a66',sad:true,hand:'#8b6a4e'}},
+ uruguay:{name:'Uruguay',lbl:[-56,-32.7],sp:0,spTxt:'0',
+   m:'No established wild monkeys',sci:'',st:'NONE',size:'—',
+   fact:'No established wild primates live here, but black-and-gold howlers live just across the river in Argentina and Brazil.',
+   food:'🥪',foodTxt:"A packed lunch — it's just visiting!",
+   pred:'Pampas fox',predE:'🦊',
+   alt:['🍎','🧃'],altTxt:"Apple slices & juice boxes",
+   pred2:'Crested caracara',pred2E:'🦅',
+   look:{fur:'#8b6a4e',face:'#e6c9a8',belly:'#b08a66',sad:true,hand:'#8b6a4e'}}
+};
+
+/* ---------------- species (monkey-first mode) ---------------- */
+const RANGES={
+ 'Leontopithecus rosalia':['brazil'],
+ 'Saguinus imperator':['peru','brazil','bolivia'],
+ 'Saguinus oedipus':['colombia'],
+ 'Saimiri boliviensis':['bolivia','peru','brazil'],
+ 'Cebuella pygmaea':['ecuador','peru','colombia','brazil','bolivia'],
+ 'Alouatta seniculus':['venezuela','colombia','ecuador','peru','brazil'],
+ 'Saguinus midas':['guyana','suriname','frenchguiana','brazil'],
+ 'Pithecia pithecia':['suriname','guyana','frenchguiana','venezuela','brazil'],
+ 'Ateles paniscus':['frenchguiana','suriname','guyana','brazil'],
+ 'Aotus azarae':['paraguay','argentina','bolivia','brazil'],
+ 'Alouatta caraya':['argentina','paraguay','bolivia','brazil'],
+ 'Alouatta pigra':['belize','guatemala'],
+ 'Ateles geoffroyi':['guatemala','belize','elsalvador','honduras','nicaragua','costarica','panama'],
+ 'Cebus imitator':['honduras','nicaragua','costarica','panama'],
+ 'Alouatta palliata':['guatemala','honduras','nicaragua','costarica','panama','colombia','ecuador','peru'],
+ 'Saimiri oerstedii':['costarica','panama'],
+ 'Saguinus geoffroyi':['panama','colombia']
+};
+const SPECIES={};
+const SPKEYS=['m','sci','st','size','fact','food','foodTxt','alt','altTxt','pred','predE','pred2','pred2E','look','baby','babyNote'];
+Object.entries(C).forEach(([id,c])=>{ if(c.sci && !SPECIES[c.sci]){ const o={home:id}; SPKEYS.forEach(k=>o[k]=c[k]); SPECIES[c.sci]=o; } });
+let pickSp=null, CUR=null;
+const TOURIST=[['🍔','Burger'],['🍕','Pizza'],['🍟','Fries'],['🥤','Milkshake'],['🌭','Hot dog'],['🍦','Ice cream cone'],['🍩','Donut'],['🥨','Pretzel']];
+let tIdx=0;
+/* ---------------- draw map ---------------- */
+const S=10, LON0=-111, LAT0=19.3;
+const px=([lo,la])=>[((lo-LON0)*S).toFixed(1),((LAT0-la)*S).toFixed(1)];
+const NS='http://www.w3.org/2000/svg';
+const svg=document.getElementById('map');
+function fitMap(){ svg.setAttribute('viewBox', window.innerWidth<=820 ? '160 -4 617 762' : '-4 -4 777 762'); }
+fitMap(); window.addEventListener('resize',fitMap);
+{const m=document.createElementNS(NS,'path');
+ m.setAttribute('d','M'+[[-92.2,14.53],[-92.2,15.25],[-91.73,16.07],[-90.45,16.07],[-90.4,16.4],[-91.43,17.25],[-90.98,17.25],[-90.98,17.82],[-89.15,17.82],[-88.85,17.95],[-88.3,18.48],[-87.5,19.5],[-87,22],[-96,22],[-96,16],[-94,16.2],[-93,15.7]].map(p=>px(p).join(',')).join('L')+'Z');
+ m.setAttribute('class','context'); svg.appendChild(m);
+ const t=document.createElementNS(NS,'text'); const [x,y]=px([-92.3,17.4]); t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('class','ctxlbl'); t.textContent='MEXICO'; svg.appendChild(t);}
+const groups={};
+Object.entries(SHAPES).forEach(([id,rings])=>{
+  const g=document.createElementNS(NS,'g'); g.setAttribute('class','cgroup'); g.dataset.id=id;
+  rings.forEach(r=>{
+    const p=document.createElementNS(NS,'path');
+    p.setAttribute('d','M'+r.map(pt=>px(pt).join(',')).join('L')+'Z');
+    p.setAttribute('class','country'); g.appendChild(p);
+  });
+  svg.appendChild(g); groups[id]=g;
+});
+Object.entries(C).forEach(([id,c])=>{
+  const t=document.createElementNS(NS,'text'); const [x,y]=px(c.lbl);
+  t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('class','lbl');
+  if(c.lblRot) t.setAttribute('transform',`rotate(${c.lblRot} ${x} ${y})`);
+  if(['frenchguiana','suriname','guyana','uruguay','ecuador','paraguay','panama','costarica','nicaragua','honduras','guatemala'].includes(id)) t.style.fontSize='7px';
+  if(['elsalvador','belize'].includes(id)) t.style.fontSize='5.5px';
+  if(id==='suriname'||id==='frenchguiana') t.style.fontSize='6px';
+  t.textContent=c.name==='French Guiana'?'Fr. Guiana':c.name; svg.appendChild(t);
+});
+
+/* ---------------- monkey drawing ---------------- */
+function monkeySVG(L){
+  const fur=L.fur, face=L.face, belly=L.belly||fur, hand=L.hand||fur, tailC=L.tail||fur, feet=L.feet||fur;
+  let s=`<svg viewBox="0 0 200 250" xmlns="${NS}">`;
+  // tail: prehensile species curl, others hang
+  if(L.hangTail){
+    const tc=L.tail||fur, w=L.longtail?8:10;
+    s+=`<path d="M104 220 C 110 248, 96 268, 100 288 A15 12 0 0 1 100 312" stroke="${tc}" stroke-width="${w}" fill="none" stroke-linecap="round"/>`;
+    s+=`<rect x="64" y="291" width="72" height="19" rx="9" fill="#6b4a2e"/>`;
+    s+=`<path d="M100 312 A15 12 0 0 1 87 291" stroke="${tc}" stroke-width="${w}" fill="none" stroke-linecap="round"/>`;
+  } else {
+  const tt=L.tailType||'curl', tw=L.tailW||(tt==='bushy'?17:(L.longtail?8:10));
+  let tpath, tcls;
+  if(tt==='curl'){ tcls='tail'; tpath=L.longtail?'M125 205 C195 222 212 180 196 150 C184 128 160 140 170 160':'M125 205 C178 218 194 188 182 168 C172 152 154 162 164 178'; }
+  else if(tt==='semi'){ tcls='tail'; tpath='M125 205 C176 214 196 196 192 170 C190 158 180 154 175 160'; }
+  else { tcls='tailh'; tpath=L.longtail?'M126 200 C180 196 200 222 194 249':'M126 202 C172 200 190 222 186 249'; }
+  s+=`<path class="${tcls}" d="${tpath}" stroke="${tailC}" stroke-width="${tw}" fill="none" stroke-linecap="round"/>`;
+  if(L.tailTip) s+=`<path class="${tcls}" d="${tpath}" pathLength="100" stroke-dasharray="0 72 28" stroke="${L.tailTip}" stroke-width="${tw}" fill="none" stroke-linecap="round"/>`;
+  if(L.rings) s+=`<path class="${tcls}" d="${tpath}" pathLength="100" stroke-dasharray="5 7" stroke="${L.rings}" stroke-width="${tw}" fill="none"/>`;
+  }
+  // legs/feet
+  s+=`<ellipse cx="80" cy="226" rx="17" ry="11" fill="${fur}"/><ellipse cx="120" cy="226" rx="17" ry="11" fill="${fur}"/>`;
+  s+=`<ellipse cx="74" cy="236" rx="13" ry="7" fill="${feet}"/><ellipse cx="126" cy="236" rx="13" ry="7" fill="${feet}"/>`;
+  // body
+  s+=`<ellipse cx="100" cy="185" rx="40" ry="44" fill="${fur}"/><ellipse cx="100" cy="193" rx="25" ry="30" fill="${belly}"/>`;
+  // left arm (resting)
+  const aw=L.lanky?10:15;
+  s+=`<g class="restArm"><path d="M66 165 Q 48 195 62 214" stroke="${fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="63" cy="215" r="9" fill="${hand}"/></g>`;
+  s+=`<g class="holdArm"><path d="M68 168 Q 36 160 40 128" stroke="${fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="40" cy="124" r="10" fill="${hand}"/></g>`;
+  // right arm (waving)
+  s+=`<g class="wave"><path d="M134 165 Q 160 140 162 108" stroke="${fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="162" cy="104" r="10" fill="${hand}"/></g>`;
+  // head group
+  s+=`<g class="bob">`;
+  if(L.mane){ // lion mane starburst
+    let pts=[]; for(let i=0;i<28;i++){const a=i/28*Math.PI*2, r=i%2?54:68; pts.push((100+Math.cos(a)*r).toFixed(1)+','+(92+Math.sin(a)*r).toFixed(1));}
+    s+=`<polygon points="${pts.join(' ')}" fill="${L.mane}"/>`;
+  }
+  s+=`<circle cx="52" cy="90" r="15" fill="${L.head||fur}"/><circle cx="148" cy="90" r="15" fill="${L.head||fur}"/>`;
+  s+=`<circle cx="52" cy="90" r="8" fill="${face}"/><circle cx="148" cy="90" r="8" fill="${face}"/>`;
+  s+=`<circle cx="100" cy="90" r="47" fill="${L.head||fur}"/>`;
+  if(L.cap) s+=`<path d="M60 80 Q100 30 140 80 Q100 62 60 80Z" fill="${L.cap}"/>`;
+  if(L.crest){
+    s+=`<path d="M62 70 C55 30 75 20 80 45 C80 15 100 5 102 38 C108 8 130 15 122 44 C135 25 150 40 138 70 Q100 50 62 70Z" fill="#f7f3ea" stroke="#e0d9c8" stroke-width="1.5"/>`;
+  }
+  // face
+  const fr=L.bigface?20:16;
+  s+=`<g fill="${face}"><circle cx="85" cy="90" r="${fr}"/><circle cx="115" cy="90" r="${fr}"/><ellipse cx="100" cy="110" rx="${L.bigface?30:25}" ry="${L.bigface?22:19}"/></g>`;
+  if(L.muzzle) s+=`<ellipse cx="100" cy="114" rx="15" ry="12" fill="${L.muzzle}"/>`;
+  if(L.stripes) s+=`<g stroke="#3a3028" stroke-width="4" stroke-linecap="round"><path d="M80 66 L84 78"/><path d="M120 66 L116 78"/><path d="M100 60 L100 74"/></g>`;
+  if(L.beard) s+=L.bigBeard?`<path d="M66 112 Q100 180 134 112 Q100 128 66 112Z" fill="${fur}"/>`:`<path d="M70 115 Q100 160 130 115 Q100 128 70 115Z" fill="${fur}"/>`;
+  if(L.goggles) s+=`<circle cx="86" cy="90" r="12.5" fill="${L.goggles}"/><circle cx="114" cy="90" r="12.5" fill="${L.goggles}"/>`;
+  // eyes
+  const er=L.bigeyes?10:7.5, pr=L.bigeyes?6:4.2;
+  s+=`<g class="eyes"><circle cx="86" cy="90" r="${er}" fill="#fff"/><circle cx="114" cy="90" r="${er}" fill="#fff"/><circle cx="87.5" cy="91" r="${pr}" fill="#1b1410"/><circle cx="115.5" cy="91" r="${pr}" fill="#1b1410"/><circle cx="89" cy="89" r="1.6" fill="#fff"/><circle cx="117" cy="89" r="1.6" fill="#fff"/></g>`;
+  if(L.sad) s+=`<path d="M76 80 L94 74 M124 80 L106 74" stroke="#4a3626" stroke-width="3" stroke-linecap="round"/>`;
+  // nose + mouth
+  const ink=(L.muzzle||L.face==='#e7b9a0'||L.face==='#f6f1e2'||L.face==='#efe4cc'||L.face==='#e6c9a8'||L.face==='#f3ead8')?'#2a1d16':'#f1d7c4';
+  s+=`<circle cx="96" cy="106" r="2.2" fill="${ink}"/><circle cx="104" cy="106" r="2.2" fill="${ink}"/>`;
+  s+=`<g class="calm">`;
+  if(L.roar) s+=`<ellipse cx="100" cy="118" rx="7" ry="6" fill="#4a1212"/>`;
+  else if(L.sad) s+=`<path d="M90 121 Q100 112 110 121" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  else s+=`<path d="M89 115 Q100 125 111 115" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  s+=`</g><g class="scaredFace">`;
+  const ew=L.bigeyes?12:10;
+  s+=`<circle cx="86" cy="89" r="${ew}" fill="#fff" stroke="#1b1410" stroke-width="1"/><circle cx="114" cy="89" r="${ew}" fill="#fff" stroke="#1b1410" stroke-width="1"/>`;
+  s+=`<circle cx="86" cy="89" r="2.6" fill="#1b1410"/><circle cx="114" cy="89" r="2.6" fill="#1b1410"/>`;
+  s+=`<path d="M74 72 Q86 64 96 72 M104 72 Q114 64 126 72" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  s+=`<ellipse cx="100" cy="120" rx="6" ry="8" fill="#3a1010"/>`;
+  s+=`</g>`;
+  if(L.mustache) s+=`<g fill="none" stroke="#f7f4ee" stroke-width="5" stroke-linecap="round"><path d="M98 110 C 85 112, 72 120, 66 142"/><path d="M102 110 C 115 112, 128 120, 134 142"/></g>`;
+  s+=`</g></svg>`;
+  return s;
+}
+
+/* ---------------- music engine v2: authentic rhythms + structured tunes ---------------- */
+/* Grid: 16th notes. 2/4 bar = 8 steps, 3/4 or 6/8 bar = 12 steps, 4/4 bar = 16 steps.
+   Pattern letters: '.' rest. Uppercase = accent.
+   strum: d = down, u = up | bass: r = root, f = fifth, o = octave | drums: x/X | melody: x = new note, - = hold */
+const SC={maj:[0,2,4,5,7,9,11],min:[0,2,3,5,7,8,10],mix:[0,2,4,5,7,9,10],dor:[0,2,3,5,7,9,10]};
+const PENT={min:[0,3,5,7,10],maj:[0,2,4,7,9]};
+const LOUD={"peru": 0.53, "bolivia": 0.64, "ecuador": 0.56, "colombia": 0.88, "venezuela": 0.78, "brazil": 0.71, "guyana": 0.82, "suriname": 0.81, "frenchguiana": 0.8, "paraguay": 0.84, "argentina": 0.6, "chile": 0.98, "uruguay": 1.39, "belize": 1.24, "honduras": 1.4, "guatemala": 1.23, "elsalvador": 1.42, "nicaragua": 1.13, "costarica": 0.69, "panama": 1.26};
+const MUSIC={
+ peru:{label:'Huayno: quena flute, charango & bombo',bpm:100,steps:8,root:57,mode:'min',pent:'min',prog:[0,0,6,2,0,0,4,0],
+   lead:'quena',reg:69,mel:['x.xxx.x.','x.xxx---','x.xxx.xx','x-------'],
+   tr:[['bombo','X.xxX.xx'],['strum:charango','d.udd.ud'],['bass','r...f...']]},
+ bolivia:{label:'Sikuri: paired siku panpipes & bombo',bpm:96,steps:8,root:62,mode:'min',pent:'min',prog:[0,0,6,6,2,2,4,0],
+   lead:'siku',reg:69,hocket:true,par:-5,mel:['x.x.x.x.','x.x.x---','xxx.x.x.','x-------'],
+   tr:[['bombo','X...X...'],['cymbal','....x...'],['bass','r...r...']]},
+ ecuador:{label:'Sanjuanito: rondador panpipe, guitar & bombo',bpm:116,steps:8,root:64,mode:'min',pent:'min',prog:[0,0,6,2,0,6,4,0],
+   lead:'pan',reg:71,mel:['x.xxx.x.','xx.xx.x.','x.xxx.xx','x---x---'],
+   tr:[['bombo','X..xX.x.'],['strum:guitar','.d.d.d.d'],['bass','r..fr...'],['shaker','s.s.s.s.']]},
+ colombia:{label:'Cumbia: gaita flutes, tambor alegre, llamador & guacharaca',bpm:104,steps:8,root:55,mode:'mix',prog:[0,0,4,4,0,0,4,0],
+   lead:'gaita',reg:67,mel:['x.x.xx.x','x.x.x---','xx.x.xx.','x---.---'],answer:'gaitamacho',
+   tr:[['llamador','..X...X.'],['alegre','x.xx.x.x'],['guacharaca','xXxXxXxX'],['maracas','s.s.s.s.']]},
+ venezuela:{label:'Joropo: harp, cuatro & maracas',bpm:176,steps:12,root:62,mode:'maj',prog:[0,0,4,4,4,4,0,0],
+   lead:'harp',reg:74,arp:true,mel:['x.x.x.x.x.x.','x.x.x.x.x.x.','x.x.x.x.x.x.','x.x.x.x.x---'],
+   tr:[['maracas','X.x.x.X.x.x.'],['strum:cuatro','d.d.u.d.u.d.'],['bass','r.....r.f...']]},
+ brazil:{label:'Carimbó (Amazon): curimbó drums, maracas, banjo & flute',bpm:112,steps:8,root:62,mode:'mix',prog:[0,0,3,4,0,0,4,0],
+   lead:'quena',reg:74,mel:['x.xx.x.x','x.x.x---','xx.x.xx.','x---.---'],
+   tr:[['curimbolow','X..xX.x.'],['curimbohi','..x...xx'],['maracas','s.sss.ss'],['strum:banjo','.d.d.d.d'],['bass','r...f...']]},
+ guyana:{label:'Amerindian bamboo flute, rattle & drum',bpm:96,steps:8,root:60,mode:'maj',pent:'maj',prog:[0,0,4,0,0,0,4,0],
+   lead:'bamboo',reg:72,mel:['x.x.xx.-','x.x.x---','xx.x.x.-','x-------'],rain:true,
+   tr:[['handdrum','X..x..X.'],['rattle','s.s.s.s.']]},
+ suriname:{label:'Amerindian flute, rattle & drum (3/4)',bpm:108,steps:12,root:65,mode:'min',pent:'min',prog:[0,0,6,0,0,0,4,0],
+   lead:'bamboo',reg:72,mel:['x...x.x.x...','x...x-------','x.x.x...x.x.','x-----------'],rain:true,
+   tr:[['handdrum','X.....x.x...'],['rattle','s...s...s...']]},
+ frenchguiana:{label:'Amerindian flute, sanpula drum & rattle',bpm:100,steps:8,root:63,mode:'min',pent:'min',prog:[0,0,6,6,0,0,4,0],
+   lead:'bamboo',reg:72,mel:['x.xx.x..','x.x.x---','x.xx.xx.','x-------'],rain:true,
+   tr:[['handdrum','X.x.X...'],['rattle','s.ss.s.s']]},
+ paraguay:{label:'Polca paraguaya: Paraguayan harp, guitar & mbaraka rattle',bpm:150,steps:12,root:55,mode:'maj',prog:[0,0,4,4,4,4,0,0],
+   lead:'harp',reg:74,arp:true,mel:['x.x.x.x.x.x.','x.x.x.x.x.x.','x.x.x.x.x.x.','x.x.x.x.x---'],
+   tr:[['bass','r.....f.....'],['strum:guitar','..d...d...d.'],['rattle','s.s.s.s.s.s.']]},
+ argentina:{label:'Chacarera: quena, guitar & bombo legüero',bpm:120,steps:12,root:64,mode:'min',prog:[0,0,4,4,4,4,0,0],
+   lead:'quena',reg:71,mel:['x.x.x.x.x.x.','x---x.x.x---','x.x.xxx.x.x.','x-----------'],
+   tr:[['legueroskin','X.....X...X.'],['leguerorim','..x.x.....x.'],['strum:guitar','d.d.u.d.d.u.'],['bass','r.....f.....']]},
+ chile:{label:'Mapuche: kultrun drum, kaskawilla bells, pifilka & trutruka',bpm:118,steps:8,root:46,mode:'maj',prog:[0,0,0,0,0,0,0,0],
+   lead:'trutruka',reg:46,mel:['x-------','........','x---x---','........'],
+   tr:[['kultrun','X.x.X.x.'],['bells','x...x...'],['pifilka','......x.']]},
+ uruguay:{label:'Candombe: chico, repique & piano drums with madera',bpm:116,steps:16,root:50,mode:'min',prog:[0,0,0,0,0,0,0,0],
+   lead:null,
+   tr:[['madera','x..x..x...x.x...'],['chico','..xx..xx..xx..xx'],['repique','....x.x.....x.xx'],['pianodrum','X.....x...X..x..']]},
+ belize:{label:'Garifuna punta: primero & segunda drums, sísira & voices',bpm:138,steps:8,root:62,mode:'min',pent:'min',prog:[0,0,6,0,0,0,4,0],
+   lead:'voice',reg:62,mel:['x.x.x---','x.xx.x--','x.x.x---','x.x.x---'],
+   tr:[['segunda','X..xX..x'],['primero','..x.xx.x'],['sisira','ssssssss'],['shell','x.x.x.x.']]},
+ honduras:{label:'Garifuna paranda: guitar, drums & voices',bpm:104,steps:16,root:60,mode:'maj',prog:[0,0,3,4,0,0,4,0],
+   lead:'voice',reg:64,mel:['x.x.x.x.x---x.x.','x.x.x.x.x-------','x.x.x.xxx---x.x.','x---------------'],
+   tr:[['strum:guitar','d..d..d.d..d..d.'],['bass','r.......f.......'],['segunda','X...X...X...X...'],['sisira','s.s.s.s.s.s.s.s.']]},
+ guatemala:{label:'Son chapín: marimba with rolls (Maya roots)',bpm:150,steps:12,root:65,mode:'maj',prog:[0,0,4,4,4,4,0,0],
+   lead:'marimba',reg:77,mel:['x.x.x.x.xxx.','x.x.x.x-----','x.x.xxx.x.x.','x.x.x-------'],
+   tr:[['marimbabass','r.....f.....'],['marimbachord','..c.c...c.c.'],['shaker','s.....s.....']]},
+ elsalvador:{label:'Nahua-Pipil chirimía & tambor',bpm:100,steps:8,root:62,mode:'dor',prog:[0,0,6,0,0,0,6,0],
+   lead:'chirimia',reg:69,mel:['x.xxx.x.','x.x.x---','xx.xx.x.','x-------'],
+   tr:[['tambor','X.x.X.xx'],['bass','r.......']]},
+ nicaragua:{label:'Son nica: marimba de arco, guitar & guitarrilla',bpm:144,steps:12,root:60,mode:'maj',prog:[0,0,4,4,4,4,0,0],
+   lead:'marimba',reg:76,mel:['x.x.x.x.x.x.','x---x.x.x---','x.xxx.x.x.x.','x-----------'],
+   tr:[['bass','r.....f.....'],['strum:guitar','..d.d...d.d.'],['strum:charango','.u...u.u...u']]},
+ costarica:{label:'Bribri: sabak drum, quijongo bow & rattle',bpm:92,steps:8,root:57,mode:'min',pent:'min',prog:[0,0,0,6,0,0,6,0],
+   lead:'bamboo',reg:69,mel:['x...x.x.','x---x---','x.x.x.x.','x-------'],
+   tr:[['sabak','X...x...'],['quijongo','b...c...'],['rattle','..s...s.']]},
+ panama:{label:'Guna gammu burwi: paired panpipes & nasis maracas',bpm:112,steps:8,root:62,mode:'min',pent:'min',prog:[0,0,6,0,0,0,4,0],
+   lead:'pan',reg:69,hocket:true,mel:['xxxxxxxx','xxxx.x.-','xxxxxxxx','xx.x.---'],
+   tr:[['maracas','x.x.x.x.'],['handdrum','X.......']]}
+};
+
+let iosAudio=null;
+function unlockIOSAudio(){
+  // a silent looping <audio> element moves iPhone audio to the "media" channel so the silent switch doesn't mute it
+  try{ if(iosAudio) { iosAudio.play().catch(()=>{}); return; }
+    const sr=8000,n=sr/2,b=new ArrayBuffer(44+n*2),v=new DataView(b),w=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i));};
+    w(0,'RIFF');v.setUint32(4,36+n*2,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*2,true);
+    let bin='';const u=new Uint8Array(b);for(let i=0;i<u.length;i++)bin+=String.fromCharCode(u[i]);
+    iosAudio=new Audio('data:audio/wav;base64,'+btoa(bin)); iosAudio.loop=true; iosAudio.setAttribute('playsinline',''); iosAudio.volume=0.01;
+    iosAudio.play().catch(()=>{});
+  }catch(e){}
+}
+let AC=null, master=null, wet=null, noise=null, bus=null, timer=null, muted=false;
+function initAudio(){
+  if(AC) return true;
+  try{
+    try{ if(navigator.audioSession) navigator.audioSession.type='playback'; }catch(e){}
+    unlockIOSAudio();
+    AC=new (window.AudioContext||window.webkitAudioContext)();
+    const comp=AC.createDynamicsCompressor(); comp.threshold.value=-16; comp.ratio.value=3;
+    master=AC.createGain(); master.gain.value=.35;
+    master.connect(comp); comp.connect(AC.destination);
+    // small room reverb
+    const len=AC.sampleRate*1.6, ir=AC.createBuffer(2,len,AC.sampleRate);
+    for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch); for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}
+    const conv=AC.createConvolver(); conv.buffer=ir;
+    wet=AC.createGain(); wet.gain.value=.22; wet.connect(conv); conv.connect(master);
+    noise=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);
+    const d=noise.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+    return true;
+  }catch(e){AC=null; return false;}
+}
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+function out(dest,pan=0,send=.6){ // returns an input node routed (panned) to dest and reverb
+  const g=AC.createGain(); let n=g;
+  if(AC.createStereoPanner && pan){const p=AC.createStereoPanner(); p.pan.value=pan; g.connect(p); n=p;}
+  n.connect(dest); if(send){const s=AC.createGain(); s.gain.value=send; n.connect(s); s.connect(wet);}
+  return g;
+}
+function nsrc(t,dur){const s=AC.createBufferSource();s.buffer=noise;s.start(t,Math.random()*1.5);s.stop(t+dur+.05);return s;}
+function envG(t,a,peak,hold,rel){const g=AC.createGain();g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(peak,t+a);g.gain.setValueAtTime(peak,t+a+hold);g.gain.exponentialRampToValueAtTime(.0001,t+a+hold+rel);return g;}
+function osc(type,f,t,dur,dest){const o=AC.createOscillator();o.type=type;o.frequency.value=f;o.connect(dest);o.start(t);o.stop(t+dur);return o;}
+
+/* ---- wind voices ---- */
+function wind(dst,f,t,d,{breath=.2,bright=.2,vib=.006,vol=.3,chiff=.3,bend=0,pan=0}={}){
+  const o=out(dst,pan,.7), g=envG(t,.05,vol,Math.max(.02,d-.1),.12); g.connect(o);
+  const a=osc('sine',f,t,d+.3,g);
+  const h=AC.createGain(); h.gain.value=bright*.35; h.connect(g); const b=osc('triangle',f*2,t,d+.3,h);
+  if(bend){a.frequency.setValueAtTime(f*(1-bend),t);a.frequency.linearRampToValueAtTime(f,t+.06);}
+  const l=AC.createOscillator(); l.frequency.value=5.3; const lg=AC.createGain(); lg.gain.setValueAtTime(0,t); lg.gain.linearRampToValueAtTime(f*vib,t+Math.min(.35,d*.6));
+  l.connect(lg); lg.connect(a.frequency); lg.connect(b.frequency); l.start(t); l.stop(t+d+.3);
+  const n=nsrc(t,d+.2), bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=f*2.2; bp.Q.value=1.4;
+  const ng=envG(t,.02,breath*vol,Math.max(.02,d-.1),.1); n.connect(bp); bp.connect(ng); ng.connect(o);
+  if(chiff){const c=nsrc(t,.06), hp=AC.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=2500; const cg=envG(t,.004,chiff*vol,.01,.04); c.connect(hp); hp.connect(cg); cg.connect(o);}
+}
+const LEAD={
+  quena:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.22,bright:.25,vib:.009,vol:.3,chiff:.35,bend:.02,pan:p}),
+  siku:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.5,bright:.08,vib:.003,vol:.28,chiff:.5,pan:p}),
+  pan:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.42,bright:.1,vib:.004,vol:.28,chiff:.45,pan:p}),
+  bamboo:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.32,bright:.12,vib:.006,vol:.26,chiff:.3,pan:p}),
+  gaita:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.38,bright:.45,vib:.007,vol:.26,chiff:.4,bend:.03,pan:p}),
+  chirimia:(d,f,t,l,p)=>{const o=out(d,p,.6), g=envG(t,.04,.16,Math.max(.02,l-.08),.1); g.connect(o);
+    const s=osc('sawtooth',f,t,l+.2,AC.createGain()); const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=1300; bp.Q.value=1.6;
+    const lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=3200; s.disconnect(); s.connect(bp); bp.connect(lp); lp.connect(g);
+    const v=AC.createOscillator(); v.frequency.value=6; const vg=AC.createGain(); vg.gain.value=f*.008; v.connect(vg); vg.connect(s.frequency); v.start(t); v.stop(t+l+.2);},
+  trutruka:(d,f,t,l,p)=>{const o=out(d,p,.8), g=envG(t,.18,.2,Math.max(.05,l-.3),.3); g.connect(o);
+    const s=osc('sawtooth',f,t,l+.4,AC.createGain()); s.frequency.setValueAtTime(f*.94,t); s.frequency.linearRampToValueAtTime(f,t+.15);
+    const lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=800; lp.Q.value=4; s.disconnect(); s.connect(lp); lp.connect(g);},
+  voice:(d,f,t,l,p)=>{const o=out(d,p,.8), g=envG(t,.07,.17,Math.max(.03,l-.12),.15); g.connect(o);
+    const s=osc('sawtooth',f,t,l+.3,AC.createGain()); s.disconnect();
+    [[700,6],[1150,7],[2600,9]].forEach(([fq,q],i)=>{const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=fq; bp.Q.value=q; const vg=AC.createGain(); vg.gain.value=[1,.7,.25][i]; s.connect(bp); bp.connect(vg); vg.connect(g);});
+    const v=AC.createOscillator(); v.frequency.value=5; const vg=AC.createGain(); vg.gain.setValueAtTime(0,t); vg.gain.linearRampToValueAtTime(f*.012,t+.25); v.connect(vg); vg.connect(s.frequency); v.start(t); v.stop(t+l+.3);},
+  marimba:(d,f,t,l,p)=>{ if(l>.28){ for(let x=0;x<l-.05;x+=.072) marimbaHit(d,f,t+x,.17*(x%0.144<.07?1:.75),p); } else marimbaHit(d,f,t,.26,p); },
+  harp:(d,f,t,l,p)=>pluckStr(d,f,t,{vol:.17,decay:1.3,bright:4200,type:'triangle',pan:p})
+};
+function marimbaHit(d,f,t,vol,pan=0){
+  const o=out(d,pan,.5), g=AC.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(vol,t+.004); g.gain.exponentialRampToValueAtTime(.0001,t+.55); g.connect(o);
+  osc('sine',f,t,.6,g);
+  const g2=AC.createGain(); g2.gain.setValueAtTime(vol*.35,t); g2.gain.exponentialRampToValueAtTime(.0001,t+.09); g2.connect(o); osc('sine',f*3.93,t,.12,g2);
+  const g3=AC.createGain(); g3.gain.setValueAtTime(vol*.12,t); g3.gain.exponentialRampToValueAtTime(.0001,t+.04); g3.connect(o); osc('sine',f*9.2,t,.06,g3);
+}
+/* ---- strings ---- */
+function pluckStr(d,f,t,{vol=.1,decay=.6,bright=3000,type='sawtooth',pan=0}={}){
+  const o=out(d,pan,.45), g=AC.createGain(); g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+decay); g.connect(o);
+  const lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.setValueAtTime(bright,t); lp.frequency.exponentialRampToValueAtTime(Math.max(300,f*1.5),t+decay*.6); lp.connect(g);
+  osc(type,f,t,decay+.05,lp); osc(type,f*1.003,t,decay+.05,lp);
+  const n=nsrc(t,.02), hp=AC.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=3000; const ng=AC.createGain(); ng.gain.setValueAtTime(vol*.6,t); ng.gain.exponentialRampToValueAtTime(.0001,t+.02); n.connect(hp); hp.connect(ng); ng.connect(o);
+}
+const STRUM={
+  charango:{oct:12,vol:.05,decay:.45,bright:5200,gap:.012,pan:.35},
+  guitar:{oct:0,vol:.06,decay:.7,bright:2600,gap:.016,pan:-.3},
+  cuatro:{oct:12,vol:.055,decay:.4,bright:4200,gap:.01,pan:.3},
+  banjo:{oct:12,vol:.05,decay:.3,bright:6000,gap:.01,pan:.3}
+};
+/* ---- percussion ---- */
+function drumHit(d,t,{f0=90,dec=.35,vol=.5,click=.2,pan=0,noiseF=1200}={}){
+  const o=out(d,pan,.35), g=AC.createGain(); g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dec); g.connect(o);
+  const s=osc('sine',f0*1.8,t,dec+.05,g); s.frequency.exponentialRampToValueAtTime(f0,t+.05);
+  const n=nsrc(t,.06), lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=noiseF; const ng=AC.createGain(); ng.gain.setValueAtTime(vol*click,t); ng.gain.exponentialRampToValueAtTime(.0001,t+.05); n.connect(lp); lp.connect(ng); ng.connect(o);
+}
+function noiseHit(d,t,{lo=4000,hi=0,dur=.06,vol=.08,att=.008,pan=0,q=0}={}){
+  const o=out(d,pan,.25), n=nsrc(t,dur+.02); let node=n;
+  if(q){const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=lo; bp.Q.value=q; node.connect(bp); node=bp;}
+  else {const hp=AC.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=lo; node.connect(hp); node=hp;}
+  const g=AC.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(vol,t+att); g.gain.exponentialRampToValueAtTime(.0001,t+dur); node.connect(g); g.connect(o);
+}
+function woodHit(d,t,f,vol=.2,pan=0){
+  const o=out(d,pan,.3), g=AC.createGain(); g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+.08); g.connect(o);
+  osc('sine',f,t,.1,g); osc('sine',f*2.6,t,.06,g);
+}
+function bellHit(d,t,vol=.06,pan=0){
+  const o=out(d,pan,.6);
+  [2210,3170,4420,5900].forEach((f,i)=>{const g=AC.createGain(); g.gain.setValueAtTime(vol/(i+1),t); g.gain.exponentialRampToValueAtTime(.0001,t+.35-i*.05); g.connect(o); osc('sine',f*(1+Math.random()*.01),t,.4,g);});
+}
+const PERC={
+  bombo:(d,t,a)=>drumHit(d,t,{f0:62,dec:.45,vol:a?.62:.4,click:.25}),
+  legueroskin:(d,t,a)=>drumHit(d,t,{f0:70,dec:.42,vol:a?.6:.45,click:.3}),
+  leguerorim:(d,t)=>woodHit(d,t,780,.12,.15),
+  cymbal:(d,t)=>noiseHit(d,t,{lo:6000,dur:.35,vol:.05}),
+  llamador:(d,t,a)=>drumHit(d,t,{f0:150,dec:.18,vol:a?.32:.24,click:.5,pan:-.25,noiseF:2500}),
+  alegre:(d,t,a)=>drumHit(d,t,{f0:210+Math.random()*30,dec:.14,vol:.22,click:.6,pan:.25,noiseF:3500}),
+  guacharaca:(d,t,a)=>{for(let k=0;k<3;k++) noiseHit(d,t+k*.018,{lo:2600,q:1.2,dur:.03,vol:a?.08:.05,att:.004,pan:-.1});},
+  maracas:(d,t,a)=>noiseHit(d,t,{lo:5200,dur:.07,vol:a?.1:.065,att:.012,pan:.2}),
+  shaker:(d,t)=>noiseHit(d,t,{lo:5500,dur:.06,vol:.06,pan:-.2}),
+  rattle:(d,t)=>noiseHit(d,t,{lo:3800,dur:.09,vol:.07,att:.02,pan:.25}),
+  sisira:(d,t)=>noiseHit(d,t,{lo:5000,dur:.05,vol:.05,att:.01,pan:.3}),
+  shell:(d,t)=>woodHit(d,t,1150,.1,-.3),
+  curimbolow:(d,t,a)=>drumHit(d,t,{f0:85,dec:.3,vol:a?.5:.38,click:.35,pan:-.15}),
+  curimbohi:(d,t)=>drumHit(d,t,{f0:190,dec:.15,vol:.24,click:.5,pan:.2,noiseF:3000}),
+  handdrum:(d,t,a)=>drumHit(d,t,{f0:110,dec:.25,vol:a?.42:.3,click:.4}),
+  kultrun:(d,t,a)=>drumHit(d,t,{f0:95,dec:.32,vol:a?.55:.4,click:.3}),
+  bells:(d,t)=>bellHit(d,t,.07,.3),
+  pifilka:(d,t)=>{const o=out(d,-.3,.7); const g=envG(t,.01,.08,.12,.08); g.connect(o); const s=osc('sine',2350,t,.3,g); s.frequency.setValueAtTime(2350,t); s.frequency.linearRampToValueAtTime(2200,t+.2);},
+  madera:(d,t)=>woodHit(d,t,1600,.14,.3),
+  chico:(d,t)=>drumHit(d,t,{f0:330,dec:.1,vol:.2,click:.6,pan:.35,noiseF:4000}),
+  repique:(d,t)=>drumHit(d,t,{f0:230,dec:.14,vol:.24,click:.6,pan:-.35,noiseF:3500}),
+  pianodrum:(d,t,a)=>drumHit(d,t,{f0:78,dec:.4,vol:a?.55:.4,click:.3}),
+  segunda:(d,t,a)=>drumHit(d,t,{f0:80,dec:.32,vol:a?.55:.42,click:.3,pan:-.1}),
+  primero:(d,t)=>drumHit(d,t,{f0:190+Math.random()*40,dec:.13,vol:.22+Math.random()*.08,click:.6,pan:.3,noiseF:3500}),
+  tambor:(d,t,a)=>drumHit(d,t,{f0:120,dec:.22,vol:a?.45:.3,click:.5}),
+  sabak:(d,t,a)=>drumHit(d,t,{f0:72,dec:.5,vol:a?.5:.32,click:.2})
+};
+
+/* ---- harmony + composition ---- */
+function rng(seed){let s=seed*9301+49297;return()=>{s=(s*9301+49297)%233280;return s/233280;};}
+function chordOf(P,deg){ // midi triad (root position) relative to P.root, from scale degrees
+  const sc=SC[P.mode]; const pc=i=>sc[((i%7)+7)%7]+12*Math.floor(i/7);
+  const ch=[pc(deg),pc(deg+2),pc(deg+4)];
+  if(P.mode==='min' && ((deg%7)+7)%7===4) ch[1]+=1; // major V in minor
+  return ch;
+}
+function compose(P,seed){
+  const r=rng(seed), S=P.steps, bars=P.prog.length;
+  const pool=[]; const sc=P.pent?PENT[P.pent]:SC[P.mode];
+  for(let o=-1;o<=1;o++) sc.forEach(x=>pool.push(P.reg-P.reg%12+(P.root%12)+x+12*o)); // notes around the register in key
+  pool.sort((a,b)=>a-b);
+  const near=(m,set)=>set.reduce((b,x)=>Math.abs(x-m)<Math.abs(b-m)?x:b,set[0]);
+  const chordPool=deg=>{const c=chordOf(P,deg).map(x=>(x+P.root)%12); return pool.filter(m=>c.includes(m%12));};
+  const beat=S===12?(P.bpm>=140?6:3):4;
+  const makeBar=(b,prev,dirBias)=>{
+    const pat=P.mel[b%P.mel.length], ev=[]; let last=prev;
+    for(let i=0;i<S;i++){ if(pat[i]!=='x') continue;
+      let len=1; while(i+len<S && pat[i+len]==='-') len++;
+      if(pat[i+len]==='.'||i+len>=S){}
+      const strong=i%beat===0, cp=chordPool(P.prog[b]);
+      let m;
+      if(strong) m=near(last+(r()<.5?2:-2)*dirBias,cp);
+      else { const idx=pool.indexOf(near(last,pool)); const step=(r()<.75?1:2)*(r()<.65?dirBias:-dirBias); m=pool[Math.max(0,Math.min(pool.length-1,idx+step))]; }
+      ev.push({s:i,len,m}); last=m; }
+    return {ev,last};
+  };
+  const tune=[]; let last=near(P.reg,chordPool(P.prog[0]));
+  // A A' B A'' phrase plan over bars (2-bar motifs)
+  const plan=[1,1,-1,-1,1,1,-1,-1];
+  const motif={};
+  for(let b=0;b<bars;b++){
+    const half=b%4; // 0..3 inside a 4-bar phrase
+    if(b>=4 && b<6 && motif[b-4]){ tune[b]=motif[b-4]; last=motif[b-4].ev.length?motif[b-4].ev[motif[b-4].ev.length-1].m:last; continue; }
+    const res=makeBar(b,last,plan[b%8]); tune[b]=res; last=res.last;
+    if(b<2) motif[b]=res;
+  }
+  // cadence: last note of the loop lands on the tonic
+  const lb=tune[bars-1]; if(lb.ev.length){ const tonic=pool.filter(m=>m%12===P.root%12); lb.ev[lb.ev.length-1].m=near(lb.ev[lb.ev.length-1].m,tonic); }
+  return tune;
+}
+
+function playMusic(id){
+  stopMusic();
+  if(muted || !initAudio()) return;
+  unlockIOSAudio();
+  if(AC.state!=='running' && AC.resume) AC.resume().catch(()=>{});
+  const P=MUSIC[id]; if(!P) return;
+  const tune=P.lead?compose(P,id.length*7+P.bpm):null;
+  bus=AC.createGain(); bus.gain.setValueAtTime(0,AC.currentTime); bus.gain.linearRampToValueAtTime(LOUD[id]||1,AC.currentTime+1.2); bus.connect(master);
+  const myBus=bus, stepDur=60/P.bpm/4, S=P.steps, bars=P.prog.length;
+  let next=AC.currentTime+.12, step=0, arpI=0, hock=0;
+  timer=setInterval(()=>{
+    while(next<AC.currentTime+.3){
+      const i=step%S, bar=Math.floor(step/S)%bars, deg=P.prog[bar], ch=chordOf(P,deg).map(x=>x+P.root);
+      // percussion + accompaniment tracks
+      P.tr.forEach(([name,pat])=>{
+        const c=pat[i]; if(!c||c==='.') return; const acc=c===c.toUpperCase()&&c!=='.';
+        if(name.startsWith('strum:')){ const st=STRUM[name.slice(6)]; const notes=ch.map(x=>x+st.oct).concat([ch[0]+st.oct+12]); const ord=c.toLowerCase()==='u'?notes.slice().reverse():notes;
+          ord.forEach((m,k)=>pluckStr(myBus,mtof(m),next+k*st.gap,{vol:st.vol*(c.toLowerCase()==='u'?.7:1),decay:st.decay,bright:st.bright,pan:st.pan})); return; }
+        if(name==='bass'){ const m=ch[0]-24+(c==='f'?7:c==='o'?12:0); pluckStr(myBus,mtof(m),next,{vol:.16,decay:.55,bright:900,type:'triangle'}); return; }
+        if(name==='marimbabass'){ const m=ch[0]-12+(c==='f'?7:0); marimbaHit(myBus,mtof(m),next,.22,-.2); return; }
+        if(name==='marimbachord'){ ch.forEach((m,k)=>marimbaHit(myBus,mtof(m+12),next+k*.008,.07,.2)); return; }
+        if(name==='quijongo'){ pluckStr(myBus,mtof(P.root-12+(c==='c'?2:0)),next,{vol:.14,decay:.5,bright:1400,type:'sawtooth',pan:-.2}); return; }
+        const fn=PERC[name]; if(fn) fn(myBus,next,acc);
+      });
+      // lead melody
+      if(tune){
+        const ev=tune[bar].ev.find(e=>e.s===i);
+        if(ev){
+          const len=ev.len*stepDur*.95; let m=ev.m;
+          if(P.arp){ const tones=ch.map(x=>x+12*Math.round((P.reg-x)/12)); const seq=[0,1,2,1+3,2,1].map(k=>k>2?tones[k-3]+12:tones[k]); m=seq[arpI++%seq.length]; if(i===0) arpI=0; }
+          let pan=0; if(P.hocket){ pan=(hock++%2)?.55:-.55; }
+          LEAD[P.lead](myBus,mtof(m),next,Math.max(stepDur*.9,len),pan);
+          if(P.par) LEAD[P.lead](myBus,mtof(m+P.par),next+.004,Math.max(stepDur*.9,len),-pan);
+          if(P.answer && i===S-2) LEAD.gaita(myBus,mtof(ch[0]+12),next,stepDur*1.6,.4);
+        }
+      }
+      if(P.rain && Math.random()<.5) noiseHit(myBus,next+Math.random()*stepDur,{lo:3000+Math.random()*4000,q:4,dur:.02,vol:.03*Math.random()});
+      next+=stepDur; step++;
+    }
+  },40);
+}
+function stopMusic(){
+  if(timer){clearInterval(timer);timer=null;}
+  if(bus&&AC){const b=bus,t=AC.currentTime; b.gain.cancelScheduledValues(t); b.gain.setValueAtTime(b.gain.value,t); b.gain.linearRampToValueAtTime(0,t+.6); setTimeout(()=>b.disconnect(),900);}
+  bus=null;
+}
+
+let currentId=null;
+function stopAll(){
+  stopMusic();
+  clearTimeout(foodTimer); clearTimeout(chaseTimer); chaseToken++;
+  stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch').forEach(e=>e.remove());
+  monkey.getAnimations().forEach(a=>a.cancel());
+  monkey.className='monkey'; monkey.innerHTML='';
+  bubble.classList.remove('show','scared'); bubble.innerHTML='';
+  hint.style.display='';
+  Object.values(groups).forEach(g=>g.classList.remove('sel','bad'));
+  stage.style.minHeight='';
+  currentId=null;
+}
+document.getElementById('stopBtn').onclick=stopAll;
+document.addEventListener('keydown',e=>{if(e.key==='Escape') stopAll();});
+document.getElementById('mute').onclick=e=>{
+  muted=!muted; e.currentTarget.textContent=muted?'🔇 Music':'🔊 Music';
+  document.body.classList.toggle('muted',muted);
+  if(muted) stopMusic(); else if(currentId) playMusic(currentId);
+};
+
+
+/* ---------------- family life ---------------- */
+const A=(r,o)=>({r,k:'adult',o}), Y=(r,o)=>({r,k:'young',o}), Bb=(r,o)=>({r,k:'baby',o});
+const TAM=t=>t;
+const FAMILY={
+ 'Leontopithecus rosalia':{dim:'same',dimTxt:"Males and females look alike.",type:'coop',m:[A('Mom'),A('Dad 👶👶'),Y('Big brother'),Y('Big sister'),Bb('Twin'),Bb('Twin')],t:'Families of 2–8. Usually only one female has babies, almost always twins, and Dad and the older kids do most of the carrying.'},
+ 'Saguinus imperator':{dim:'same',dimTxt:"Males and females look alike, mustaches and all.",type:'coop',m:[A('Mom'),A('Dad 👶👶'),A('Helper'),Bb('Twin'),Bb('Twin')],t:'Families of 2–8. Mom usually has twins, and the males do most of the baby-carrying.'},
+ 'Saguinus oedipus':{dim:'same',dimTxt:"Males and females look alike.",type:'coop',m:[A('Mom'),A('Dad'),Y('Big sib'),Y('Big sib'),Bb('Twin'),Bb('Twin')],t:'One female breeds and the whole family takes turns carrying the twins. It\'s practice for when the older kids have their own.'},
+ 'Cebuella pygmaea':{dim:'same',dimTxt:"Males and females look alike.",type:'coop',m:[A('Mom'),A('Dad 👶👶'),Y('Big sib'),Bb('Twin'),Bb('Twin')],t:'Tiny family groups. Mom usually has twins, and Dad and the older siblings carry them most of the time.'},
+ 'Saguinus midas':{dim:'same',dimTxt:"Males and females look alike.",type:'coop',m:[A('Mom'),A('Dad'),A('Helper'),Y('Big sib'),Bb('Twin'),Bb('Twin')],t:'Small groups where several grown-ups share the job of carrying the twins.'},
+ 'Saguinus geoffroyi':{dim:'same',dimTxt:"Males and females look alike.",type:'coop',m:[A('Mom'),A('Dad'),A('Helper'),Y('Big sib'),Bb('Twin'),Bb('Twin')],t:'Groups of 3–9. Everyone pitches in to carry the twins.'},
+ 'Saimiri boliviensis':{dim:'bigM',dimTxt:"Males are a bit bigger and bulk up in mating season.",type:'mm',m:[A('Mom'),A('Aunt'),A('Mom'),Bb('Baby'),Bb('Baby'),A('Male')],t:'Big, chattery troops of dozens. Females run the show and help each other with babies, while males stay toward the edges.'},
+ 'Saimiri oerstedii':{dim:'bigM',dimTxt:"Males are a bit bigger and bulk up in mating season.",type:'mm',m:[A('Mom'),A('Mom'),A('Male'),Y('Young'),Bb('Baby'),Bb('Baby')],t:'Troops of 20 or more. Each mom has a single baby, and the troop keeps a sharp lookout for hawks.'},
+ 'Aotus azarae':{dim:'same',dimTxt:"Males and females look alike.",type:'mono',m:[A('Mom'),A('Dad 👶'),Y('Big sib'),Bb('Baby')],t:'Night monkeys pair up for life. Dad carries the baby almost all the time and hands it to Mom mainly to nurse.'},
+ 'Pithecia pithecia':{dim:'color',dimTxt:"Males are black with white faces; females are grey-brown.",type:'mono',m:[A('Dad'),A('Mom',{face:'#6a5a4c',fur:'#5e554c',belly:'#6a6058',bigface:false,muzzle:null}),Y('Big sib',{face:'#6a5a4c',fur:'#5e554c',bigface:false,muzzle:null}),Bb('Baby',{face:'#6a5a4c',fur:'#5e554c',bigface:false,muzzle:null})],t:'Small families of 2–5: a pair and their young. Only grown-up males get the white face.'},
+ 'Ateles paniscus':{dim:'same',dimTxt:"Males and females are about the same size.",type:'ff',m:[A('Mom 👶'),Bb('Baby'),A('Mom'),Y('Young'),A('Male'),A('Male')],t:'Spider monkeys live in big communities that split into small foraging parties during the day. Moms raise their single baby alone for about 2 years.'},
+ 'Ateles geoffroyi':{dim:'same',dimTxt:"Males and females are about the same size.",type:'ff',m:[A('Mom 👶'),Bb('Baby'),A('Mom'),Y('Young'),A('Male'),A('Male')],t:'Spider monkeys live in big communities that split into small foraging parties during the day. Moms raise their single baby alone for about 2 years.'},
+ 'Alouatta seniculus':{dim:'bigM',dimTxt:"Males are much bigger, with longer beards.",type:'onefew',m:[A('Male'),A('Mom'),A('Mom'),Y('Young'),Bb('Baby')],t:'Troops of about 4–9 with one or a few males. The whole troop roars together at dawn to claim its patch of forest.'},
+ 'Alouatta caraya':{dim:'color',dimTxt:"Males are black and bigger; females are golden.",type:'mm',m:[A('Dad (black)'),A('Mom (gold)',{fur:'#d9a441',belly:'#e8c06a',hand:'#d9a441'}),A('Mom (gold)',{fur:'#d9a441',belly:'#e8c06a',hand:'#d9a441'}),Y('Young',{fur:'#d9a441',belly:'#e8c06a',hand:'#d9a441'}),Bb('Baby')],t:'Groups of about 5–8. Other females help carry, groom and protect babies that aren\'t their own.'},
+ 'Alouatta pigra':{dim:'bigM',dimTxt:"Males are much bigger, with longer beards.",type:'one',m:[A('Male'),A('Mom'),A('Mom'),Y('Young'),Bb('Baby')],t:'Small troops, often with just one adult male. Each mom raises her baby on her own for about a year.'},
+ 'Alouatta palliata':{dim:'bigM',dimTxt:"Males are much bigger, with longer beards.",type:'mm',m:[A('Male'),A('Male'),A('Mom'),A('Mom'),A('Mom'),Y('Young'),Bb('Baby')],t:'The biggest howler troops: 10–20 or more, with several males and even more females.'},
+ 'Cebus imitator':{dim:'bigM',dimTxt:"Males are noticeably bigger than females.",type:'mm',m:[A('Alpha male'),A('Mom'),A('Mom'),Y('Young'),Bb('Baby')],t:'Troops of 10–35 led by an alpha male. Females stay with their mothers for life, and lots of troop members help babysit.'}
+};
+const TOURFAM={type:'vac',m:[A('Mom'),A('Dad'),Y('Kid'),Bb('Baby')],t:'This visiting family is on vacation! Wild New World monkey families range from tiny pairs (night monkeys) to troops of dozens (squirrel monkeys).'};
+const FTYPES={
+ mono:['💑 Monogamous pair','A mom and dad pair up for the long term and raise their young together.'],
+ coop:['🤝 Cooperative family','One female breeds while dad and older siblings act as helpers.'],
+ mm:['👥 Multi-male, multi-female troop','A big mixed group with several adult males and several adult females.'],
+ one:['👑 Mostly one-male troop','Usually one adult male living with a few females and their young.'],
+ onefew:['👥 One- or few-male troop','One to a few adult males living with several females and their young.'],
+ ff:['🔀 Fission-fusion society','A large community that splits into small parties during the day and comes back together later.'],
+ vac:['🧳 Vacation family','Just visiting!']
+};
+function sexOf(r){
+  if(/^(Mom|Aunt|Big sister)/.test(r)) return 'f';
+  if(/^(Dad|Male|Alpha male|Big brother)/.test(r)) return 'm';
+  return null;
+}
+function showFamily(c){
+  const F=FAMILY[c.sci]||TOURFAM;
+  const row=document.createElement('div'); row.className='stat new famrow';
+  const W=isPhone()?{adult:34,young:26,baby:20}:{adult:42,young:32,baby:24};
+  const members=F.m.map((x,i)=>{
+    let L=Object.assign({},c.look,(x.k==='baby'&&c.baby)?c.baby:{},x.o||{});
+    if(x.k==='young' && c.baby && !x.o) L=Object.assign({},c.look,c.baby);
+    const sx=sexOf(x.r);
+    let w=W[x.k];
+    if(sx==='m' && x.k==='adult' && F.dim==='bigM'){ w=Math.round(w*1.22); if(L.beard) L.bigBeard=true; }
+    if(sx==='f' && x.k==='adult' && F.dim==='bigM') w=Math.round(w*0.92);
+    const sym=sx?`<b class="sx ${sx}">${sx==='m'?'♂':'♀'}</b>`:'';
+    sfxFamily(x.k,sx,i*0.35+.08,(i/(F.m.length-1||1))*1.2-.6);
+    return `<div class="fm" style="animation-delay:${i*0.35}s"><div style="width:${w}px">${monkeySVG(L)}</div><span>${sym}${x.r}</span></div>`;
+  }).join('');
+  const FT=FTYPES[F.type];
+  row.innerHTML=`<div style="width:100%"><span class="k">Family life</span> <span class="ftype" title="${FT[1]}">${FT[0]}</span><div class="famstrip">${members}</div><div class="famtxt"><b>${FT[0].replace(/^\S+\s/,'')}:</b> ${FT[1]} ${F.t}${F.dimTxt?`<br><b>♂ vs ♀:</b> ${F.dimTxt}`:''}</div></div>`;
+  bubble.querySelector('.music').before(row); layoutStage();
+}
+
+
+/* ---------------- simplified country flags (60x40) ---------------- */
+function starPath(cx,cy,R,r=R*0.4,n=5,rot=-90){let p='';for(let i=0;i<n*2;i++){const a=(rot+i*180/n)*Math.PI/180,rr=i%2?r:R;p+=(i?'L':'M')+(cx+Math.cos(a)*rr).toFixed(2)+' '+(cy+Math.sin(a)*rr).toFixed(2);}return p+'Z';}
+const H3=(a,b,c)=>`<rect width="60" height="40" fill="${b}"/><rect width="60" height="13.34" fill="${a}"/><rect y="26.66" width="60" height="13.34" fill="${c}"/>`;
+const V3=(a,b,c)=>`<rect width="60" height="40" fill="${b}"/><rect width="20" height="40" fill="${a}"/><rect x="40" width="20" height="40" fill="${c}"/>`;
+const FLAGS={
+ argentina:H3('#74acdf','#fff','#74acdf')+`<circle cx="30" cy="20" r="4.6" fill="#f6b40e"/>`,
+ belize:`<rect width="60" height="40" fill="#d90f19"/><rect y="4" width="60" height="32" fill="#171696"/><circle cx="30" cy="20" r="11" fill="#fff"/><circle cx="30" cy="20" r="9" fill="none" stroke="#3a8a3a" stroke-width="2"/>`,
+ bolivia:H3('#d52b1e','#f9e300','#007934'),
+ brazil:`<rect width="60" height="40" fill="#009c3b"/><path d="M30 4 L56 20 L30 36 L4 20Z" fill="#ffdf00"/><circle cx="30" cy="20" r="8.5" fill="#002776"/><path d="M21.8 18 Q30 15.5 38.4 21" stroke="#fff" stroke-width="1.6" fill="none"/>`,
+ chile:`<rect width="60" height="40" fill="#fff"/><rect y="20" width="60" height="20" fill="#d52b1e"/><rect width="20" height="20" fill="#0039a6"/><path d="${starPath(10,10,5)}" fill="#fff"/>`,
+ colombia:`<rect width="60" height="40" fill="#fcd116"/><rect y="20" width="60" height="10" fill="#003893"/><rect y="30" width="60" height="10" fill="#ce1126"/>`,
+ costarica:`<rect width="60" height="40" fill="#002b7f"/><rect y="6.67" width="60" height="26.66" fill="#fff"/><rect y="13.33" width="60" height="13.34" fill="#ce1126"/>`,
+ ecuador:`<rect width="60" height="40" fill="#ffdd00"/><rect y="20" width="60" height="10" fill="#034ea2"/><rect y="30" width="60" height="10" fill="#ed1c24"/><ellipse cx="30" cy="20" rx="5" ry="6" fill="#6aa5d9" stroke="#8a5a2a" stroke-width="1"/>`,
+ elsalvador:H3('#0047ab','#fff','#0047ab')+`<path d="M30 15 L35 23 L25 23Z" fill="#3a8a3a" stroke="#d4a017" stroke-width=".8"/>`,
+ frenchguiana:V3('#002395','#fff','#ed2939'),
+ guatemala:V3('#4997d0','#fff','#4997d0')+`<circle cx="30" cy="20" r="5.5" fill="none" stroke="#3a8a3a" stroke-width="1.6"/><circle cx="30" cy="20" r="2.4" fill="#4aa66b"/>`,
+ guyana:`<rect width="60" height="40" fill="#009e49"/><path d="M0 0 L60 20 L0 40Z" fill="#fff"/><path d="M0 1.8 L55 20 L0 38.2Z" fill="#fcd116"/><path d="M0 0 L30 20 L0 40Z" fill="#000"/><path d="M0 2.6 L26 20 L0 37.4Z" fill="#ce1126"/>`,
+ honduras:H3('#0073cf','#fff','#0073cf')+[[30,20],[23,17],[23,23],[37,17],[37,23]].map(([x,y])=>`<path d="${starPath(x,y,2.3)}" fill="#0073cf"/>`).join(''),
+ nicaragua:H3('#0067c6','#fff','#0067c6')+`<path d="M30 15.5 L34.5 23 L25.5 23Z" fill="none" stroke="#d4a017" stroke-width="1.2"/><circle cx="30" cy="20.6" r="1.6" fill="#3a8a3a"/>`,
+ panama:`<rect width="60" height="40" fill="#fff"/><rect x="30" width="30" height="20" fill="#d21034"/><rect y="20" width="30" height="20" fill="#005293"/><path d="${starPath(15,10,5)}" fill="#005293"/><path d="${starPath(45,30,5)}" fill="#d21034"/>`,
+ paraguay:H3('#d52b1e','#fff','#0038a8')+`<circle cx="30" cy="20" r="4.2" fill="none" stroke="#3a8a3a" stroke-width="1.2"/><path d="${starPath(30,20,2.2)}" fill="#f6b40e"/>`,
+ peru:V3('#d91023','#fff','#d91023'),
+ suriname:`<rect width="60" height="40" fill="#377e3f"/><rect y="8" width="60" height="24" fill="#fff"/><rect y="11" width="60" height="18" fill="#b40a2d"/><path d="${starPath(30,20,7)}" fill="#ecc81d"/>`,
+ uruguay:`<rect width="60" height="40" fill="#fff"/>${[1,3,5,7].map(i=>`<rect y="${i*40/9}" width="60" height="${40/9}" fill="#0038a8"/>`).join('')}<rect width="22" height="22.2" fill="#fff"/><circle cx="11" cy="11.1" r="5.2" fill="#fcd116"/><circle cx="11" cy="11.1" r="7.8" fill="none" stroke="#fcd116" stroke-width="1.6" stroke-dasharray="1.6 1.6"/>`,
+ venezuela:H3('#ffcc00','#00247d','#cf142b')+[0,1,2,3,4,5,6,7].map(i=>{const a=(204+i*18.86)*Math.PI/180;return `<path d="${starPath(30+Math.cos(a)*11,28.5+Math.sin(a)*11,2)}" fill="#fff"/>`}).join('')
+};
+function flagSVG(id){ const f=FLAGS[id]; return f?`<svg viewBox="0 0 60 40" aria-label="Flag of ${C[id].name}">${f}</svg>`:''; }
+
+
+/* ---------------- sound effects (subtle; follow the Music on/off switch) ---------------- */
+function sfxReady(){ if(muted) return false; if(!AC) initAudio(); if(!AC) return false; if(AC.state!=='running'&&AC.resume) AC.resume().catch(()=>{}); return true; }
+function sfxOut(vol=1,pan=0){ const g=AC.createGain(); g.gain.value=vol; let n=g; if(AC.createStereoPanner&&pan){const p=AC.createStereoPanner();p.pan.value=pan;g.connect(p);n=p;} n.connect(master); const s=AC.createGain(); s.gain.value=.3; n.connect(s); s.connect(wet); return g; }
+function sweepTone(dst,type,f1,f2,t,dur,vol,filt){ const g=AC.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(vol,t+Math.min(.05,dur*.2)); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  let node=g; if(filt){const f=AC.createBiquadFilter(); f.type=filt[0]; f.frequency.value=filt[1]; f.Q.value=filt[2]||1; f.connect(g); node=f;} g.connect(dst);
+  const o=AC.createOscillator(); o.type=type; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+dur); o.connect(node); o.start(t); o.stop(t+dur+.05); return o; }
+function noiseSweep(dst,t,dur,vol,type,f1,f2,q=1,att=.03){ const n=nsrc(t,dur), f=AC.createBiquadFilter(); f.type=type; f.Q.value=q; f.frequency.setValueAtTime(f1,t); f.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  const g=AC.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(vol,t+att); g.gain.exponentialRampToValueAtTime(.0001,t+dur); n.connect(f); f.connect(g); g.connect(dst); }
+function growlTremolo(o,t,dur,rate=24,depth=.5){ const l=AC.createOscillator(); l.frequency.value=rate; const lg=AC.createGain(); lg.gain.value=depth; l.connect(lg); return [l,lg]; }
+const VOICE={
+  cat:(d,t,big)=>{ // rasping growl pitched into the range small speakers can play
+    const f=big?120:165, g=AC.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(.55,t+.07); g.gain.setValueAtTime(.55,t+.5); g.gain.exponentialRampToValueAtTime(.0001,t+.9); g.connect(d);
+    const am=AC.createGain(); am.gain.value=.55; am.connect(g);
+    const l=AC.createOscillator(); l.frequency.value=big?22:30; const lg=AC.createGain(); lg.gain.value=.45; l.connect(lg); lg.connect(am.gain);
+    const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=big?650:900; bp.Q.value=.9; bp.connect(am);
+    const lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=big?1400:1900; lp.connect(bp);
+    [1,1.007].forEach(k=>{const o=AC.createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(f*k,t); o.frequency.linearRampToValueAtTime(f*1.3*k,t+.28); o.frequency.linearRampToValueAtTime(f*.85*k,t+.9); o.connect(lp); o.start(t); o.stop(t+.95);});
+    l.start(t); l.stop(t+.95);
+    noiseSweep(d,t,.85,.3,'bandpass',big?700:950,big?450:650,1.1,.06);   // breathy rasp
+  },
+  puma:(d,t)=>{ // raspy, snarling big-cat scream (not a meow)
+    noiseSweep(d,t,.22,.2,'highpass',2500,3500,.8,.01);                 // sharp hissing "spit"
+    const t2=t+.15, g=AC.createGain(); g.gain.setValueAtTime(.0001,t2); g.gain.linearRampToValueAtTime(.5,t2+.08); g.gain.setValueAtTime(.45,t2+.6); g.gain.exponentialRampToValueAtTime(.0001,t2+1.05); g.connect(d);
+    const am=AC.createGain(); am.gain.value=.5; am.connect(g);
+    const l=AC.createOscillator(); l.frequency.value=38; const lg=AC.createGain(); lg.gain.value=.5; l.connect(lg); lg.connect(am.gain);   // rough, rattling throat
+    const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=950; bp.Q.value=.8; bp.connect(am);
+    [1,1.012,.497].forEach((k,i)=>{const o=AC.createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(250*k,t2); o.frequency.linearRampToValueAtTime(360*k,t2+.25); o.frequency.exponentialRampToValueAtTime(190*k,t2+1.05);
+      const og=AC.createGain(); og.gain.value=i===2?.6:1; o.connect(og); og.connect(bp); o.start(t2); o.stop(t2+1.1);});
+    l.start(t2); l.stop(t2+1.1);
+    noiseSweep(d,t2,1.0,.4,'bandpass',1300,800,1,.05);                    // heavy breathy rasp
+  },
+  hiss:(d,t)=>noiseSweep(d,t,1.0,.22,'highpass',3500,5200,.7,.12),
+  screech:(d,t,low)=>{ const a=low?1500:2500, b=low?1050:1650; sweepTone(d,'sawtooth',a,b,t,.55,.13,['bandpass',low?1300:2200,3]); sweepTone(d,'sine',a*1.01,b,t,.55,.05); noiseSweep(d,t,.5,.06,'bandpass',a,b,3); },
+  wail:(d,t)=>{ // harpy eagle: long, high, mournful whistled wail
+    const g=AC.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(.32,t+.12); g.gain.setValueAtTime(.3,t+.75); g.gain.exponentialRampToValueAtTime(.0001,t+1.25); g.connect(d);
+    const v=AC.createOscillator(); v.frequency.value=7; const vg=AC.createGain(); vg.gain.value=22; v.connect(vg);
+    [['sine',1,1],['triangle',2,.25],['sawtooth',1,.08]].forEach(([ty,k,a])=>{const o=AC.createOscillator(); o.type=ty;
+      o.frequency.setValueAtTime(1350*k,t); o.frequency.linearRampToValueAtTime(1750*k,t+.3); o.frequency.linearRampToValueAtTime(1600*k,t+.7); o.frequency.exponentialRampToValueAtTime(950*k,t+1.25);
+      vg.connect(o.frequency); const og=AC.createGain(); og.gain.value=a; o.connect(og); og.connect(g); o.start(t); o.stop(t+1.3);});
+    v.start(t); v.stop(t+1.3);
+    noiseSweep(d,t,1.2,.06,'bandpass',1700,1000,4,.1);
+  },
+  hoot:(d,t)=>{ [[0,.22],[.32,.22],[.68,.42]].forEach(([dt,len])=>sweepTone(d,'sine',330,300,t+dt,len,.22,['lowpass',900])); },
+  yip:(d,t)=>{ [0,.2].forEach(dt=>{ sweepTone(d,'sawtooth',950,620,t+dt,.14,.12,['bandpass',1400,2]); }); },
+  chatter:(d,t)=>{ for(let k=0;k<5;k++) noiseSweep(d,t+k*.09,.07,.13,'bandpass',1600,1300,3,.005); sweepTone(d,'sawtooth',300,240,t,.45,.05,['lowpass',700]); },
+  cackle:(d,t)=>{ for(let k=0;k<6;k++){ noiseSweep(d,t+k*.1,.07,.1,'bandpass',1900,1500,4,.005); sweepTone(d,'square',900,760,t+k*.1,.06,.03,['bandpass',1800,3]); } }
+};
+const PVOICE={'Ocelot':['cat',0],'Jaguar':['cat',1],'Puma':['puma'],'Tayra':['chatter'],'Pampas fox':['yip'],'Culpeo fox':['yip'],
+  'Boa constrictor':['hiss'],'Ornate hawk-eagle':['screech',0],'Forest falcon':['screech',0],'Harpy eagle':['wail'],'Crested caracara':['cackle'],'Great horned owl':['hoot']};
+const VGAIN={'Ocelot':2.2,'Jaguar':3.3,'Puma':2.0,'Tayra':13,'Pampas fox':9,'Culpeo fox':9,'Boa constrictor':2.2,'Ornate hawk-eagle':5.3,'Forest falcon':6.5,'Harpy eagle':0.8,'Crested caracara':12,'Great horned owl':2.2};
+function predatorVoice(pname,pan){ if(!sfxReady()) return; const v=PVOICE[pname]; if(!v) return; VOICE[v[0]](sfxOut(.55*(VGAIN[pname]||1),pan),AC.currentTime+.02,v[1]); }
+const SNACK=[
+  (d,t)=>{ noiseSweep(d,t,.5,.06,'bandpass',3200,700,1.5,.15); [[1568,0],[2349,.07]].forEach(([f,dt])=>{ sweepTone(d,'sine',f,f,t+.55+dt,.45,.12); sweepTone(d,'sine',f*2.76,f*2.76,t+.55+dt,.18,.03); }); }, // whoosh + chime
+  (d,t)=>{ const o=sweepTone(d,'sine',600,600,t+.5,.6,.2); o.frequency.setValueAtTime(480,t+.5); o.frequency.exponentialRampToValueAtTime(1050,t+.62); o.frequency.exponentialRampToValueAtTime(780,t+1.1);
+           const l=AC.createOscillator(); l.frequency.value=18; const lg=AC.createGain(); lg.gain.setValueAtTime(120,t+.5); lg.gain.exponentialRampToValueAtTime(1,t+1.1); l.connect(lg); lg.connect(o.frequency); l.start(t+.5); l.stop(t+1.15); }, // springy boing
+  (d,t)=>{ noiseSweep(d,t+.5,.06,.25,'bandpass',1800,1200,1.5,.004); sweepTone(d,'sine',1100,420,t+.5,.08,.24);
+           [2093,2637,3136].forEach((f,i)=>{ sweepTone(d,'sine',f,f,t+.6+i*.07,.22,.07); }); },   // pop + twinkle
+  (d,t)=>{ sweepTone(d,'sine',2000,700,t+.05,.5,.08); sweepTone(d,'sine',520,240,t+.56,.14,.3); noiseSweep(d,t+.56,.1,.11,'bandpass',1600,900,1.5,.005); }, // slide whistle + plop
+  (d,t)=>{ [[523,0],[659,.08],[784,.16],[1047,.24]].forEach(([f,dt])=>marimbaHit(d,f,t+.5+dt,.14)); }   // marimba run
+];
+function sfxSnack(){ if(!sfxReady()) return; SNACK[Math.floor(Math.random()*SNACK.length)](sfxOut(1.2,-.2),AC.currentTime); }
+
+function voicedSigh(d,t,f1,f2,dur,vol){ // soft breathy "haah" with a vowel-like formant
+  const g=AC.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(vol,t+.08); g.gain.exponentialRampToValueAtTime(.0001,t+dur); g.connect(d);
+  const o=AC.createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  [[750,5,1],[1250,7,.5]].forEach(([fq,q,v])=>{const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=fq; bp.Q.value=q; const vg=AC.createGain(); vg.gain.value=v; o.connect(bp); bp.connect(vg); vg.connect(g);});
+  o.start(t); o.stop(t+dur+.05);
+  noiseSweep(d,t,dur,vol*1.4,'bandpass',1400,800,1.2,.06);
+}
+const PHEW=[
+  (d,t)=>{ noiseSweep(d,t,.75,.32,'bandpass',2200,700,2.2,.05); sweepTone(d,'sine',950,520,t+.05,.6,.05); },     // whistled "phew"
+  (d,t)=>voicedSigh(d,t,230,165,.85,.2),                                                                       // relieved "haaah"
+  (d,t)=>{ noiseSweep(d,t,.22,.3,'bandpass',1500,1000,1.5,.02); noiseSweep(d,t+.28,.42,.3,'bandpass',1400,700,1.5,.03); }, // "huff-huff"
+  (d,t)=>{ noiseSweep(d,t,.8,.28,'bandpass',1200,600,1.8,.05); sweepTone(d,'sine',600,820,t,.15,.04); sweepTone(d,'sine',820,450,t+.15,.55,.05); } // "whew"
+];
+function sfxPhew(){ if(!sfxReady()) return; PHEW[Math.floor(Math.random()*PHEW.length)](sfxOut(2,0),AC.currentTime+.02); }
+function sfxFamily(kind,sex,delay,pan){ if(!sfxReady()) return; const t=AC.currentTime+delay, d=sfxOut(8.5,pan);
+  let f={adult:780,young:1040,baby:1350}[kind]||900; if(sex==='m') f*=.88; if(sex==='f') f*=1.08;
+  sweepTone(d,'triangle',f*.8,f*1.15,t,.1,.06); sweepTone(d,'sine',f*2,f*2.2,t,.06,.02); }
+function sfxBaby(hang,pan){ if(!sfxReady()) return; const t=AC.currentTime, d=sfxOut(hang?3.4:5,pan);
+  if(hang){ sweepTone(d,'sine',1500,650,t,.55,.09); }         // gentle slide-whistle "wheee"
+  else { sweepTone(d,'triangle',520,1050,t,.12,.14); sweepTone(d,'triangle',780,1400,t+.1,.1,.08); } }  // little "boop"
+
+
+
+/* ---------------- randomized favorite foods (top-tier staples only) ---------------- */
+const FAVS={
+ 'Leontopithecus rosalia':[['🍈','Sweet ripe fruit'],['🍇','Juicy wild figs & berries'],['🦗','Crunchy insects']],
+ 'Saguinus imperator':[['🍯','Sticky tree gum'],['🍇','Ripe wild fruit'],['🌺','Flower nectar']],
+ 'Saguinus oedipus':[['🦗','Insects — it hunts them all day'],['🍑','Ripe fruit'],['🍯','Tree gum']],
+ 'Saimiri boliviensis':[['🐛','Caterpillars & other insects'],['🦗','Grasshoppers'],['🍈','Ripe fruit']],
+ 'Cebuella pygmaea':[['🍯','Tree sap & gum it gnaws out of bark'],['🍯','Sweet tree gum'],['🦗','Tiny insects']],
+ 'Alouatta seniculus':[['🍃','Leaves — lots of them'],['🍇','Wild figs'],['🍈','Ripe fruit']],
+ 'Saguinus midas':[['🍒','Juicy small fruits'],['🦗','Insects'],['🌺','Flower nectar']],
+ 'Pithecia pithecia':[['🌰','Hard seeds cracked from unripe fruit'],['🍇','Fruit pulp & seeds']],
+ 'Ateles paniscus':[['🍑','Ripe fruit'],['🍇','Wild figs']],
+ 'Aotus azarae':[['🍈','Ripe fruit'],['🌸','Flowers'],['🍃','Tender leaves']],
+ 'Alouatta caraya':[['🍃','Leaves'],['🍈','Fruit in season'],['🌼','Flowers in season']],
+ 'Alouatta pigra':[['🍃','Leaves'],['🍇','Wild figs'],['🍈','Ripe fruit']],
+ 'Ateles geoffroyi':[['🍑','Ripe fruit'],['🍇','Wild figs']],
+ 'Cebus imitator':[['🍈','Ripe fruit'],['🦗','Insects it digs out of bark']],
+ 'Alouatta palliata':[['🍃','Leaves — it rests for hours to digest them'],['🍇','Wild figs'],['🍈','Ripe fruit']],
+ 'Saimiri oerstedii':[['🦗','Insects, especially grasshoppers'],['🍈','Ripe fruit']],
+ 'Saguinus geoffroyi':[['🍇','Small fruits & berries'],['🦗','Insects'],['🍯','Tree sap']]
+};
+function pickFavorite(c){ const pool=FAVS[c.sci]; if(!pool) return; const f=pool[Math.floor(Math.random()*pool.length)]; c.food=f[0]; c.foodTxt=f[1]; }
+
+/* ---------------- randomized baby snacks (real diet foods for each species) ---------------- */
+const BABYSNACKS={
+ 'Leontopithecus rosalia':[['🦗','crickets'],['🦎','small lizards'],['🐸','tree frogs'],['🕷️','spiders'],['🐌','snails'],['🍇','wild berries'],['🌺','nectar flowers'],['🍯','tree gum']],
+ 'Saguinus imperator':[['🌺','flower nectar'],['🐞','beetles'],['🦗','crickets'],['🍯','tree gum'],['🍇','wild berries'],['🕷️','spiders'],['🍒','small red fruits']],
+ 'Saguinus oedipus':[['🍑','ripe fruit'],['🍯','tree gum'],['🦗','grasshoppers'],['🐛','caterpillars'],['🍇','wild berries'],['🌸','flowers'],['🕷️','spiders']],
+ 'Saimiri boliviensis':[['🍈','ripe fruit'],['🌼','flowers'],['🐛','caterpillars'],['🦗','grasshoppers'],['🕷️','spiders'],['🍇','wild berries'],['🌺','flower nectar']],
+ 'Cebuella pygmaea':[['🐛','caterpillars'],['🌼','flower nectar'],['🍯','tree sap'],['🦗','crickets'],['🕷️','spiders'],['🦋','butterflies'],['🍇','tiny fruits']],
+ 'Alouatta seniculus':[['🍈','ripe fruit'],['🌸','flowers'],['🍃','young leaves'],['🌿','leaf buds'],['🍇','wild figs'],['🌺','blossoms']],
+ 'Saguinus midas':[['🦗','crickets'],['🌺','flower nectar'],['🍇','wild berries'],['🍯','tree gum'],['🕷️','spiders'],['🐸','tree frogs'],['🍒','small red fruits']],
+ 'Pithecia pithecia':[['🍇','fruit pulp'],['🌰','hard seeds'],['🍃','young leaves'],['🌸','flowers'],['🐛','caterpillars'],['🐜','ants']],
+ 'Ateles paniscus':[['🍃','young leaves'],['🌸','flowers'],['🍇','wild figs'],['🍈','ripe fruit'],['🍑','soft fruit'],['🌺','blossoms']],
+ 'Aotus azarae':[['🍈','ripe fruit'],['🐞','beetles'],['🍃','leaves'],['🌸','flowers'],['🍇','wild berries'],['🦋','moths']],
+ 'Alouatta caraya':[['🍈','ripe fruit'],['🌼','flowers'],['🍃','leaves'],['🌿','leaf buds'],['🍇','wild figs'],['🌸','blossoms']],
+ 'Alouatta pigra':[['🍃','ramón leaves'],['🍈','ripe fruit'],['🌸','flowers'],['🍇','wild figs'],['🌿','leaf buds']],
+ 'Ateles geoffroyi':[['🍃','young leaves'],['🌸','flowers'],['🍇','wild figs'],['🍈','ripe fruit'],['🍑','soft fruit'],['🐛','caterpillars']],
+ 'Cebus imitator':[['🦗','grasshoppers'],['🥚','bird eggs'],['🦎','small lizards'],['🐛','caterpillars'],['🍈','ripe fruit'],['🍇','wild figs'],['🐜','ants'],['🌸','flowers']],
+ 'Alouatta palliata':[['🍃','young leaves'],['🌸','flowers'],['🍇','wild figs'],['🍈','ripe fruit'],['🌿','leaf buds']],
+ 'Saimiri oerstedii':[['🦗','grasshoppers'],['🐛','caterpillars'],['🕷️','spiders'],['🍈','ripe fruit'],['🌺','flower nectar'],['🍇','wild berries']],
+ 'Saguinus geoffroyi':[['🦗','grasshoppers'],['🍯','tree sap'],['🍇','wild berries'],['🐛','caterpillars'],['🌺','flower nectar'],['🕷️','spiders']]
+};
+function pickBabySnacks(c){
+  const pool=(BABYSNACKS[c.sci]||[]).filter(x=>x[0]!==c.food); if(pool.length<2) return;
+  const a=Math.floor(Math.random()*pool.length); let b=Math.floor(Math.random()*(pool.length-1)); if(b>=a) b++;
+  const A=pool[a], B=pool[b];
+  c.alt=[A[0],B[0]]; c.altTxt=A[1].charAt(0).toUpperCase()+A[1].slice(1)+' & '+B[1];
+}
+
+/* ---------------- interaction ---------------- */
+const tip=document.getElementById('tip'), wrap=document.getElementById('mapwrap');
+const bubble=document.getElementById('bubble'), monkey=document.getElementById('monkey'), hint=document.getElementById('hint'), stage=document.getElementById('stage');
+let mode='explore', target=null, score=0, tries=0, remaining=[];
+
+function showCountry(id,sp){
+  const c=Object.assign({},C[id]);
+  if(sp){const S2=SPECIES[sp]; SPKEYS.forEach(k=>c[k]=S2[k]); if(sp!==C[id].sci){c.note='';c.isPick=true;}}
+  if(!sp && C[id].sp===0){
+    const t=i=>TOURIST[(tIdx+i)%TOURIST.length];
+    c.food=t(0)[0]; c.foodTxt=`A tourist's ${t(0)[1].toLowerCase()} — no wild monkey snacks grow here!`;
+    c.alt=[t(1)[0],t(2)[0]]; c.altTxt=`${t(1)[1]} & ${t(2)[1].toLowerCase()} from the snack stand`;
+    tIdx=(tIdx+3)%TOURIST.length;
+  }
+  if(C[id].sp>0){ pickFavorite(c); pickBabySnacks(c); }
+  CUR=c; hint.style.display='none'; currentId=id;
+  stage.style.minHeight='';
+  if(window.innerWidth<=820) setTimeout(()=>{ stage.scrollIntoView({behavior:'smooth',block:'start'}); setTimeout(keepGrassInView,450); },150);
+  Object.values(groups).forEach(g=>g.classList.remove('sel','bad'));
+  groups[id].classList.add('sel');
+  const [stName,stCol]=STATUS[c.st];
+  const pct=Math.max(c.sp/MAXSP*100, c.sp?3:0);
+  bubble.innerHTML=`<div class="bhead"><div class="bface">${monkeySVG(c.look).replace('viewBox="0 0 200 250"','viewBox="26 0 148 150"')}</div><div class="btitle"><h2>${c.m}</h2>
+    <div class="sub">📍 <b>${c.name}</b>${c.note?` · ${c.note}`:''}</div></div><div class="bflag" title="Flag of ${c.name}">${flagSVG(id)}</div></div><div class="bscroll">
+    <div class="stat"><span class="k">Primate species</span><span class="v">${c.spTxt}</span></div>
+    <div class="bar"><div style="--w:${pct}%"></div></div>
+    <div class="stat"><span class="k">${c.isPick?'Monkey':'Star monkey'}</span><span class="v">${c.m}${c.sci?`<br><i>${c.sci}</i>`:''}</span></div>
+    ${c.st!=='NONE'?`<div class="stat"><span class="k">Status</span><span class="v"><span class="badge" style="background:${stCol}">${stName}</span></span></div>
+    <div class="stat"><span class="k">Weight</span><span class="v">${c.size}</span></div>`:''}
+    <div class="fact"><b>Fun fact:</b> ${c.fact}</div>
+    <div class="snack" id="snack">🍽 Snack time coming…<span></span></div>
+    <div class="music"><span class="notes"><i></i><i></i><i></i></span> ♪ ${MUSIC[id].label}</div></div>`;
+  playMusic(id);
+  clearTimeout(foodTimer); clearTimeout(chaseTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch').forEach(f=>f.remove()); monkey.getAnimations().forEach(a=>a.cancel());
+  foodTimer=setTimeout(()=>serveFood(id),6000);
+  monkey.className='monkey'+(c.look.tiny?' tiny':'');
+  monkey.innerHTML=monkeySVG(c.look);
+  void monkey.offsetWidth; monkey.classList.add('pop');
+  bubble.classList.remove('show','scared'); void bubble.offsetWidth; bubble.classList.add('show');
+  requestAnimationFrame(()=>{const b=bubble.querySelector('.bar div'); requestAnimationFrame(()=>b.style.width=pct+'%');});
+  // place monkey under the bubble
+  requestAnimationFrame(layoutStage);
+}
+const isPhone=()=>window.innerWidth<=820;
+function layoutStage(){
+  if(isPhone()){
+    monkey.style.bottom='34px';
+    stage.style.minHeight='';
+    // size the panel to the visible screen (works inside iframes like Brightspace too)
+    const vh=Math.min(window.innerHeight||800, (screen&&screen.height)||9999);
+    stage.style.height=Math.max(460,vh-12)+'px';
+    const sc=bubble.querySelector('.bscroll');
+    if(sc && sc.scrollHeight>sc.clientHeight+2) requestAnimationFrame(()=>{
+      // show the newest section in full: start at its top; if room is left, include what follows
+      const rows=sc.querySelectorAll('.stat.new'); const last=rows[rows.length-1];
+      let top=sc.scrollHeight-sc.clientHeight;
+      if(last){ const rt=last.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - 4; top=Math.min(rt, top); }
+      sc.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+    });
+    guardMonkey(); positionHang(); keepGrassInView(); return;
+  }
+  {
+    const bh=bubble.offsetHeight+14+30;
+    const room=stage.clientHeight-bh;
+    const mh=monkey.offsetHeight;
+    monkey.style.bottom=Math.max(40,Math.min(70,room-mh))+'px';
+    stage.style.minHeight=Math.max(560,bh+mh+60+(stage.querySelector('.branch')?40:0))+'px';
+  }
+  guardMonkey();
+  positionHang();
+  keepGrassInView();
+}
+function guardMonkey(){
+  // never let the info bubble reach down onto the monkey
+  if(!bubble.innerHTML) return;
+  const need=(stage.querySelector('.branch')?70:30);
+  const bubbleBottom=bubble.offsetTop+bubble.offsetHeight;
+  const monkeyTop=stage.clientHeight-(parseFloat(monkey.style.bottom)||40)-monkey.offsetHeight;
+  const over=bubbleBottom+need-monkeyTop;
+  if(over<=0) return;
+  const sc=bubble.querySelector('.bscroll');
+  if(isPhone() && sc){ sc.style.maxHeight=Math.max(110, sc.clientHeight-over)+'px'; }
+  else { stage.style.minHeight=(stage.clientHeight+over)+'px'; }
+}
+function keepGrassInView(){
+  if(window.innerWidth>820 || !currentId) return;
+  requestAnimationFrame(()=>{
+    const r=stage.getBoundingClientRect();
+    const target=window.scrollY + r.bottom - window.innerHeight + 6;
+    if(Math.abs(target-window.scrollY)>4) window.scrollTo({top:target,behavior:'smooth'});
+  });
+}
+let foodTimer=null, chaseTimer=null, chaseToken=0;
+const BRANCH={
+ guatemala:["a ceiba branch — Guatemala's national tree",'#3f7f34',null],
+ elsalvador:["a maquilishuat branch — El Salvador's national tree",'#5f9a45','#e98fc0'],
+ nicaragua:["a madroño branch — Nicaragua's national tree",'#4f8f3a','#f6f2e4'],
+ costarica:["a guanacaste branch — Costa Rica's national tree",'#3f7f34',null],
+ panama:["a Panamá tree branch — Panama's national tree",'#4f8f3a',null],
+ argentina:["a riverbank ceibo branch — Argentina's national flower",'#5f9a45','#d8343a'],
+ paraguay:['a pink lapacho branch','#6aa04a','#e66fa8'],
+ belize:['a ramón (breadnut) tree branch','#3f7f34',null],
+ _:['a rainforest liana','#4f8f3a',null]
+};
+function branchSVG(leaf,flower){
+  let g=`<path d="M-10 18 C 120 15, 280 21, 420 18" stroke="#6b4a2e" stroke-width="9" fill="none" stroke-linecap="round"/>`;
+  for(let i=0;i<11;i++){const x=10+i*38, y=(i%2?26:10)+((i*7)%5), r=(i%2?28:-28);
+    g+=`<ellipse cx="${x}" cy="${y}" rx="13" ry="5.5" fill="${leaf}" transform="rotate(${r} ${x} ${y})"/>`;
+    if(flower && i%2===0) g+=`<g fill="${flower}"><circle cx="${x+9}" cy="${y-3}" r="4"/><circle cx="${x+14}" cy="${y+1}" r="3.5"/><circle cx="${x+6}" cy="${y+2}" r="3.2"/></g>`;}
+  return `<svg viewBox="0 0 400 40" preserveAspectRatio="none" style="width:100%;height:40px;display:block">${g}</svg>`;
+}
+function positionHang(){
+  const br=stage.querySelector('.branch'); if(!br) return;
+  const y=bubble.offsetTop+bubble.offsetHeight+46;  // clear the bubble's pointer
+  br.style.top=(y-22)+'px';
+  stage.querySelectorAll('.baby.hang').forEach(b=>{ const sc=b.offsetWidth/200; b.style.top=(y-4+50*sc)+'px'; b.style.transformOrigin=`50% ${-50*sc}px`; });
+}
+const PLOOK={
+ 'Ocelot':{kind:'quad',fur:'#d9a648',spots:'#4a3220',belly:'#f3e2bd'},
+ 'Jaguar':{kind:'quad',fur:'#e0a33e',spots:'#2b1d12',belly:'#f3e2bd',big:true},
+ 'Puma':{kind:'quad',fur:'#c49464',belly:'#ecd8bd',big:true},
+ 'Tayra':{kind:'quad',fur:'#3a2a20',head:'#a58a66',belly:'#3a2a20',long:true},
+ 'Pampas fox':{kind:'quad',fur:'#9a9188',belly:'#d8d0c4',fox:true,head:'#b88a5e'},
+ 'Culpeo fox':{kind:'quad',fur:'#a8704a',belly:'#e3cdb2',fox:true,head:'#c4834f'},
+ 'Crested caracara':{kind:'bird',body:'#3a2a20',head:'#f0e6d2',wing:'#2a1d16',crest:'#1d1a18',belly:'#e8e0d0'},
+ 'Ornate hawk-eagle':{kind:'bird',body:'#6b4a2e',head:'#c4692c',wing:'#3a2a20',crest:'#1d1a18',belly:'#f2ece0'},
+ 'Forest falcon':{kind:'bird',body:'#4a4440',head:'#4a4440',wing:'#2e2a28',belly:'#e8e2d6'},
+ 'Harpy eagle':{kind:'bird',body:'#3c3a3a',head:'#a7a5a3',wing:'#2a2828',crest:'#5a5858',belly:'#f4f2ee',big:true},
+ 'Great horned owl':{kind:'bird',body:'#8a6c4c',head:'#8a6c4c',wing:'#5c4632',belly:'#d9c6a4',owl:true},
+ 'Boa constrictor':{kind:'snake',body:'#8a7a52',spots:'#5a3a24'}
+};
+function predatorSVG(L){
+  if(L.kind==='snake'){
+    return `<svg viewBox="0 0 240 120"><g class="slither"><path d="M10 90 C40 50 70 110 100 80 S160 50 190 80" stroke="${L.body}" stroke-width="22" fill="none" stroke-linecap="round"/>
+      <path d="M10 90 C40 50 70 110 100 80 S160 50 190 80" stroke="${L.spots}" stroke-width="10" fill="none" stroke-dasharray="8 16" stroke-linecap="round"/>
+      <g class="pmouth"><path d="M206 82 L236 70 L236 96Z" fill="#5a1414"/><path d="M226 74 l2 7 l2 -8 M226 92 l2 -7 l2 8" fill="#fff"/></g><ellipse cx="200" cy="80" rx="24" ry="15" fill="${L.body}"/><circle cx="208" cy="73" r="5" fill="#ffd23a"/><rect x="207" y="70" width="2" height="7" fill="#111"/>
+      <path d="M222 84 l14 2 m-14 -2 l13 -5" stroke="#c22" stroke-width="2.5" stroke-linecap="round"/></g></svg>`;
+  }
+  if(L.kind==='bird'){
+    const crest=L.crest?`<path d="M118 34 L100 6 L124 26 L122 2 L134 28Z" fill="${L.crest}"/>`:'';
+    const eyes=L.owl?`<circle cx="128" cy="52" r="11" fill="#ffc21a"/><circle cx="152" cy="52" r="11" fill="#ffc21a"/><circle cx="130" cy="53" r="5" fill="#111"/><circle cx="154" cy="53" r="5" fill="#111"/><path d="M120 30 L124 14 L132 32 M160 30 L156 14 L148 32" stroke="${L.head}" stroke-width="7" stroke-linecap="round"/>`
+      :`<circle cx="150" cy="48" r="7" fill="#ffd23a"/><circle cx="152" cy="48" r="3.5" fill="#111"/><path d="M138 41 L160 40" stroke="#111" stroke-width="3" stroke-linecap="round"/>`;
+    const beak=L.owl?`<g class="pmouth"><ellipse cx="140" cy="75" rx="4.5" ry="5" fill="#3a1414"/></g><path d="M136 62 L140 72 L144 62Z" fill="#3a3a3a"/>`
+      :`<g class="pmouth"><path d="M160 57 L180 62 L164 70Z" fill="#5a1414"/><path d="M160 61 Q174 68 170 76 Q163 70 158 64Z" fill="#3a3a3a"/></g><path d="M162 50 Q182 50 176 66 Q170 60 160 60Z" fill="#3a3a3a"/>`;
+    return `<svg viewBox="0 0 220 160"><g class="flap"><path d="M90 70 Q40 10 0 30 Q30 50 40 70 Q60 80 90 80Z" fill="${L.wing}"/></g>
+      <ellipse cx="105" cy="90" rx="42" ry="34" fill="${L.body}"/><ellipse cx="112" cy="98" rx="24" ry="24" fill="${L.belly}"/>
+      <path d="M65 95 L30 120 L68 108Z" fill="${L.wing}"/>
+      ${crest}<circle cx="${L.owl?140:140}" cy="52" r="${L.owl?30:26}" fill="${L.head}"/>${eyes}${beak}
+      <path d="M100 122 l-6 16 m6 -16 l2 17 m-2 -17 l9 14 M120 122 l-4 16 m4 -16 l4 17 m-4 -17 l11 13" stroke="#e8b52a" stroke-width="4" stroke-linecap="round"/>
+      <g class="flap" style="animation-delay:.11s"><path d="M100 72 Q80 20 40 10 Q60 50 70 80Z" fill="${L.wing}" opacity=".85"/></g></svg>`;
+  }
+  // quadruped facing right
+  const len=L.long?80:68, head=L.head||L.fur;
+  let spots=''; if(L.spots){for(let i=0;i<14;i++){const x=70+((i*37)%110), y=78+((i*23)%32); spots+=`<ellipse cx="${x}" cy="${y}" rx="6" ry="4.5" fill="none" stroke="${L.spots}" stroke-width="2.5"/>`;}}
+  const tail=L.fox?`<path d="M58 88 Q20 70 14 104 Q30 98 56 100Z" fill="${L.fur}"/><path d="M14 104 Q18 96 26 98" stroke="#fff" stroke-width="6" stroke-linecap="round"/>`
+    :`<path d="M55 88 Q20 70 18 40" stroke="${L.fur}" stroke-width="${L.long?14:11}" fill="none" stroke-linecap="round"/>`;
+  const ears=L.fox?`<path d="M178 52 L184 22 L196 48Z M200 50 L212 24 L216 54Z" fill="${head}"/>`
+    :`<circle cx="186" cy="52" r="10" fill="${head}"/><circle cx="210" cy="52" r="10" fill="${head}"/>`;
+  const snout=L.fox?`<g class="pmouth"><path d="M214 86 L240 90 L214 100Z" fill="#5a1414"/></g><path d="M212 72 L244 84 L212 92Z" fill="${head}"/><circle cx="242" cy="84" r="4" fill="#111"/>`
+    :`<ellipse cx="220" cy="84" rx="16" ry="12" fill="${L.belly}"/><path d="M226 78 l6 3 -6 3z" fill="#5a2a2a"/><path class="pclosed" d="M214 92 Q222 98 230 92" stroke="#3a2020" stroke-width="2" fill="none"/>
+      <g class="pmouth"><ellipse cx="222" cy="96" rx="10" ry="7.5" fill="#5a1414"/><path d="M215 90 l2 5 l2 -5 M225 90 l2 5 l2 -5" fill="#fff"/><ellipse cx="222" cy="100" rx="5" ry="2.5" fill="#d0606a"/></g>`;
+  return `<svg viewBox="0 0 260 150">${tail}
+    <g class="legs"><rect x="70" y="100" width="15" height="38" rx="7" fill="${L.fur}"/><rect x="155" y="100" width="15" height="38" rx="7" fill="${L.fur}"/></g>
+    <g class="legs" style="animation-delay:.09s"><rect x="90" y="100" width="15" height="38" rx="7" fill="${L.fur}" opacity=".85"/><rect x="175" y="100" width="15" height="38" rx="7" fill="${L.fur}" opacity=".85"/></g>
+    <ellipse cx="128" cy="92" rx="${len}" ry="${L.big?32:27}" fill="${L.fur}"/><ellipse cx="128" cy="104" rx="${len-20}" ry="12" fill="${L.belly}"/>${spots}
+    ${ears}<circle cx="198" cy="76" r="${L.big?30:26}" fill="${head}"/>${snout}
+    <circle cx="200" cy="68" r="5.5" fill="#d9f25a"/><circle cx="201.5" cy="68" r="2.6" fill="#111"/>
+    <path d="M190 58 L208 62" stroke="#111" stroke-width="3" stroke-linecap="round"/></svg>`;
+}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function chase(id){
+  if(currentId!==id) return;
+  const tok=++chaseToken, ok=()=>tok===chaseToken&&currentId===id;
+  const c=CUR, W=stage.clientWidth;
+  const mb=parseFloat(monkey.style.bottom)||50;
+  const addRow=(k,v)=>{const r=document.createElement('div'); r.className='stat new'; r.innerHTML=`<span class="k">${k}</span><span class="v">${v}</span>`; bubble.querySelector('.music').before(r); layoutStage();};
+  // dir=+1: predator from left, monkey flees right; dir=-1: mirror
+  async function pass(dir,pname){
+    const L=PLOOK[pname];
+    const p=document.createElement('div'); p.className='predator '+L.kind;
+    p.innerHTML=`<div style="transform:scaleX(${dir})">${predatorSVG(L)}</div>`;
+    p.style.bottom=(L.kind==='bird'? mb+150 : mb-10)+'px';
+    stage.appendChild(p);
+    const startY=L.kind==='bird'?-200:0, midY=L.kind==='bird'?-40:0;
+    const gap = L.kind==='bird' ? W*.33 : Math.max(W*.33, (isPhone()?215:280) + (L.kind==='snake'?60:0));  // keep ground predators clear of the monkey
+    const pin=p.animate([{transform:`translate(${-dir*W}px,${startY}px)`},{transform:`translate(${-dir*gap}px,${midY}px)`}],{duration:1300,easing:'ease-out',fill:'forwards'});
+    await wait(450); if(!ok()) return false;
+    p.classList.add('speak'); predatorVoice(pname,-dir*.5); setTimeout(()=>p.classList.remove('speak'),700);
+    await wait(250); if(!ok()) return false;
+    monkey.classList.add('scared'); bubble.classList.add('scared');
+    const a=document.createElement('div'); a.className='alert'; a.textContent='❗'; a.style.bottom=(mb+monkey.offsetHeight*0.62)+'px'; a.style.marginLeft=(monkey.offsetWidth*0.32)+'px'; stage.appendChild(a);
+    await wait(600); if(!ok()) return false; a.remove();
+    monkey.classList.remove('pop','hop');
+    const r=8*dir;
+    monkey.animate([{transform:'translate(0,0) rotate(0)'},{transform:`translate(${dir*W*.18}px,-30px) rotate(${r}deg)`},{transform:`translate(${dir*W*.36}px,0) rotate(${r}deg)`},{transform:`translate(${dir*W*.54}px,-30px) rotate(${r}deg)`},{transform:`translate(${dir*W*.8}px,0) rotate(${r}deg)`}],{duration:1000,easing:'ease-out',fill:'forwards'});
+    pin.cancel();
+    p.animate([{transform:`translate(${-dir*gap}px,${midY}px)`},{transform:`translate(${dir*(W*1.1+250)}px,${L.kind==='bird'?-60:0}px)`}],{duration:2200,delay:200,easing:'linear',fill:'both'});
+    await wait(2200); if(!ok()) return false; p.remove();
+    // monkey comes back to center from the opposite side, snack still in hand
+    const back=monkey.animate([{transform:`translate(${-dir*W*.8}px,0)`},{transform:`translate(${-dir*W*.4}px,-24px)`},{transform:'translate(0,0)'}],{duration:1200,easing:'ease-out',fill:'forwards'});
+    await back.finished.catch(()=>{}); if(!ok()) return false;
+    back.cancel(); monkey.getAnimations().forEach(x=>x.cancel());
+    monkey.classList.remove('scared'); bubble.classList.remove('scared');
+    return true;
+  }
+  addRow('Biggest predator',`${c.predE} ${c.pred}`);
+  if(!await pass(1,c.pred)) return;
+  await wait(3000); if(!ok()) return;
+  if(c.pred2){
+    addRow('Also hunted by',`${c.pred2E} ${c.pred2}`);
+    if(!await pass(-1,c.pred2)) return;
+  }
+  sfxPhew(); const ph=document.createElement('div'); ph.className='phew'; ph.textContent='Phew! 😅'; ph.style.bottom=(mb+monkey.offsetHeight-30)+'px'; stage.appendChild(ph);
+  await wait(1300); ph.style.transition='opacity .25s'; ph.style.opacity='0';
+  await wait(250); ph.remove(); if(!ok()) return;
+  await wait(150); if(!ok()) return;
+  // two babies pop up with the other snacks
+  const small=!!c.look.tiny, bw=isPhone()?(small?67:94):(small?91:127), mw=monkey.offsetWidth;
+  const hang = c.sp>0 && (c.look.tailType||'curl')==='curl';
+  const BR = BRANCH[currentId]||BRANCH._;
+  if(hang){ const br=document.createElement('div'); br.className='branch'; br.innerHTML=branchSVG(BR[1],BR[2]); stage.appendChild(br); positionHang(); }
+  [[-(mw/2)-bw+10,0],[mw/2-10,1]].forEach(([dx,k],n)=>{
+    setTimeout(()=>{ if(!ok()) return;
+      const b=document.createElement('div'); b.style.width=bw+'px'; b.style.marginLeft=dx+'px';
+      const L=Object.assign({},c.look,c.baby||{});
+      sfxBaby(hang, n?.4:-.4);
+      if(hang){
+        b.className='baby hang holding';
+        b.innerHTML=`<div class="flip">${monkeySVG(Object.assign({},L,{hangTail:true}))}</div><div class="bfood hfood">${c.alt[k]}</div>`;
+        stage.appendChild(b); positionHang();
+      } else {
+        b.className='baby pop holding'; b.style.bottom=(mb+8)+'px';
+        b.innerHTML=monkeySVG(L)+`<div class="bfood">${c.alt[k]}</div>`;
+        stage.appendChild(b);
+      }
+    }, n*450);
+  });
+  await wait(800); if(!ok()) return;
+  const row2=document.createElement('div'); row2.className='stat new';
+  row2.innerHTML=`<span class="k">Babies' snacks</span><span class="v">${c.alt[0]} ${c.alt[1]} ${c.altTxt}${c.babyNote?`<br><i>${c.babyNote}</i>`:''}${hang?`<br>🌿 Hanging by their tails from ${BR[0]}`:''}</span>`;
+  bubble.querySelector('.music').before(row2); layoutStage();
+  await wait(6000); if(!ok()) return;
+  showFamily(c);
+}
+function serveFood(id){
+  if(currentId!==id) return;
+  const c=CUR;
+  const sn=document.getElementById('snack');
+  const row=document.createElement('div'); row.className='stat new';
+  row.innerHTML=`<span class="k">Favorite food</span><span class="v">${c.food} ${c.foodTxt}</span>`;
+  if(sn) sn.replaceWith(row); else bubble.querySelector('.fact').before(row);
+  const f=document.createElement('div'); f.className='food'; f.textContent=c.food;
+  monkey.appendChild(f); monkey.classList.add('holding'); sfxSnack();
+  monkey.classList.remove('pop','hop'); void monkey.offsetWidth; monkey.classList.add('hop');
+  layoutStage();
+  chaseTimer=setTimeout(()=>chase(id),6000);
+}
+
+function confetti(){
+  const r=stage.getBoundingClientRect();
+  for(let i=0;i<26;i++){
+    const d=document.createElement('div'); d.className='confetti';
+    d.style.left=(r.width/2)+'px'; d.style.top=(r.height-160)+'px';
+    d.style.background=['#ffc93c','#e8584a','#4fb0e0','#7bc26f','#c77dde'][i%5];
+    d.style.setProperty('--dx',(Math.random()*320-160)+'px'); d.style.setProperty('--dy',(-Math.random()*300-60)+'px');
+    stage.appendChild(d); setTimeout(()=>d.remove(),1300);
+  }
+}
+
+Object.entries(groups).forEach(([id,g])=>{
+  g.addEventListener('mousemove',e=>{
+    const r=wrap.getBoundingClientRect();
+    tip.textContent=C[id].name; tip.style.opacity=1;
+    tip.style.left=(e.clientX-r.left+14)+'px'; tip.style.top=(e.clientY-r.top-10)+'px';
+  });
+  g.addEventListener('mouseleave',()=>tip.style.opacity=0);
+  g.addEventListener('click',()=>{
+    if(mode==='explore'){
+      if(pickSp){ if(RANGES[pickSp].includes(id)) showCountry(id,pickSp); else { tip.textContent=`No ${SPECIES[pickSp].m}s here`; } return; }
+      showCountry(id);return;}
+    if(!target) return;
+    tries++;
+    if(id===target){score++; showCountry(id); confetti(); target=null; renderQuiz(`✅ Yes! That's ${C[id].name}.`, true);}
+    else{
+      groups[id].classList.add('bad'); setTimeout(()=>groups[id].classList.remove('bad'),600);
+      renderQuiz(`❌ That's ${C[id].name}. Try again!`);
+    }
+  });
+});
+
+const pgrid=document.getElementById('pgrid'), mapEl=document.getElementById('map');
+function setPick(sp){
+  pickSp=sp;
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.toggle('on',b.dataset.sp===sp));
+  Object.entries(groups).forEach(([id,g])=>g.classList.toggle('range',!!sp&&RANGES[sp].includes(id)));
+  mapEl.classList.toggle('picking',!!sp);
+  if(mode==='explore') qb.innerHTML=sp?`<span>Countries where the <b>${SPECIES[sp].m}</b> lives are glowing. Click one!</span> <button id="clrPick">Show all countries</button>`:'<span style="opacity:.85">Click any country to meet its monkey, or pick a monkey <span class="onleft">on the left</span><span class="below">below the map</span>.</span>';
+  const cb=document.getElementById('clrPick'); if(cb) cb.onclick=()=>setPick(null);
+}
+Object.entries(SPECIES).forEach(([sp,o])=>{
+  const b=document.createElement('button'); b.className='pbtn'; b.dataset.sp=sp; b.title=o.m;
+  b.innerHTML=monkeySVG(o.look).replace('viewBox="0 0 200 250"','viewBox="26 0 148 150"')+`<span>${o.m}</span>`;
+  b.onclick=()=>setPick(pickSp===sp?null:sp);
+  pgrid.appendChild(b);
+});
+const qb=document.getElementById('quizbar');
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function nextTarget(){
+  if(!remaining.length){
+    renderQuiz(`🏆 Done! You scored ${score} out of ${Object.keys(C).length} on ${tries} clicks.`,false,true); return;
+  }
+  target=remaining.pop();
+  Object.values(groups).forEach(g=>g.classList.remove('sel','bad'));
+  renderQuiz();
+}
+function renderQuiz(msg='',solved=false,done=false){
+  const left=remaining.length+(target?1:0);
+  qb.innerHTML=(done?'':(target?`Find: <span class="target">${C[target].name}</span>`:''))+
+    (msg?` <span>${msg}</span>`:'')+
+    ` <span class="score">Score ${score} · ${left} left</span>`+
+    (solved?` <button id="nextBtn">Next country →</button>`:'')+
+    (done?` <button id="againBtn">Play again</button>`:'');
+  const nb=document.getElementById('nextBtn'); if(nb) nb.onclick=nextTarget;
+  const ab=document.getElementById('againBtn'); if(ab) ab.onclick=startQuiz;
+}
+function startQuiz(){setPick(null);score=0;tries=0;remaining=shuffle(Object.keys(C));target=null;nextTarget();}
+
+const bE=document.getElementById('mExplore'), bQ=document.getElementById('mQuiz');
+bE.onclick=()=>{mode='explore';bE.classList.add('on');bQ.classList.remove('on');document.body.classList.remove('quiz');setPick(null);};
+bQ.onclick=()=>{mode='quiz';bQ.classList.add('on');bE.classList.remove('on');document.body.classList.add('quiz');startQuiz();};
+</script>
+</body>
+</html>

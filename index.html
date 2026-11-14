@@ -190,6 +190,9 @@
   .baby .bfood{position:absolute;font-size:41px;left:4%;top:32%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
   .monkey svg,.baby svg{overflow:visible;display:block}
   .scaredFace{display:none}
+  .callFace{display:none}
+  .mopen .callFace{display:inline}
+  .mopen .calm{display:none}
   .scared .scaredFace{display:inline}
   .scared .calm{display:none}
   .famrow{display:block}
@@ -602,7 +605,7 @@ function monkeySVG(L){
   if(L.roar) s+=`<ellipse cx="100" cy="118" rx="7" ry="6" fill="#4a1212"/>`;
   else if(L.sad) s+=`<path d="M90 121 Q100 112 110 121" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
   else s+=`<path d="M89 115 Q100 125 111 115" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-  s+=`</g><g class="scaredFace">`;
+  s+=`</g><g class="callFace"><ellipse cx="100" cy="119" rx="${L.roar?9:7}" ry="${L.roar?10:8}" fill="#3a1010"/><ellipse cx="100" cy="123" rx="${L.roar?5:4}" ry="2.5" fill="#c45a64"/></g><g class="scaredFace">`;
   const ew=L.bigeyes?12:10;
   s+=`<circle cx="86" cy="89" r="${ew}" fill="#fff" stroke="#1b1410" stroke-width="1"/><circle cx="114" cy="89" r="${ew}" fill="#fff" stroke="#1b1410" stroke-width="1"/>`;
   s+=`<circle cx="86" cy="89" r="2.6" fill="#1b1410"/><circle cx="114" cy="89" r="2.6" fill="#1b1410"/>`;
@@ -919,7 +922,7 @@ function stopMusic(){
 let currentId=null;
 function stopAll(){
   stopMusic();
-  clearTimeout(foodTimer); clearTimeout(chaseTimer); chaseToken++;
+  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++;
   stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch').forEach(e=>e.remove());
   monkey.getAnimations().forEach(a=>a.cancel());
   monkey.className='monkey'; monkey.innerHTML='';
@@ -1159,6 +1162,45 @@ function pickBabySnacks(c){
   c.alt=[A[0],B[0]]; c.altTxt=A[1].charAt(0).toUpperCase()+A[1].slice(1)+' & '+B[1];
 }
 
+
+/* ---------------- monkey calls (species-appropriate), with mouth movement ---------------- */
+function formantVoice(d,t,f1,f2,dur,vol,forms,noiseAmt=.3){
+  const g=AC.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(vol,t+Math.min(.08,dur*.25)); g.gain.setValueAtTime(vol*.9,t+dur*.6); g.gain.exponentialRampToValueAtTime(.0001,t+dur); g.connect(d);
+  const o=AC.createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(f1,t); o.frequency.linearRampToValueAtTime(f1*1.15,t+dur*.4); o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  forms.forEach(([fq,q,v])=>{const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=fq; bp.Q.value=q; const vg=AC.createGain(); vg.gain.value=v; o.connect(bp); bp.connect(vg); vg.connect(g);});
+  o.start(t); o.stop(t+dur+.05);
+  if(noiseAmt) noiseSweep(d,t,dur,vol*noiseAmt*2,'bandpass',forms[0][0],forms[0][0]*.8,1.2,.05);
+}
+function whistle(d,t,f1,f2,dur,vol){ sweepTone(d,'sine',f1,f2,t,dur,vol); sweepTone(d,'sine',f1*2,f2*2,t,dur,vol*.12); }
+const CALLS={
+  howl:(d,t)=>{ const syl=[]; [[0,.75,165],[.85,.8,175],[1.75,1.05,185]].forEach(([dt,len,f])=>{ formantVoice(d,t+dt,f,f*.8,len,.38,[[620,3,1],[1150,5,.6],[2400,6,.15]],.55); syl.push([dt,len]); }); return syl; },
+  whinny:(d,t)=>{ // horse-like whinny: descending, trilling call
+    const g=AC.createGain(); g.gain.value=.65; g.connect(d);
+    const l=AC.createOscillator(); l.frequency.value=13; const lg=AC.createGain(); lg.gain.value=.35; l.connect(lg); lg.connect(g.gain); l.start(t); l.stop(t+.95);
+    sweepTone(g,'sawtooth',1500,620,t,.9,.12,['bandpass',1300,1.2]); whistle(g,t,1500,650,.9,.07);
+    return [[0,.88]]; },
+  glt:(d,t)=>{ const syl=[]; [[0,2600,2300],[.22,2500,2150],[.44,2400,2000],[.66,2300,1850],[.88,2200,1700]].forEach(([dt,a,b])=>{ whistle(d,t+dt,a,b,.17,.12); syl.push([dt,.15]); }); return syl; },
+  tamarin:(d,t)=>{ const syl=[]; [0,.16,.32,.6,.76].forEach((dt,i)=>{ const f=2400+((i*37)%5)*120; whistle(d,t+dt,f,f*1.12,.1,.11); syl.push([dt,.09]); }); return syl; },
+  marmoset:(d,t)=>{ const syl=[[0,.5]]; for(let k=0;k<9;k++) whistle(d,t+k*.055,3100,3400,.045,.08); return syl; },
+  squirrel:(d,t)=>{ const syl=[]; [0,.12,.24,.5,.62,.74,.86].forEach((dt,i)=>{ if(i%3===2) formantVoice(d,t+dt,420,360,.09,.18,[[1200,3,1]],.4); else whistle(d,t+dt,2700,3100,.07,.1); syl.push([dt,.07]); }); return syl; },
+  capuchin:(d,t)=>{ const syl=[]; [0,.3].forEach(dt=>{ formantVoice(d,t+dt,260,220,.18,.3,[[800,3,1],[1500,5,.5]],.6); syl.push([dt,.17]); });
+    for(let k=0;k<6;k++) whistle(d,t+.7+k*.05,2200,2500,.04,.08); syl.push([.7,.3]); return syl; },
+  saki:(d,t)=>{ const syl=[]; [0,.5].forEach(dt=>{ const o=sweepTone(d,'sine',520,430,t+dt,.38,.22,['lowpass',1600]); const l=AC.createOscillator(); l.frequency.value=9; const lg=AC.createGain(); lg.gain.value=18; l.connect(lg); lg.connect(o.frequency); l.start(t+dt); l.stop(t+dt+.4); syl.push([dt,.36]); }); return syl; },
+  nightmonkey:(d,t)=>{ const syl=[]; [0,.42,.84].forEach(dt=>{ sweepTone(d,'sine',300,250,t+dt,.32,.34,['lowpass',900]); sweepTone(d,'triangle',600,500,t+dt,.32,.05); syl.push([dt,.3]); }); return syl; },
+  visitor:(d,t)=>{ const syl=[]; [[0,.22,320,[[350,4,1],[800,6,.6]]],[.28,.22,320,[[350,4,1],[800,6,.6]]],[.6,.26,380,[[800,4,1],[1250,5,.6]]],[.92,.3,380,[[800,4,1],[1250,5,.6]]]].forEach(([dt,len,f,fm])=>{ formantVoice(d,t+dt,f,f*.9,len,.24,fm,.3); syl.push([dt,len*.9]); }); return syl; }
+};
+const CALLOF={'Alouatta seniculus':'howl','Alouatta pigra':'howl','Alouatta palliata':'howl','Alouatta caraya':'howl','Ateles paniscus':'whinny','Ateles geoffroyi':'whinny',
+ 'Leontopithecus rosalia':'glt','Saguinus imperator':'tamarin','Saguinus oedipus':'tamarin','Saguinus midas':'tamarin','Saguinus geoffroyi':'tamarin','Cebuella pygmaea':'marmoset',
+ 'Saimiri boliviensis':'squirrel','Saimiri oerstedii':'squirrel','Cebus imitator':'capuchin','Pithecia pithecia':'saki','Aotus azarae':'nightmonkey'};
+const CALLGAIN={howl:1.1,whinny:3.2,glt:1.55,tamarin:2.0,marmoset:2.1,squirrel:2.1,capuchin:1.7,saki:1.0,nightmonkey:.65,visitor:1.05};
+let callTimer=null;
+function monkeyCall(c){
+  const kind=c.sci?CALLOF[c.sci]:'visitor'; if(!kind) return;
+  let syl=[[0,.6]];
+  if(sfxReady()){ syl=CALLS[kind](sfxOut(1.5*(CALLGAIN[kind]||1),0),AC.currentTime+.05)||syl; }
+  syl.forEach(([dt,len])=>{ setTimeout(()=>monkey.classList.add('mopen'),dt*1000+50); setTimeout(()=>monkey.classList.remove('mopen'),(dt+len)*1000+50); });
+}
+
 /* ---------------- interaction ---------------- */
 const tip=document.getElementById('tip'), wrap=document.getElementById('mapwrap');
 const bubble=document.getElementById('bubble'), monkey=document.getElementById('monkey'), hint=document.getElementById('hint'), stage=document.getElementById('stage');
@@ -1192,8 +1234,9 @@ function showCountry(id,sp){
     <div class="snack" id="snack">🍽 Snack time coming…<span></span></div>
     <div class="music"><span class="notes"><i></i><i></i><i></i></span> ♪ ${MUSIC[id].label}</div></div>`;
   playMusic(id);
-  clearTimeout(foodTimer); clearTimeout(chaseTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch').forEach(f=>f.remove()); monkey.getAnimations().forEach(a=>a.cancel());
+  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch').forEach(f=>f.remove()); monkey.getAnimations().forEach(a=>a.cancel());
   foodTimer=setTimeout(()=>serveFood(id),6000);
+  clearTimeout(callTimer); callTimer=setTimeout(()=>{ if(currentId===id) monkeyCall(CUR); },2500);
   monkey.className='monkey'+(c.look.tiny?' tiny':'');
   monkey.innerHTML=monkeySVG(c.look);
   void monkey.offsetWidth; monkey.classList.add('pop');

@@ -205,6 +205,9 @@
   .sx.m{color:#2a6fdb}
   .sx.f{color:#d0457a}
   .famtxt{font-size:13px;line-height:1.35;background:#e8f4e0;border-radius:10px;padding:6px 9px;margin-top:4px}
+  .newbtn{position:absolute;left:12px;bottom:12px;z-index:7;display:none;font:inherit;font-weight:600;font-size:14px;border:2px solid #2b2b2b;border-radius:999px;padding:7px 14px;background:#ffc93c;color:#3a2a00;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+  .newbtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+  .stage.active .newbtn{display:block}
   .holdArm{display:none}
   .holding .holdArm{display:inline}
   .holding .restArm{display:none}
@@ -249,6 +252,7 @@
     <div class="hint" id="hint"><b>👆</b>Pick a country on the map and a local monkey will pop up with its primate stats.</div>
     <div class="bubble" id="bubble"></div>
     <div class="monkey" id="monkey"></div>
+    <button class="newbtn" id="newBtn" title="Stop and pick another monkey">🐒 Pick a new monkey</button>
     <svg class="foliage" viewBox="0 0 420 150" preserveAspectRatio="none">
       <g fill="#3f8a3c">
         <ellipse cx="30" cy="110" rx="70" ry="55"/><ellipse cx="140" cy="125" rx="80" ry="50"/>
@@ -575,6 +579,7 @@ function monkeySVG(L){
   // right arm (waving)
   s+=`<g class="wave"><path d="M134 165 Q 160 140 162 108" stroke="${fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="162" cy="104" r="10" fill="${hand}"/></g>`;
   // head group
+  if(L.headOnly) s=`<svg viewBox="22 10 156 156" xmlns="${NS}">`;  // portrait: drop tail, legs, body and arms
   s+=`<g class="bob">`;
   if(L.mane){ // lion mane starburst
     let pts=[]; for(let i=0;i<28;i++){const a=i/28*Math.PI*2, r=i%2?54:68; pts.push((100+Math.cos(a)*r).toFixed(1)+','+(92+Math.sin(a)*r).toFixed(1));}
@@ -931,8 +936,10 @@ function stopAll(){
   Object.values(groups).forEach(g=>g.classList.remove('sel','bad'));
   stage.style.minHeight='';
   currentId=null;
+  stage.classList.remove('active');
 }
 document.getElementById('stopBtn').onclick=stopAll;
+document.getElementById('newBtn').onclick=()=>{ stopAll(); window.scrollTo({top:0,behavior:'smooth'}); };
 document.addEventListener('keydown',e=>{if(e.key==='Escape') stopAll();});
 document.getElementById('mute').onclick=e=>{
   muted=!muted; e.currentTarget.textContent=muted?'🔇 Music':'🔊 Music';
@@ -1217,13 +1224,14 @@ function showCountry(id,sp){
   }
   if(C[id].sp>0){ pickFavorite(c); pickBabySnacks(c); }
   CUR=c; hint.style.display='none'; currentId=id;
+  stage.classList.add('active');
   stage.style.minHeight='';
   if(window.innerWidth<=820) setTimeout(()=>{ stage.scrollIntoView({behavior:'smooth',block:'start'}); setTimeout(keepGrassInView,450); },150);
   Object.values(groups).forEach(g=>g.classList.remove('sel','bad'));
   groups[id].classList.add('sel');
   const [stName,stCol]=STATUS[c.st];
   const pct=Math.max(c.sp/MAXSP*100, c.sp?3:0);
-  bubble.innerHTML=`<div class="bhead"><div class="bface">${monkeySVG(c.look).replace('viewBox="0 0 200 250"','viewBox="26 0 148 150"')}</div><div class="btitle"><h2>${c.m}</h2>
+  bubble.innerHTML=`<div class="bhead"><div class="bface">${monkeySVG(Object.assign({},c.look,{headOnly:true}))}</div><div class="btitle"><h2>${c.m}</h2>
     <div class="sub">📍 <b>${c.name}</b>${c.note?` · ${c.note}`:''}</div></div><div class="bflag" title="Flag of ${c.name}">${flagSVG(id)}</div></div><div class="bscroll">
     <div class="stat"><span class="k">Primate species</span><span class="v">${c.spTxt}</span></div>
     <div class="bar"><div style="--w:${pct}%"></div></div>

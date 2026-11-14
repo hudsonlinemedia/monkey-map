@@ -1250,7 +1250,25 @@ function formantVoice(d,t,f1,f2,dur,vol,forms,noiseAmt=.3){
 }
 function whistle(d,t,f1,f2,dur,vol){ sweepTone(d,'sine',f1,f2,t,dur,vol); sweepTone(d,'sine',f1*2,f2*2,t,dur,vol*.12); }
 const CALLS={
-  howl:(d,t)=>{ const syl=[]; [[0,.75,165],[.85,.8,175],[1.75,1.05,185]].forEach(([dt,len,f])=>{ formantVoice(d,t+dt,f,f*.8,len,.38,[[620,3,1],[1150,5,.6],[2400,6,.15]],.55); syl.push([dt,len]); }); return syl; },
+  howl:(d,t)=>{ // howler: coughing grunts building into deep, gritty, pulsing roars
+    const syl=[];
+    const shaper=AC.createWaveShaper(); const cv=new Float32Array(1024); for(let i=0;i<1024;i++){const x=i/512-1; cv[i]=Math.tanh(x*3.5);} shaper.curve=cv;
+    const out=AC.createGain(); out.gain.value=.55; shaper.connect(out); out.connect(d);
+    const grit=(t0,len,f0,f1,peak,pulse)=>{ // one roar: distorted voice + throat formants + breath, with a pumping pulse
+      const g=AC.createGain(); g.gain.setValueAtTime(.0001,t0); g.gain.linearRampToValueAtTime(peak,t0+.08); g.gain.setValueAtTime(peak*.9,t0+len*.7); g.gain.exponentialRampToValueAtTime(.0001,t0+len);
+      const am=AC.createGain(); am.gain.value=.65; am.connect(g); g.connect(shaper);
+      if(pulse){ const l=AC.createOscillator(); l.frequency.value=pulse; const lg=AC.createGain(); lg.gain.value=.35; l.connect(lg); lg.connect(am.gain); l.start(t0); l.stop(t0+len+.05); }
+      [[1,1],[2.01,.5],[.5,.6]].forEach(([k,v])=>{ const o=AC.createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(f0*k,t0); o.frequency.linearRampToValueAtTime(f1*k*1.08,t0+len*.45); o.frequency.exponentialRampToValueAtTime(f1*k*.85,t0+len);
+        const og=AC.createGain(); og.gain.value=v; o.connect(og);
+        [[420,2.5,1],[850,4,.7],[1700,6,.25]].forEach(([fq,q,vv])=>{ const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=fq; bp.Q.value=q; const bg=AC.createGain(); bg.gain.value=vv; og.connect(bp); bp.connect(bg); bg.connect(am); });
+        o.start(t0); o.stop(t0+len+.05); });
+      noiseSweep(d,t0,len,peak*.5,'bandpass',700,500,1,.06);   // breathy rush of air
+    };
+    // two short coughing grunts
+    [0,.32].forEach(dt=>{ grit(t+dt,.16,120,105,.5,0); syl.push([dt,.15]); });
+    // three roars, each longer, with the pumping rhythm of a real howl
+    [[.75,.9,135,175,6],[1.8,1.1,140,185,5.5],[3.05,1.4,145,190,5]].forEach(([dt,len,f0,f1,pl])=>{ grit(t+dt,len,f0,f1,.7,pl); syl.push([dt,len*.95]); });
+    return syl; },
   whinny:(d,t)=>{ // horse-like whinny: descending, trilling call
     const g=AC.createGain(); g.gain.value=.65; g.connect(d);
     const l=AC.createOscillator(); l.frequency.value=13; const lg=AC.createGain(); lg.gain.value=.35; l.connect(lg); lg.connect(g.gain); l.start(t); l.stop(t+.95);
@@ -1269,7 +1287,7 @@ const CALLS={
 const CALLOF={'Alouatta seniculus':'howl','Alouatta pigra':'howl','Alouatta palliata':'howl','Alouatta caraya':'howl','Ateles paniscus':'whinny','Ateles geoffroyi':'whinny',
  'Leontopithecus rosalia':'glt','Saguinus imperator':'tamarin','Saguinus oedipus':'tamarin','Saguinus midas':'tamarin','Saguinus geoffroyi':'tamarin','Cebuella pygmaea':'marmoset',
  'Saimiri boliviensis':'squirrel','Saimiri oerstedii':'squirrel','Cebus imitator':'capuchin','Pithecia pithecia':'saki','Aotus azarae':'nightmonkey'};
-const CALLGAIN={howl:1.1,whinny:3.2,glt:1.55,tamarin:2.0,marmoset:2.1,squirrel:2.1,capuchin:1.7,saki:1.0,nightmonkey:.65,visitor:1.05};
+const CALLGAIN={howl:.33,whinny:3.2,glt:1.55,tamarin:2.0,marmoset:2.1,squirrel:2.1,capuchin:1.7,saki:1.0,nightmonkey:.65,visitor:1.05};
 let callTimer=null;
 function monkeyCall(c){
   const kind=c.sci?CALLOF[c.sci]:'visitor'; if(!kind) return;

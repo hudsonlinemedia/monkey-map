@@ -160,6 +160,12 @@
   .food{position:absolute;z-index:3;font-size:54px;line-height:1;left:-4%;top:30%;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25));animation:drop .9s cubic-bezier(.3,1.5,.5,1) both}
   .food:after{content:"✨";position:absolute;font-size:22px;right:-18px;top:-10px;animation:spark 1s ease-in-out infinite alternate}
   @keyframes drop{0%{transform:translateY(-420px) rotate(-90deg);opacity:0}60%{opacity:1}100%{transform:translateY(0) rotate(0)}}
+  .leafstack{position:absolute;left:0;bottom:48%;width:1em;height:1em;pointer-events:none}
+  .leafstack .lf{position:absolute;font-size:.8em;line-height:1;animation:leafdrop .6s cubic-bezier(.3,1.4,.5,1) both}
+  @keyframes leafdrop{0%{transform:translateY(-200px);opacity:0}45%{opacity:1}100%{transform:none}}
+  .airleaf{position:absolute;z-index:4;pointer-events:none;line-height:1}
+  .airleaf span{display:inline-block;animation:flutter .8s ease-in-out infinite alternate}
+  @keyframes flutter{from{transform:rotate(-28deg) translateX(-7px)}to{transform:rotate(28deg) translateX(7px)}}
   .snacktrail{position:absolute;z-index:2;left:-4%;top:30%;width:1em;height:1em;font-size:54px;pointer-events:none}
   .snacktrail .streak{position:absolute;left:50%;bottom:45%;width:.42em;margin-left:-.21em;border-radius:1em;background:linear-gradient(to top,rgba(255,250,215,1),rgba(255,214,90,.8) 30%,rgba(255,238,160,0));box-shadow:0 0 14px 4px rgba(255,220,110,.45);filter:blur(1px);transform-origin:bottom;animation:streak 1.15s cubic-bezier(.3,1.5,.5,1) both}
   @keyframes streak{0%{transform:translateY(-420px);height:20px;opacity:0}10%{opacity:1}45%{height:300px;opacity:1}75%{height:120px;opacity:.7}100%{transform:translateY(0);height:10px;opacity:0}}
@@ -194,6 +200,23 @@
   .predator .slither{animation:slither .35s ease-in-out infinite alternate}
   @keyframes slither{from{transform:translateY(-4px)}to{transform:translateY(4px)}}
   .predator .pmouth{opacity:0;transition:opacity .08s}
+  .predator .pshock{opacity:0}
+  .predator.shock .pshock{opacity:1}
+  .predator.shock .peye{opacity:0}
+  .predator.shock .pmouth{opacity:1}
+  .predator.shock .pclosed{opacity:0}
+  .flybug{position:absolute;z-index:7;pointer-events:none;line-height:1;left:0;top:0}
+  .flybug span{display:inline-block}
+  .flybug.flail span{animation:flail .14s ease-in-out infinite alternate}
+  .saphat{position:absolute;z-index:2;pointer-events:none;line-height:1}
+  .saphat span{display:inline-block;transform:rotate(180deg)}
+  .saphat i{position:absolute;width:6px;height:9px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;background:#e8a317;top:85%;animation:sapdrip 1s ease-in infinite}
+  .saphat i:nth-of-type(1){left:22%}
+  .saphat i:nth-of-type(2){left:68%;animation-delay:.5s}
+  @keyframes sapdrip{0%{transform:translateY(0) scale(.4);opacity:0}20%{opacity:1}100%{transform:translateY(26px) scale(1);opacity:0}}
+  .flybug.spin span{animation:fspin .3s linear infinite}
+  @keyframes fspin{to{transform:rotate(360deg)}}
+  @keyframes flail{from{transform:rotate(-30deg) scale(1.05)}to{transform:rotate(30deg) scale(.95)}}
   .predator.speak .pmouth{opacity:1}
   .predator.speak .pclosed{opacity:0}
   .alert,.phew{position:absolute;z-index:5;left:50%;font-weight:700;pointer-events:none;animation:pop .4s cubic-bezier(.3,1.6,.5,1) both}
@@ -662,7 +685,7 @@ function monkeySVG(L){
    strum: d = down, u = up | bass: r = root, f = fifth, o = octave | drums: x/X | melody: x = new note, - = hold */
 const SC={maj:[0,2,4,5,7,9,11],min:[0,2,3,5,7,8,10],mix:[0,2,4,5,7,9,10],dor:[0,2,3,5,7,9,10]};
 const PENT={min:[0,3,5,7,10],maj:[0,2,4,7,9]};
-const LOUD={"peru": 0.53, "bolivia": 0.64, "ecuador": 0.56, "colombia": 0.88, "venezuela": 0.78, "brazil": 0.71, "guyana": 0.82, "suriname": 0.81, "frenchguiana": 0.8, "paraguay": 0.84, "argentina": 0.6, "chile": 0.98, "uruguay": 1.39, "belize": 1.24, "honduras": 1.4, "guatemala": 1.23, "elsalvador": 1.42, "nicaragua": 1.13, "costarica": 0.69, "panama": 1.26};
+const LOUD={"peru": 0.53, "bolivia": 0.64, "ecuador": 0.517, "colombia": 0.954, "venezuela": 0.78, "brazil": 0.778, "guyana": 0.82, "suriname": 0.974, "frenchguiana": 0.908, "paraguay": 0.84, "argentina": 0.58, "chile": 0.98, "uruguay": 1.39, "belize": 1.24, "honduras": 1.4, "guatemala": 1.23, "elsalvador": 1.42, "nicaragua": 1.13, "costarica": 0.608, "panama": 1.26};
 const MUSIC={
  peru:{label:'Huayno: quena flute, charango & bombo',bpm:100,steps:8,root:57,mode:'min',pent:'min',prog:[0,0,6,2,0,0,4,0],
    lead:'quena',reg:69,mel:['x.xxx.x.','x.xxx---','x.xxx.xx','x-------'],
@@ -670,8 +693,8 @@ const MUSIC={
  bolivia:{label:'Sikuri: paired siku panpipes & bombo',bpm:96,steps:8,root:62,mode:'min',pent:'min',prog:[0,0,6,6,2,2,4,0],
    lead:'siku',reg:69,hocket:true,par:-5,mel:['x.x.x.x.','x.x.x---','xxx.x.x.','x-------'],
    tr:[['bombo','X...X...'],['cymbal','....x...'],['bass','r...r...']]},
- ecuador:{label:'Sanjuanito: rondador panpipe, guitar & bombo',bpm:116,steps:8,root:64,mode:'min',pent:'min',prog:[0,0,6,2,0,6,4,0],
-   lead:'pan',reg:71,mel:['x.xxx.x.','xx.xx.x.','x.xxx.xx','x---x---'],
+ ecuador:{label:'Sanjuanito: rondador panpipe (two notes at once), guitar & bombo',bpm:116,steps:8,root:64,mode:'min',pent:'min',prog:[0,0,6,2,0,6,4,0],
+   lead:'rondador',reg:71,par:-5,mel:['x.xxx.x.','xx.xx.x.','x.xxx.xx','x---x---'],
    tr:[['bombo','X..xX.x.'],['strum:guitar','.d.d.d.d'],['bass','r..fr...'],['shaker','s.s.s.s.']]},
  colombia:{label:'Cumbia: gaita flutes, tambor alegre, llamador & guacharaca',bpm:104,steps:8,root:55,mode:'mix',prog:[0,0,4,4,0,0,4,0],
    lead:'gaita',reg:67,mel:['x.x.xx.x','x.x.x---','xx.x.xx.','x---.---'],answer:'gaitamacho',
@@ -679,23 +702,23 @@ const MUSIC={
  venezuela:{label:'Joropo: harp, cuatro & maracas',bpm:176,steps:12,root:62,mode:'maj',prog:[0,0,4,4,4,4,0,0],
    lead:'harp',reg:74,arp:true,mel:['x.x.x.x.x.x.','x.x.x.x.x.x.','x.x.x.x.x.x.','x.x.x.x.x---'],
    tr:[['maracas','X.x.x.X.x.x.'],['strum:cuatro','d.d.u.d.u.d.'],['bass','r.....r.f...']]},
- brazil:{label:'Carimbó (Amazon): curimbó drums, maracas, banjo & flute',bpm:112,steps:8,root:62,mode:'mix',prog:[0,0,3,4,0,0,4,0],
-   lead:'quena',reg:74,mel:['x.xx.x.x','x.x.x---','xx.x.xx.','x---.---'],
+ brazil:{label:'Carimbó (Amazon): curimbó drums, maracas, banjo & handmade wooden flute',bpm:112,steps:8,root:62,mode:'mix',prog:[0,0,3,4,0,0,4,0],
+   lead:'flauta',reg:74,mel:['x.xx.x.x','x.x.x---','xx.x.xx.','x---.---'],
    tr:[['curimbolow','X..xX.x.'],['curimbohi','..x...xx'],['maracas','s.sss.ss'],['strum:banjo','.d.d.d.d'],['bass','r...f...']]},
- guyana:{label:'Amerindian bamboo flute, rattle & drum',bpm:96,steps:8,root:60,mode:'maj',pent:'maj',prog:[0,0,4,0,0,0,4,0],
-   lead:'bamboo',reg:72,mel:['x.x.xx.-','x.x.x---','xx.x.x.-','x-------'],rain:true,
+ guyana:{label:'Waiwai bamboo flute, rattle & drum',bpm:96,steps:8,root:60,mode:'maj',pent:'maj',prog:[0,0,4,0,0,0,4,0],
+   lead:'bamboo',reg:67,mel:['x.x.xx.-','x.x.x---','xx.x.x.-','x-------'],rain:true,
    tr:[['handdrum','X..x..X.'],['rattle','s.s.s.s.']]},
- suriname:{label:'Amerindian flute, rattle & drum (3/4)',bpm:108,steps:12,root:65,mode:'min',pent:'min',prog:[0,0,6,0,0,0,4,0],
-   lead:'bamboo',reg:72,mel:['x...x.x.x...','x...x-------','x.x.x...x.x.','x-----------'],rain:true,
+ suriname:{label:'Wayana bone flute, rattle & drum (3/4)',bpm:108,steps:12,root:65,mode:'min',pent:'min',prog:[0,0,6,0,0,0,4,0],
+   lead:'bone',reg:81,mel:['x...x.x.x...','x...x-------','x.x.x...x.x.','x-----------'],rain:true,
    tr:[['handdrum','X.....x.x...'],['rattle','s...s...s...']]},
- frenchguiana:{label:'Amerindian flute, sanpula drum & rattle',bpm:100,steps:8,root:63,mode:'min',pent:'min',prog:[0,0,6,6,0,0,4,0],
-   lead:'bamboo',reg:72,mel:['x.xx.x..','x.x.x---','x.xx.xx.','x-------'],rain:true,
+ frenchguiana:{label:'Waiãpi nose flute, sanpula drum & rattle',bpm:100,steps:8,root:63,mode:'min',pent:'min',prog:[0,0,6,6,0,0,4,0],
+   lead:'nose',reg:69,mel:['x.xx.x..','x.x.x---','x.xx.xx.','x-------'],rain:true,
    tr:[['handdrum','X.x.X...'],['rattle','s.ss.s.s']]},
  paraguay:{label:'Polca paraguaya: Paraguayan harp, guitar & mbaraka rattle',bpm:150,steps:12,root:55,mode:'maj',prog:[0,0,4,4,4,4,0,0],
    lead:'harp',reg:74,arp:true,mel:['x.x.x.x.x.x.','x.x.x.x.x.x.','x.x.x.x.x.x.','x.x.x.x.x---'],
    tr:[['bass','r.....f.....'],['strum:guitar','..d...d...d.'],['rattle','s.s.s.s.s.s.']]},
- argentina:{label:'Chacarera: quena, guitar & bombo legüero',bpm:120,steps:12,root:64,mode:'min',prog:[0,0,4,4,4,4,0,0],
-   lead:'quena',reg:71,mel:['x.x.x.x.x.x.','x---x.x.x---','x.x.xxx.x.x.','x-----------'],
+ argentina:{label:'Chacarera: quenacho (deep quena), guitar & bombo legüero',bpm:120,steps:12,root:64,mode:'min',prog:[0,0,4,4,4,4,0,0],
+   lead:'quenacho',reg:66,mel:['x.x.x.x.x.x.','x---x.x.x---','x.x.xxx.x.x.','x-----------'],
    tr:[['legueroskin','X.....X...X.'],['leguerorim','..x.x.....x.'],['strum:guitar','d.d.u.d.d.u.'],['bass','r.....f.....']]},
  chile:{label:'Mapuche: kultrun drum, kaskawilla bells, pifilka & trutruka',bpm:118,steps:8,root:46,mode:'maj',prog:[0,0,0,0,0,0,0,0],
    lead:'trutruka',reg:46,mel:['x-------','........','x---x---','........'],
@@ -718,8 +741,8 @@ const MUSIC={
  nicaragua:{label:'Son nica: marimba de arco, guitar & guitarrilla',bpm:144,steps:12,root:60,mode:'maj',prog:[0,0,4,4,4,4,0,0],
    lead:'marimba',reg:76,mel:['x.x.x.x.x.x.','x---x.x.x---','x.xxx.x.x.x.','x-----------'],
    tr:[['bass','r.....f.....'],['strum:guitar','..d.d...d.d.'],['strum:charango','.u...u.u...u']]},
- costarica:{label:'Bribri: sabak drum, quijongo bow & rattle',bpm:92,steps:8,root:57,mode:'min',pent:'min',prog:[0,0,0,6,0,0,6,0],
-   lead:'bamboo',reg:69,mel:['x...x.x.','x---x---','x.x.x.x.','x-------'],
+ costarica:{label:'Bribri sabak drum & rattle with a Nicoya clay ocarina',bpm:92,steps:8,root:57,mode:'min',pent:'min',prog:[0,0,0,6,0,0,6,0],
+   lead:'ocarina',reg:72,mel:['x...x.x.','x---x---','x.x.x.x.','x-------'],
    tr:[['sabak','X...x...'],['quijongo','b...c...'],['rattle','..s...s.']]},
  panama:{label:'Guna gammu burwi: paired panpipes & nasis maracas',bpm:112,steps:8,root:62,mode:'min',pent:'min',prog:[0,0,6,0,0,0,4,0],
    lead:'pan',reg:69,hocket:true,mel:['xxxxxxxx','xxxx.x.-','xxxxxxxx','xx.x.---'],
@@ -770,14 +793,22 @@ function envG(t,a,peak,hold,rel){const g=AC.createGain();g.gain.setValueAtTime(.
 function osc(type,f,t,dur,dest){const o=AC.createOscillator();o.type=type;o.frequency.value=f;o.connect(dest);o.start(t);o.stop(t+dur);return o;}
 
 /* ---- wind voices ---- */
-function wind(dst,f,t,d,{breath=.2,bright=.2,vib=.006,vol=.3,chiff=.3,bend=0,pan=0}={}){
-  const o=out(dst,pan,.7), g=envG(t,.05,vol,Math.max(.02,d-.1),.12); g.connect(o);
-  const a=osc('sine',f,t,d+.3,g);
-  const h=AC.createGain(); h.gain.value=bright*.35; h.connect(g); const b=osc('triangle',f*2,t,d+.3,h);
-  if(bend){a.frequency.setValueAtTime(f*(1-bend),t);a.frequency.linearRampToValueAtTime(f,t+.06);}
-  const l=AC.createOscillator(); l.frequency.value=5.3; const lg=AC.createGain(); lg.gain.setValueAtTime(0,t); lg.gain.linearRampToValueAtTime(f*vib,t+Math.min(.35,d*.6));
-  l.connect(lg); lg.connect(a.frequency); lg.connect(b.frequency); l.start(t); l.stop(t+d+.3);
-  const n=nsrc(t,d+.2), bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=f*2.2; bp.Q.value=1.4;
+function wind(dst,f,t,d,{breath=.2,bright=.2,vib=.006,vol=.3,chiff=.3,bend=0,pan=0,vr=5.3,bt=.06,grace=0,h2=0,buzz=0,nf=2.2,nq=1.4,lp=0,droop=0}={}){
+  const o=out(dst,pan,.7), g=envG(t,.05,vol,Math.max(.02,d-.1),.12);
+  let tone=g; if(lp){ const f2=AC.createBiquadFilter(); f2.type='lowpass'; f2.frequency.value=lp; f2.connect(g); tone=f2; } g.connect(o);
+  const a=osc('sine',f,t,d+.3,tone);
+  const h=AC.createGain(); h.gain.value=bright*.35; h.connect(tone); const b=osc('triangle',f*2,t,d+.3,h);
+  const pitch=[a,b];
+  if(h2){ const hg=AC.createGain(); hg.gain.value=h2*.5; hg.connect(tone); pitch.push(osc('sine',f*2,t,d+.3,hg)); }
+  if(buzz){ const bg=AC.createGain(); bg.gain.value=buzz*.22; const bp2=AC.createBiquadFilter(); bp2.type='bandpass'; bp2.frequency.value=f*3; bp2.Q.value=2.5; bp2.connect(bg); bg.connect(tone); const s=osc('sawtooth',f,t,d+.3,AC.createGain()); s.disconnect(); s.connect(bp2); pitch.push(s); }
+  const k=[1,2,2,1];
+  pitch.forEach((p,i)=>{ const m=k[i]||1;
+    if(grace){ p.frequency.setValueAtTime(f*m*grace,t); p.frequency.setValueAtTime(f*m*grace,t+.035); p.frequency.exponentialRampToValueAtTime(f*m,t+.06); }
+    else if(bend){ p.frequency.setValueAtTime(f*m*(1-bend),t); p.frequency.linearRampToValueAtTime(f*m,t+bt); }
+    if(droop){ p.frequency.setValueAtTime(f*m,t+Math.max(.05,d-.08)); p.frequency.linearRampToValueAtTime(f*m*(1-droop),t+d+.12); } });
+  const l=AC.createOscillator(); l.frequency.value=vr; const lg=AC.createGain(); lg.gain.setValueAtTime(0,t); lg.gain.linearRampToValueAtTime(f*vib,t+Math.min(.35,d*.6));
+  l.connect(lg); pitch.forEach((p,i)=>{ if(i===0) lg.connect(p.frequency); else { const x=AC.createGain(); x.gain.value=k[i]||1; lg.connect(x); x.connect(p.frequency); } }); l.start(t); l.stop(t+d+.3);
+  const n=nsrc(t,d+.2), bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=f*nf; bp.Q.value=nq;
   const ng=envG(t,.02,breath*vol,Math.max(.02,d-.1),.1); n.connect(bp); bp.connect(ng); ng.connect(o);
   if(chiff){const c=nsrc(t,.06), hp=AC.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=2500; const cg=envG(t,.004,chiff*vol,.01,.04); c.connect(hp); hp.connect(cg); cg.connect(o);}
 }
@@ -785,8 +816,14 @@ const LEAD={
   quena:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.22,bright:.25,vib:.009,vol:.3,chiff:.35,bend:.02,pan:p}),
   siku:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.5,bright:.08,vib:.003,vol:.28,chiff:.5,pan:p}),
   pan:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.42,bright:.1,vib:.004,vol:.28,chiff:.45,pan:p}),
-  bamboo:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.32,bright:.12,vib:.006,vol:.26,chiff:.3,pan:p}),
-  gaita:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.38,bright:.45,vib:.007,vol:.26,chiff:.4,bend:.03,pan:p}),
+  gaita:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.3,bright:.3,vib:.007,vol:.24,chiff:.35,bend:.03,buzz:.55,pan:p}),   // Colombian gaita: duct flute with a beeswax & feather head — buzzy, nasal
+  quenacho:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.34,bright:.08,vib:.007,vr:4.6,vol:.32,chiff:.22,bend:.03,bt:.09,nf:1.8,lp:f*5,pan:p}),   // bigger, deeper quena: dark & warm
+  rondador:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.3,bright:.22,vib:.002,vol:.22,chiff:.6,nf:3,h2:.15,pan:p}),   // Ecuadorian panpipe, played two pipes at a time
+  flauta:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.26,bright:.08,h2:.4,vib:.008,vr:5.9,vol:.26,chiff:.12,grace:Math.random()<.35?1.122:0,pan:p}),   // carimbó's handmade wooden transverse flute, with grace-note flicks
+  bamboo:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.46,bright:.06,vib:.005,vr:4.5,vol:.27,chiff:.2,bend:.06,bt:.14,nf:1.6,pan:p}),   // Waiwai bamboo flute: low, breathy, sliding
+  bone:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.16,bright:.32,vib:.004,vr:6.2,vol:.19,chiff:.5,nf:3,pan:p}),   // Wayana deer-bone flute: small, high, thin
+  nose:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.75,bright:.02,vib:.006,vr:4,vol:.22,chiff:0,nf:1.3,nq:.8,lp:f*3,pan:p}),   // Waiãpi nose flute: soft, hollow, very airy
+  ocarina:(d,f,t,l,p)=>wind(d,f,t,l,{breath:.07,bright:.015,vib:.004,vr:5,vol:.3,chiff:.08,droop:.035,pan:p}),   // Greater Nicoya clay ocarina: pure & round
   chirimia:(d,f,t,l,p)=>{const o=out(d,p,.6), g=envG(t,.04,.16,Math.max(.02,l-.08),.1); g.connect(o);
     const s=osc('sawtooth',f,t,l+.2,AC.createGain()); const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=1300; bp.Q.value=1.6;
     const lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=3200; s.disconnect(); s.connect(bp); bp.connect(lp); lp.connect(g);
@@ -964,7 +1001,7 @@ let currentId=null;
 function stopAll(){
   stopMusic();
   clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++;
-  stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch,.react').forEach(e=>e.remove());
+  stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch,.react,.airleaf,.flybug').forEach(e=>e.remove()); clearTimeout(leafTimer);
   monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running');
   monkey.className='monkey'; monkey.innerHTML='';
   bubble.classList.remove('show','scared'); bubble.innerHTML='';
@@ -1431,7 +1468,7 @@ function showCountry(id,sp){
     <div class="snack" id="snack">🍽 Snack time coming…<span></span></div>
     <div class="music"><span class="notes"><i></i><i></i><i></i></span> ♪ ${MUSIC[id].label}</div></div>`;
   playMusic(id);
-  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch').forEach(f=>f.remove()); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running');
+  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch,.airleaf,.flybug').forEach(f=>f.remove()); clearTimeout(leafTimer); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running');
   foodTimer=setTimeout(()=>serveFood(id),6000);
   clearTimeout(callTimer); callTimer=setTimeout(()=>{ if(currentId===id) monkeyCall(CUR); },2500);
   monkey.className='monkey'+(c.look.tiny?' tiny':'');
@@ -1588,7 +1625,9 @@ function catSVG(L){
     <ellipse cx="${bx}" cy="${by}" rx="${brx}" ry="${bry}" fill="${fur}"/><ellipse cx="${bx+6}" cy="${by+bry*.42}" rx="${brx-22}" ry="${bry*.36}" fill="${belly}"/>
     <path d="M${bx+brx*.62} ${by-bry*.15} L${hx-hr*.35} ${hy+hr*.25}" stroke="${fur}" stroke-width="${hr*1.35}" stroke-linecap="round"/>
     <g clip-path="url(#${uid})">${pat}</g>
-    ${ears}${headShape}${face}${eyes}</svg>`;
+    ${ears}${headShape}${face}<g class="peye">${eyes}</g>
+    <g class="pshock"><circle cx="${ex}" cy="${eyY-1}" r="${eye*1.9}" fill="#fff" stroke="#111" stroke-width="1.5"/><circle cx="${ex+1}" cy="${eyY-1}" r="${eye*.55}" fill="#111"/>
+      <path d="M${ex-eye*2} ${eyY-eye*2.6} Q${ex} ${eyY-eye*4.2} ${ex+eye*2.2} ${eyY-eye*2.8}" stroke="#111" stroke-width="3" fill="none" stroke-linecap="round"/></g></svg>`;
 }
 function predatorSVG(L){
   if(L.cat) return catSVG(L);
@@ -1630,6 +1669,22 @@ function predatorSVG(L){
     <circle cx="200" cy="68" r="5.5" fill="#d9f25a"/><circle cx="201.5" cy="68" r="2.6" fill="#111"/>
     <path d="M190 58 L208 62" stroke="#111" stroke-width="3" stroke-linecap="round"/></svg>`;
 }
+/* ---------------- bug-toss gag: monkey throws a live snack at the cat ---------------- */
+const FRUITFOOD=['🍇','🍈','🍑','🍒','🫐','🍌','🍊','🍎','🍐','🥭','🍓'];
+const LIVEFOOD=['🦗','🐛','🕷️','🐞','🦋','🐜','🦎','🐸','🐌','🐝','🪲'];
+function sfxThrow(){ if(!sfxReady()) return; const d=sfxOut(1.6,0),t=AC.currentTime; noiseSweep(d,t,.28,.16,'bandpass',1400,4200,2,.02); }
+function sfxBonk(){ if(!sfxReady()) return; const d=sfxOut(2.4,0),t=AC.currentTime; sweepTone(d,'sine',950,260,t,.16,.32); noiseSweep(d,t,.05,.2,'bandpass',2000,1200,1.5,.003); }
+function sfxYowl(){ if(!sfxReady()) return; const d=sfxOut(1.8,0),t=AC.currentTime+.05; const o=sweepTone(d,'sawtooth',420,700,t,.6,.16,['bandpass',1500,1.4]);
+  o.frequency.setValueAtTime(420,t); o.frequency.linearRampToValueAtTime(1150,t+.18); o.frequency.exponentialRampToValueAtTime(640,t+.58);
+  const l=AC.createOscillator(); l.frequency.value=11; const lg=AC.createGain(); lg.gain.value=40; l.connect(lg); lg.connect(o.frequency); l.start(t); l.stop(t+.62); }
+function sfxPlop(){ if(!sfxReady()) return; const d=sfxOut(2.4,0),t=AC.currentTime; sweepTone(d,'sine',300,120,t,.22,.34,['lowpass',900]); [0,.12,.22].forEach((dt,i)=>sweepTone(d,'sine',520-i*60,900-i*80,t+.12+dt,.09,.12)); }
+function sfxCatch(){ if(!sfxReady()) return; const d=sfxOut(2,0),t=AC.currentTime; sweepTone(d,'sine',700,1400,t,.1,.2); [2093,2637].forEach((f,i)=>sweepTone(d,'sine',f,f,t+.08+i*.07,.2,.06)); }
+function catHead(p,L,dir){ const C=CATS[L.cat], r=p.querySelector('svg').getBoundingClientRect(), hx=C.head[0]/260, hy=(C.head[1]-C.head[2]*.7)/150;
+  return {x:r.left+r.width*(dir>0?hx:1-hx), y:r.top+r.height*hy}; }
+function flyTo(el,from,toFn,ms,arc,minY=-1e9){ return new Promise(res=>{ const t0=performance.now();
+  const step=now=>{ const p=Math.min(1,(now-t0)/ms), to=toFn(), x=from.x+(to.x-from.x)*p, y=Math.max(minY,from.y+(to.y-from.y)*p-arc*4*p*(1-p));
+    el.style.transform=`translate(${x}px,${y}px)`; if(p<1&&el.isConnected) requestAnimationFrame(step); else res(); };
+  requestAnimationFrame(step); }); }
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 async function chase(id){
   if(currentId!==id) return;
@@ -1638,7 +1693,7 @@ async function chase(id){
   const mb=parseFloat(monkey.style.bottom)||50;
   const addRow=(k,v)=>{const r=document.createElement('div'); r.className='stat new'; r.innerHTML=`<span class="k">${k}</span><span class="v">${v}</span>`; bubble.querySelector('.music').before(r); layoutStage();};
   // dir=+1: predator from left, monkey flees right; dir=-1: mirror
-  async function pass(dir,pname){
+  async function pass(dir,pname,trick){
     const L=PLOOK[pname];
     const p=document.createElement('div'); p.className='predator '+L.kind+(L.small?' small':'')+(L.big?' big':'')+(L.long&&L.kind==='snake'?' long':'');
     p.innerHTML=`<div style="transform:scaleX(${dir})">${predatorSVG(L)}</div>`;
@@ -1653,27 +1708,74 @@ async function chase(id){
     monkey.classList.add('scared'); bubble.classList.add('scared');
     const a=document.createElement('div'); a.className='alert'; a.textContent='❗'; a.style.bottom=(mb+monkey.offsetHeight*0.62)+'px'; a.style.marginLeft=(monkey.offsetWidth*0.32)+'px'; stage.appendChild(a);
     await wait(600); if(!ok()) return false; a.remove();
-    monkey.classList.remove('pop','hop'); monkey.classList.add('running');
+    monkey.classList.remove('pop','hop'); monkey.classList.add('running'); leavesUp();
     const r=8*dir;
     monkey.animate([{transform:'translate(0,0) rotate(0)'},{transform:`translate(${dir*W*.18}px,-30px) rotate(${r}deg)`},{transform:`translate(${dir*W*.36}px,0) rotate(${r}deg)`},{transform:`translate(${dir*W*.54}px,-30px) rotate(${r}deg)`},{transform:`translate(${dir*W*.8}px,0) rotate(${r}deg)`}],{duration:1000,easing:'ease-out',fill:'forwards'});
     pin.cancel();
-    p.animate([{transform:`translate(${-dir*gap}px,${midY}px)`},{transform:`translate(${dir*(W*1.1+250)}px,${L.kind==='bird'?-60:0}px)`}],{duration:2200,delay:200,easing:'linear',fill:'both'});
-    await wait(2200); if(!ok()) return false; p.remove();
+    const run=p.animate([{transform:`translate(${-dir*gap}px,${midY}px)`},{transform:`translate(${dir*(W*1.1+250)}px,${L.kind==='bird'?-60:0}px)`}],{duration:2200,delay:200,easing:'linear',fill:'both'});
+    let bug=null, hand=null, f=null, regrow=false;
+    if(trick && (f=monkey.querySelector('.food'))){
+      const SR=()=>stage.getBoundingClientRect(), fr0=f.getBoundingClientRect(); hand={x:fr0.left-SR().left, y:fr0.top-SR().top};
+      await wait(260); if(!ok()) return false;
+      // the monkey hurls its bug back at the cat
+      const fr=f.getBoundingClientRect(); f.style.visibility='hidden';
+      bug=document.createElement('div'); bug.className='flybug'; bug.innerHTML=`<span>${f.firstChild.textContent}</span>`; bug.style.fontSize=getComputedStyle(f).fontSize; stage.appendChild(bug);
+      const from={x:fr.left-SR().left, y:fr.top-SR().top}, fsz=fr.height; sfxThrow();
+      if(trick==='sap'){ // the pot of sap lands upside down on the snake's head like a hat
+        const C2=L.long?{w:310,x0:70}:{w:240,x0:0}, head=()=>{ const r=p.querySelector('svg').getBoundingClientRect(), fx=(200+C2.x0)/C2.w; return {x:r.left+r.width*(dir>0?fx:1-fx), y:r.top+r.height*.5}; };
+        bug.firstChild.animate([{transform:'rotate(0)'},{transform:'rotate(540deg)'}],{duration:480,easing:'ease-out',fill:'forwards'});
+        await flyTo(bug,from,()=>{ const h=head(); return {x:h.x-SR().left-fsz*.5, y:h.y-SR().top-fsz*.95}; },480,80); if(!ok()) return false;
+        bug.remove(); bug=null; regrow=true; sfxPlop();
+        const pr=p.getBoundingClientRect(), h=head(), hat=document.createElement('div'); hat.className='saphat'; hat.innerHTML='<span>🍯</span><i></i><i></i>'; hat.style.fontSize=fsz*.95+'px';
+        hat.style.left=(h.x-pr.left-fsz*.48)+'px'; hat.style.top=(h.y-pr.top-fsz*.95)+'px'; p.appendChild(hat);
+        run.pause(); const q=document.createElement('div'); q.className='alert'; q.textContent='❓'; q.style.left=(h.x-SR().left)+'px'; q.style.marginLeft='-16px'; q.style.bottom=(SR().bottom-h.y+fsz*1.1)+'px'; q.style.fontSize='38px'; stage.appendChild(q);
+        await wait(700); if(!ok()) return false; q.remove();
+        run.play(); await run.finished.catch(()=>{}); if(!ok()) return false; p.remove();
+      } else
+      if(trick==='fruit'){ // the fruit beans the bird: it spins a full circle but keeps flying, and the fruit spins back up
+        const target=()=>{ const r=p.querySelector('svg').getBoundingClientRect(); return {x:r.left+r.width*.48-SR().left-fsz*.45, y:r.top+r.height*.5-SR().top-fsz*.5}; };
+        bug.classList.add('spin'); await flyTo(bug,from,target,440,50); if(!ok()) return false;
+        sfxBonk(); p.querySelector('svg').animate([{transform:'rotate(0)'},{transform:'rotate(360deg)'}],{duration:700,easing:'ease-in-out'});
+        const sp=p.getBoundingClientRect(), dz=document.createElement('div'); dz.className='alert'; dz.textContent='💫'; dz.style.left=(sp.left+sp.width/2-SR().left)+'px'; dz.style.marginLeft='-20px'; dz.style.bottom=(SR().bottom-sp.bottom+sp.height*.45)+'px'; dz.style.zIndex='8'; dz.style.fontSize='34px'; stage.appendChild(dz); setTimeout(()=>dz.remove(),900);
+        const b0=target(), ceil=bubble.getBoundingClientRect().bottom-SR().top+12;
+        flyTo(bug,b0,()=>({x:hand.x+(b0.x-hand.x)*.3, y:ceil}),700,30,ceil);
+        await wait(Math.max(0,2200-260-440)); if(!ok()) return false; p.remove();
+      } else {
+      await flyTo(bug,from,()=>{ const h=catHead(p,L,dir); return {x:h.x-SR().left-fsz*.45, y:h.y-SR().top-fsz*.8}; },480,70); if(!ok()) return false;
+      // bonk! the cat freezes, looks shocked, yowls and jumps
+      run.pause(); p.classList.add('shock'); sfxBonk(); setTimeout(sfxYowl,120);
+      const h=catHead(p,L,dir), al=document.createElement('div'); al.className='alert'; al.textContent='‼️'; al.style.left=(h.x-SR().left)+'px'; al.style.marginLeft='0'; al.style.bottom=(SR().bottom-h.y+fsz*1.1)+'px'; stage.appendChild(al);
+      p.querySelector('svg').animate([{transform:'translateY(0)'},{transform:'translateY(-70px) rotate(-6deg)',offset:.45},{transform:'translateY(0)'}],{duration:600,easing:'ease-out'});
+      // ...which sends the bug flying high into the air
+      const b0={x:h.x-SR().left-fsz*.45, y:h.y-SR().top-fsz*.8}, ceil=bubble.getBoundingClientRect().bottom-SR().top+12;
+      bug.classList.add('flail'); flyTo(bug,b0,()=>({x:hand.x+(b0.x-hand.x)*.35, y:ceil}),700,40,ceil);
+      await wait(650); if(!ok()) return false; al.remove();
+      run.play(); await run.finished.catch(()=>{}); if(!ok()) return false; p.remove();
+      }
+    } else { await wait(2200); if(!ok()) return false; p.remove(); }
     // monkey comes back to center from the opposite side, snack still in hand
-    sfxSwish(dir);
+    sfxSwish(dir); leavesAlign();
+    if(bug){ const cur=bug.getBoundingClientRect(), sr2=stage.getBoundingClientRect(); bug.classList.remove('flail');
+      flyTo(bug,{x:cur.left-sr2.left,y:cur.top-sr2.top},()=>hand,1150,-10).then(()=>{ bug.remove(); if(f&&monkey.contains(f)){ f.style.visibility=''; sfxCatch(); } }); }
     const back=monkey.animate([{transform:`translate(${-dir*W*.8}px,0)`},{transform:`translate(${-dir*W*.4}px,-24px)`},{transform:'translate(0,0)'}],{duration:1200,easing:'ease-out',fill:'forwards'});
     await back.finished.catch(()=>{}); if(!ok()) return false;
-    back.cancel(); monkey.getAnimations().forEach(x=>x.cancel()); monkey.classList.remove('running');
+    back.cancel(); monkey.getAnimations().forEach(x=>x.cancel()); monkey.classList.remove('running'); leavesDown();
+    if(regrow && f && monkey.contains(f)){ f.style.visibility=''; f.style.animation='none'; void f.offsetWidth; f.style.animation=''; snackTrail(); sfxSnack(); }
     monkey.classList.remove('scared'); bubble.classList.remove('scared');
     escapeReaction(dir>0, dir);   // second escape: visual only (the phew sigh plays)
     return true;
   }
   addRow('Biggest predator',`${c.predE} ${c.pred}`);
-  if(!await pass(1,c.pred)) return;
+  const birdPasses=[[1,c.pred],[2,c.pred2]].filter(([n,pn])=>pn&&PLOOK[pn]&&PLOOK[pn].kind==='bird').map(x=>x[0]);
+  const fruitPass=(FRUITFOOD.includes(c.food)&&birdPasses.length&&Math.random()<.4)?birdPasses[Math.floor(Math.random()*birdPasses.length)]:0;
+  const snakePasses=[[1,c.pred],[2,c.pred2]].filter(([n,pn])=>pn&&PLOOK[pn]&&PLOOK[pn].kind==='snake').map(x=>x[0]);
+  const sapPass=(c.food==='🍯'&&snakePasses.length&&Math.random()<.35)?snakePasses[Math.floor(Math.random()*snakePasses.length)]:0;
+  if(!await pass(1,c.pred,fruitPass===1?'fruit':sapPass===1?'sap':null)) return;
   await wait(3000); if(!ok()) return;
   if(c.pred2){
     addRow('Also hunted by',`${c.pred2E} ${c.pred2}`);
-    if(!await pass(-1,c.pred2)) return;
+    const trick=fruitPass===2?'fruit':sapPass===2?'sap':(LIVEFOOD.includes(c.food) && !!(PLOOK[c.pred2]&&PLOOK[c.pred2].cat) && Math.random()<.4)?'bug':null;
+    if(!await pass(-1,c.pred2,trick)) return;
   }
   await wait(1100); if(!ok()) return;   // let the escape reaction finish before the phew
   stage.querySelectorAll('.react').forEach(e=>e.remove());
@@ -1717,6 +1819,54 @@ async function chase(id){
   await wait(6000); if(!ok()) return;
   showFamily(c);
 }
+/* ---------------- howlers: a big pile of leaves ---------------- */
+const isLeafy=c=>!!(c.sci&&c.sci.startsWith('Alouatta')&&(c.food==='🍃'||c.food==='🌿'));
+function lotsTxt(t){ const m=t.match(/^(?:ramón )?leaves(.*)$/i); let tail=m?m[1].replace(/\s*—\s*lots of them\s*/i,' ').trim():'';
+  if(tail && !/^[,—]/.test(tail)) tail='— '+tail; return 'Lots of leaves'+(tail?(tail[0]===','?tail:' '+tail):''); }
+function sfxRustle(){ if(!sfxReady()) return; const d=sfxOut(2.2,-.2),t=AC.currentTime; [0,.09,.2,.33].forEach((dt,i)=>noiseSweep(d,t+dt,.12,.12-i*.015,'bandpass',4200-i*400,2200,1.6,.006)); }
+let leafTimer=null;
+function addLeafStack(f,c,row){
+  leafTimer=setTimeout(()=>{ if(!monkey.contains(f)) return;
+    const st=document.createElement('div'); st.className='leafstack';
+    [[-.12,.05,-25],[.3,.32,20],[.02,.62,-8]].forEach(([x,y,r],i)=>{ const lf=document.createElement('span'); lf.className='lf'; lf.textContent=c.food;
+      lf.style.left=x+'em'; lf.style.bottom=y+'em'; lf.style.rotate=r+'deg'; lf.style.animationDelay=(i*.14)+'s'; st.appendChild(lf); });
+    f.appendChild(st); setTimeout(sfxRustle,350);
+    row.querySelector('.v').textContent=`${c.food}${c.food}${c.food} ${lotsTxt(c.foodTxt)}`; row.classList.remove('new'); void row.offsetWidth; row.classList.add('new');
+  },1400);
+}
+function leafDrift(el,i){ // slow, gusty wandering while airborne
+  const w=Math.random()<.5?-1:1, pts=[[0,0]]; for(let k=1;k<6;k++) pts.push([w*k*7+(Math.random()*36-18),(Math.random()*26-13)]);
+  return el.animate(pts.map(([x,y],k)=>({transform:`translate(${x}px,${y}px)`,offset:k/(pts.length-1)})),{duration:3200+i*400,iterations:Infinity,direction:'alternate',easing:'ease-in-out'}); }
+function leavesUp(){ // extra leaves fly up and get blown around while the monkey runs
+  const st=monkey.querySelector('.leafstack'); if(!st) return; const sr=stage.getBoundingClientRect();
+  st.querySelectorAll('.lf').forEach((lf,i)=>{ if(lf.style.visibility==='hidden') return; const r=lf.getBoundingClientRect();
+    const a=document.createElement('div'); a.className='airleaf'; a.innerHTML=`<i class="drift" style="display:inline-block"><span style="animation-delay:${-i*.27}s">${lf.textContent}</span></i>`;
+    a.style.left=(r.left-sr.left)+'px'; a.style.top=(r.top-sr.top)+'px'; a.style.fontSize=getComputedStyle(lf).fontSize; a._lf=lf; a._x0=r.left-sr.left; a._y0=r.top-sr.top; stage.appendChild(a); lf.style.visibility='hidden';
+    const top0=r.top-sr.top, ceil=bubble.getBoundingClientRect().bottom-sr.top+14, ty=Math.max(ceil,top0-(70+i*28)), tx=(i-1)*70+Math.random()*16-8;
+    a.animate([{transform:'translate(0,0)'},{transform:`translate(${tx*.6}px,${(ty-top0)*.75}px)`,offset:.5},{transform:`translate(${tx}px,${ty-top0}px)`}],{duration:900,easing:'cubic-bezier(.2,.8,.3,1)',fill:'forwards'});
+    setTimeout(()=>{ if(a.isConnected) a._drift=leafDrift(a.querySelector('.drift'),i); },900); });
+  sfxRustle();
+}
+function freezeLeaf(a,sr){ const dr=a.querySelector('.drift'), ar=dr.getBoundingClientRect();
+  a.getAnimations().forEach(x=>x.cancel()); dr.getAnimations().forEach(x=>x.cancel()); a.style.left=(ar.left-sr.left)+'px'; a.style.top=(ar.top-sr.top)+'px'; return ar; }
+function leavesAlign(){ // while the monkey heads back, the wind swirls each leaf into a column right above its spot on the stack
+  const sr=stage.getBoundingClientRect(), ceil=bubble.getBoundingClientRect().bottom-sr.top+10;
+  stage.querySelectorAll('.airleaf').forEach((a,i)=>{ freezeLeaf(a,sr); const cx=parseFloat(a.style.left), cy=parseFloat(a.style.top);
+    const tx=a._x0, ty=Math.max(ceil+i*4, a._y0-(70+i*42)), R=(26+Math.random()*14)*(Math.random()<.5?-1:1), N=16, kf=[];
+    for(let k=0;k<=N;k++){ const p=k/N, e=p*p*(3-2*p), x=(tx-cx)*e+R*Math.sin(2*Math.PI*p)*(1-p), y=(ty-cy)*e-Math.abs(R)*.55*(1-Math.cos(2*Math.PI*p))*(1-p);
+      kf.push({transform:`translate(${x}px,${y}px)`}); }
+    a.animate(kf,{duration:1150,easing:'linear',fill:'forwards'}); });
+}
+function leavesDown(){ // ...then flutter straight down onto the stack, rocking gently side to side
+  const sr=stage.getBoundingClientRect();
+  stage.querySelectorAll('.airleaf').forEach((a,i)=>{ const lf=a._lf, ar=freezeLeaf(a,sr);
+    if(!lf||!monkey.contains(lf)){ a.remove(); return; }
+    const r=lf.getBoundingClientRect(), dx=r.left-ar.left, dy=r.top-ar.top, N=16, sw=14+Math.random()*8, ph=Math.random()<.5?1:-1, kf=[];
+    for(let k=0;k<=N;k++){ const p=k/N, side=ph*Math.sin(p*Math.PI*3)*sw*(1-p);
+      kf.push({transform:`translate(${dx*p+side}px,${dy*p}px) rotate(${ph*Math.cos(p*Math.PI*3)*18*(1-p)}deg)`}); }
+    const an=a.animate(kf,{duration:450+Math.max(0,dy)*1.5,delay:i*80,easing:'ease-in',fill:'forwards'});
+    an.finished.then(()=>{ lf.style.visibility=''; a.remove(); if(i===0) sfxRustle(); }).catch(()=>{}); });
+}
 function snackTrail(){ // glowing streak + a few sparkles left behind as the snack falls
   const tr=document.createElement('div'); tr.className='snacktrail'; tr.innerHTML='<div class="streak"></div>';
   const stars=['✦','✧','✦','✦','✧','✦','✧','✦'];
@@ -1728,10 +1878,12 @@ function serveFood(id){
   const c=CUR;
   const sn=document.getElementById('snack');
   const row=document.createElement('div'); row.className='stat new';
-  row.innerHTML=`<span class="k">Favorite food</span><span class="v">${c.food} ${c.foodTxt}</span>`;
+  const leafy=isLeafy(c);
+  row.innerHTML=`<span class="k">Favorite food</span><span class="v">${c.food} ${leafy?'Leaves':c.foodTxt}</span>`;
   if(sn) sn.replaceWith(row); else bubble.querySelector('.fact').before(row);
   const f=document.createElement('div'); f.className='food'; f.textContent=c.food;
   snackTrail(); monkey.appendChild(f); monkey.classList.add('holding'); sfxSnack();
+  if(leafy) addLeafStack(f,c,row);
   monkey.classList.remove('pop','hop'); void monkey.offsetWidth; monkey.classList.add('hop');
   layoutStage();
   chaseTimer=setTimeout(()=>chase(id),6000);

@@ -183,13 +183,13 @@
   .phew{background:#fff;border:3px solid #2b2b2b;border-radius:16px;padding:4px 12px;font-size:20px;margin-left:40px}
   .baby{position:absolute;z-index:2;width:127px;left:50%;pointer-events:none}
   .baby.pop{animation:pop .6s cubic-bezier(.25,1.6,.45,1) both}
-  .branch{position:absolute;left:-10px;width:calc(100% + 20px);z-index:2;pointer-events:none;animation:brin .6s ease-out both}
+  .branch{position:absolute;left:-10px;width:calc(100% + 20px);z-index:2;pointer-events:none;transition:top .7s ease-in-out;animation:brin .6s ease-out both}
   @keyframes brin{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
-  .baby.hang{z-index:3;animation:lower .9s ease-out backwards,swing 2.4s ease-in-out .9s infinite alternate}
+  .baby.hang{z-index:3;transition:top .7s ease-in-out;animation:lower 1s cubic-bezier(.2,.7,.3,1) backwards,swing 2.8s ease-in-out 1s infinite}
   .baby.hang .flip{transform:rotate(180deg)}
   .baby.hang .hfood{left:62%;top:40%}
-  @keyframes lower{from{transform:translateY(-24px) scaleY(.7);opacity:0}60%{opacity:1}to{transform:none}}
-  @keyframes swing{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+  @keyframes lower{from{transform:translateY(-30px);opacity:0}50%{opacity:1}to{transform:rotate(0)}}
+  @keyframes swing{0%,100%{transform:rotate(0)}25%{transform:rotate(6deg)}75%{transform:rotate(-6deg)}}
   .baby .bfood{position:absolute;font-size:41px;left:4%;top:32%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
   .monkey svg,.baby svg{overflow:visible;display:block}
   .scaredFace{display:none}
@@ -1037,7 +1037,8 @@ function flagSVG(id){ const f=FLAGS[id]; return f?`<svg viewBox="0 0 60 40" aria
 
 /* ---------------- sound effects (subtle; follow the Music on/off switch) ---------------- */
 function sfxReady(){ if(muted) return false; if(!AC) initAudio(); if(!AC) return false; if(AC.state!=='running'&&AC.resume) AC.resume().catch(()=>{}); return true; }
-function sfxOut(vol=1,pan=0){ const g=AC.createGain(); g.gain.value=vol; let n=g; if(AC.createStereoPanner&&pan){const p=AC.createStereoPanner();p.pan.value=pan;g.connect(p);n=p;} n.connect(master); const s=AC.createGain(); s.gain.value=.3; n.connect(s); s.connect(wet); return g; }
+const SFXVOL=1.19; // +1.5 dB for all sound effects
+function sfxOut(vol=1,pan=0){ const g=AC.createGain(); g.gain.value=vol*SFXVOL; let n=g; if(AC.createStereoPanner&&pan){const p=AC.createStereoPanner();p.pan.value=pan;g.connect(p);n=p;} n.connect(master); const s=AC.createGain(); s.gain.value=.3; n.connect(s); s.connect(wet); return g; }
 function sweepTone(dst,type,f1,f2,t,dur,vol,filt){ const g=AC.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(vol,t+Math.min(.05,dur*.2)); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
   let node=g; if(filt){const f=AC.createBiquadFilter(); f.type=filt[0]; f.frequency.value=filt[1]; f.Q.value=filt[2]||1; f.connect(g); node=f;} g.connect(dst);
   const o=AC.createOscillator(); o.type=type; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+dur); o.connect(node); o.start(t); o.stop(t+dur+.05); return o; }
@@ -1344,8 +1345,11 @@ function branchSVG(leaf,flower){
 function positionHang(){
   const br=stage.querySelector('.branch'); if(!br) return;
   const y=bubble.offsetTop+bubble.offsetHeight+46;  // clear the bubble's pointer
-  br.style.top=(y-22)+'px';
-  stage.querySelectorAll('.baby.hang').forEach(b=>{ const sc=b.offsetWidth/200; b.style.top=(y-4+50*sc)+'px'; b.style.transformOrigin=`50% ${-50*sc}px`; });
+  if(!br.dataset.placed){ br.style.transition='none'; br.style.top=(y-22)+'px'; void br.offsetHeight; br.style.transition=''; br.dataset.placed='1'; } else br.style.top=(y-22)+'px';
+  stage.querySelectorAll('.baby.hang').forEach(b=>{ const sc=b.offsetWidth/200, top=(y-4+50*sc)+'px';
+    if(!b.dataset.placed){ b.style.transition='none'; b.style.top=top; void b.offsetHeight; b.style.transition=''; b.dataset.placed='1'; }  // first placement: no glide
+    else b.style.top=top;                                                                                                          // later adjustments glide smoothly
+    b.style.transformOrigin=`50% ${-50*sc}px`; });
 }
 const PLOOK={
  'Ocelot':{kind:'quad',fur:'#d9a648',spots:'#4a3220',belly:'#f3e2bd'},
@@ -1457,6 +1461,10 @@ async function chase(id){
   const small=!!c.look.tiny, bw=isPhone()?(small?67:94):(small?91:127), mw=monkey.offsetWidth;
   const hang = c.sp>0 && (c.look.tailType||'curl')==='curl';
   const BR = BRANCH[currentId]||BRANCH._;
+  const row2=document.createElement('div'); row2.className='stat new';
+  row2.innerHTML=`<span class="k">Babies' snacks</span><span class="v">${c.alt[0]} ${c.alt[1]} ${c.altTxt}${c.babyNote?`<br><i>${c.babyNote}</i>`:''}${hang?`<br>🌿 Hanging by their tails from ${BR[0]}`:''}</span>`;
+  bubble.querySelector('.music').before(row2); layoutStage();
+  await wait(250); if(!ok()) return;
   if(hang){ const br=document.createElement('div'); br.className='branch'; br.innerHTML=branchSVG(BR[1],BR[2]); stage.appendChild(br); positionHang(); }
   [[-(mw/2)-bw+10,0],[mw/2-10,1]].forEach(([dx,k],n)=>{
     setTimeout(()=>{ if(!ok()) return;
@@ -1474,10 +1482,7 @@ async function chase(id){
       }
     }, n*450);
   });
-  await wait(800); if(!ok()) return;
-  const row2=document.createElement('div'); row2.className='stat new';
-  row2.innerHTML=`<span class="k">Babies' snacks</span><span class="v">${c.alt[0]} ${c.alt[1]} ${c.altTxt}${c.babyNote?`<br><i>${c.babyNote}</i>`:''}${hang?`<br>🌿 Hanging by their tails from ${BR[0]}`:''}</span>`;
-  bubble.querySelector('.music').before(row2); layoutStage();
+
   await wait(6000); if(!ok()) return;
   showFamily(c);
 }

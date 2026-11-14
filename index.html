@@ -166,6 +166,9 @@
   @keyframes fill{to{width:120px}}
   .predator{position:absolute;z-index:6;width:230px;left:50%;margin-left:-115px;pointer-events:none}
   .predator.bird{width:200px;margin-left:-100px}
+  .predator.small{width:175px;margin-left:-88px}
+  .predator.snake.big{width:280px;margin-left:-140px}
+  .predator.bird.big{width:220px;margin-left:-110px}
   .predator .flap{transform-box:fill-box;transform-origin:50% 100%;animation:flap .22s ease-in-out infinite alternate}
   @keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(-.5)}}
   .predator .legs{animation:gallop .18s linear infinite alternate}
@@ -205,9 +208,8 @@
   .sx.m{color:#2a6fdb}
   .sx.f{color:#d0457a}
   .famtxt{font-size:13px;line-height:1.35;background:#e8f4e0;border-radius:10px;padding:6px 9px;margin-top:4px}
-  .newbtn{position:absolute;left:12px;bottom:12px;z-index:7;display:none;font:inherit;font-weight:600;font-size:14px;border:2px solid #2b2b2b;border-radius:999px;padding:7px 14px;background:#ffc93c;color:#3a2a00;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.25)}
-  .newbtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
-  .stage.active .newbtn{display:block}
+  .newbtn{margin-top:5px;font:inherit;font-weight:600;font-size:12.5px;border:2px solid #2b2b2b;border-radius:999px;padding:3px 11px;background:#ffc93c;color:#3a2a00;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.25)}
+  .newbtn:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
   .holdArm{display:none}
   .holding .holdArm{display:inline}
   .holding .restArm{display:none}
@@ -252,7 +254,6 @@
     <div class="hint" id="hint"><b>👆</b>Pick a country on the map and a local monkey will pop up with its primate stats.</div>
     <div class="bubble" id="bubble"></div>
     <div class="monkey" id="monkey"></div>
-    <button class="newbtn" id="newBtn" title="Stop and pick another monkey">🐒 Pick a new monkey</button>
     <svg class="foliage" viewBox="0 0 420 150" preserveAspectRatio="none">
       <g fill="#3f8a3c">
         <ellipse cx="30" cy="110" rx="70" ry="55"/><ellipse cx="140" cy="125" rx="80" ry="50"/>
@@ -939,7 +940,6 @@ function stopAll(){
   stage.classList.remove('active');
 }
 document.getElementById('stopBtn').onclick=stopAll;
-document.getElementById('newBtn').onclick=()=>{ stopAll(); window.scrollTo({top:0,behavior:'smooth'}); };
 document.addEventListener('keydown',e=>{if(e.key==='Escape') stopAll();});
 document.getElementById('mute').onclick=e=>{
   muted=!muted; e.currentTarget.textContent=muted?'🔇 Music':'🔊 Music';
@@ -1077,14 +1077,18 @@ const VOICE={
     v.start(t); v.stop(t+1.3);
     noiseSweep(d,t,1.2,.06,'bandpass',1700,1000,4,.1);
   },
+  jchirp:(d,t)=>{ [0,.16,.32,.6].forEach(dt=>{ sweepTone(d,'sine',1150,1550,t+dt,.11,.14); sweepTone(d,'triangle',2300,3100,t+dt,.08,.03); }); },   // jaguarundi chirps
+  hissDeep:(d,t)=>{ noiseSweep(d,t,1.2,.24,'bandpass',1800,1200,.6,.15); noiseSweep(d,t,1.2,.1,'highpass',3000,3600,.7,.15); },  // anaconda: deep, heavy hiss
+  bhe:(d,t)=>{ [0,.18,.36].forEach(dt=>sweepTone(d,'sine',1700,1850,t+dt,.12,.16)); const o=sweepTone(d,'sine',2000,1100,t+.6,.75,.2); sweepTone(d,'sawtooth',2000,1100,t+.6,.75,.03,['bandpass',1600,3]); }, // "whi-whi-whi-wheeeoo"
+  knock:(d,t)=>{ let x=0; for(let k=0;k<7;k++){ sweepTone(d,'sine',230,200,t+x,.11,.32,['lowpass',700]); x+=Math.max(.07,.22-k*.025); } },  // spectacled owl's accelerating knocking hoots
   hoot:(d,t)=>{ [[0,.22],[.32,.22],[.68,.42]].forEach(([dt,len])=>sweepTone(d,'sine',330,300,t+dt,len,.22,['lowpass',900])); },
   yip:(d,t)=>{ [0,.2].forEach(dt=>{ sweepTone(d,'sawtooth',950,620,t+dt,.14,.12,['bandpass',1400,2]); }); },
   chatter:(d,t)=>{ for(let k=0;k<5;k++) noiseSweep(d,t+k*.09,.07,.13,'bandpass',1600,1300,3,.005); sweepTone(d,'sawtooth',300,240,t,.45,.05,['lowpass',700]); },
   cackle:(d,t)=>{ for(let k=0;k<6;k++){ noiseSweep(d,t+k*.1,.07,.1,'bandpass',1900,1500,4,.005); sweepTone(d,'square',900,760,t+k*.1,.06,.03,['bandpass',1800,3]); } }
 };
 const PVOICE={'Ocelot':['cat',0],'Jaguar':['cat',1],'Puma':['puma'],'Tayra':['chatter'],'Pampas fox':['yip'],'Culpeo fox':['yip'],
-  'Boa constrictor':['hiss'],'Ornate hawk-eagle':['screech',0],'Forest falcon':['screech',0],'Harpy eagle':['wail'],'Crested caracara':['cackle'],'Great horned owl':['hoot']};
-const VGAIN={'Ocelot':2.2,'Jaguar':3.3,'Puma':2.0,'Tayra':13,'Pampas fox':9,'Culpeo fox':9,'Boa constrictor':2.2,'Ornate hawk-eagle':5.3,'Forest falcon':6.5,'Harpy eagle':0.8,'Crested caracara':12,'Great horned owl':2.2};
+  'Boa constrictor':['hiss'],'Ornate hawk-eagle':['screech',0],'Forest falcon':['screech',0],'Harpy eagle':['wail'],'Crested caracara':['cackle'],'Great horned owl':['hoot'],'Margay':['cat',0],'Jaguarundi':['jchirp'],'Green anaconda':['hissDeep'],'Crested eagle':['wail'],'Black hawk-eagle':['bhe'],'Spectacled owl':['knock'],'Crowned eagle':['screech',1]};
+const VGAIN={'Ocelot':2.2,'Jaguar':3.3,'Puma':2.0,'Tayra':13,'Pampas fox':9,'Culpeo fox':9,'Boa constrictor':2.2,'Ornate hawk-eagle':5.3,'Forest falcon':6.5,'Harpy eagle':0.8,'Crested caracara':12,'Great horned owl':2.2,'Margay':1.6,'Jaguarundi':4.3,'Green anaconda':3.4,'Crested eagle':0.7,'Black hawk-eagle':2.2,'Spectacled owl':2.0,'Crowned eagle':7.2};
 function predatorVoice(pname,pan){ if(!sfxReady()) return; const v=PVOICE[pname]; if(!v) return; VOICE[v[0]](sfxOut(.55*(VGAIN[pname]||1),pan),AC.currentTime+.02,v[1]); }
 const SNACK=[
   (d,t)=>{ noiseSweep(d,t,.5,.06,'bandpass',3200,700,1.5,.15); [[1568,0],[2349,.07]].forEach(([f,dt])=>{ sweepTone(d,'sine',f,f,t+.55+dt,.45,.12); sweepTone(d,'sine',f*2.76,f*2.76,t+.55+dt,.18,.03); }); }, // whoosh + chime
@@ -1119,6 +1123,21 @@ function sfxBaby(hang,pan){ if(!sfxReady()) return; const t=AC.currentTime, d=sf
   else { sweepTone(d,'triangle',520,1050,t,.12,.14); sweepTone(d,'triangle',780,1400,t+.1,.1,.08); } }  // little "boop"
 
 
+
+
+/* ---------------- randomized second predator (others found in that country) ---------------- */
+const PEMO={'Ocelot':'🐆','Jaguar':'🐆','Puma':'🐈','Tayra':'🦡','Pampas fox':'🦊','Culpeo fox':'🦊','Ornate hawk-eagle':'🦅','Forest falcon':'🦅','Harpy eagle':'🦅','Great horned owl':'🦉','Boa constrictor':'🐍','Crested caracara':'🦅','Margay':'🐆','Jaguarundi':'🐈‍⬛','Green anaconda':'🐍','Crested eagle':'🦅','Black hawk-eagle':'🦅','Spectacled owl':'🦉','Crowned eagle':'🦅'};
+const PRED2={
+ brazil:['Boa constrictor','Harpy eagle','Tayra','Ornate hawk-eagle','Margay','Black hawk-eagle'], peru:['Tayra','Ocelot','Boa constrictor','Harpy eagle','Margay','Black hawk-eagle'],
+ colombia:['Ornate hawk-eagle','Ocelot','Tayra','Harpy eagle','Margay','Black hawk-eagle'], bolivia:['Ornate hawk-eagle','Ocelot','Boa constrictor','Harpy eagle','Margay','Black hawk-eagle'],
+ ecuador:['Boa constrictor','Ocelot','Tayra','Margay','Jaguarundi','Black hawk-eagle'], venezuela:['Jaguar','Puma','Boa constrictor','Green anaconda','Crested eagle'], guyana:['Ornate hawk-eagle','Boa constrictor','Tayra','Margay','Black hawk-eagle'],
+ suriname:['Boa constrictor','Jaguar','Ocelot','Crested eagle','Green anaconda'], frenchguiana:['Harpy eagle','Puma','Boa constrictor','Crested eagle','Green anaconda'], paraguay:['Ocelot','Boa constrictor','Tayra','Spectacled owl','Margay','Jaguarundi'],
+ argentina:['Jaguar','Ocelot','Crowned eagle','Black hawk-eagle'], chile:['Culpeo fox','Crested caracara'], uruguay:['Crested caracara','Great horned owl'],
+ belize:['Harpy eagle','Ocelot','Boa constrictor','Crested eagle','Black hawk-eagle'], guatemala:['Harpy eagle','Puma','Ocelot','Crested eagle','Black hawk-eagle'], elsalvador:['Boa constrictor','Ornate hawk-eagle','Black hawk-eagle'],
+ honduras:['Harpy eagle','Ocelot','Jaguar','Margay','Black hawk-eagle','Crested eagle'], nicaragua:['Jaguar','Puma','Boa constrictor','Crested eagle','Black hawk-eagle'], costarica:['Boa constrictor','Tayra','Ocelot','Margay','Jaguarundi','Black hawk-eagle','Spectacled owl'],
+ panama:['Ornate hawk-eagle','Boa constrictor','Ocelot','Margay','Black hawk-eagle','Spectacled owl']
+};
+function pickPred2(c,id){ const pool=(PRED2[id]||[c.pred2]).filter(p=>p&&p!==c.pred); if(!pool.length) return; c.pred2=pool[Math.floor(Math.random()*pool.length)]; c.pred2E=PEMO[c.pred2]||'🐾'; }
 
 /* ---------------- randomized favorite foods (top-tier staples only) ---------------- */
 const FAVS={
@@ -1223,6 +1242,7 @@ function showCountry(id,sp){
     tIdx=(tIdx+3)%TOURIST.length;
   }
   if(C[id].sp>0){ pickFavorite(c); pickBabySnacks(c); }
+  pickPred2(c,id);
   CUR=c; hint.style.display='none'; currentId=id;
   stage.classList.add('active');
   stage.style.minHeight='';
@@ -1232,7 +1252,7 @@ function showCountry(id,sp){
   const [stName,stCol]=STATUS[c.st];
   const pct=Math.max(c.sp/MAXSP*100, c.sp?3:0);
   bubble.innerHTML=`<div class="bhead"><div class="bface">${monkeySVG(Object.assign({},c.look,{headOnly:true}))}</div><div class="btitle"><h2>${c.m}</h2>
-    <div class="sub">📍 <b>${c.name}</b>${c.note?` · ${c.note}`:''}</div></div><div class="bflag" title="Flag of ${c.name}">${flagSVG(id)}</div></div><div class="bscroll">
+    <div class="sub">📍 <b>${c.name}</b>${c.note?` · ${c.note}`:''}</div><button class="newbtn" title="Stop and pick another monkey">🐒 New monkey</button></div><div class="bflag" title="Flag of ${c.name}">${flagSVG(id)}</div></div><div class="bscroll">
     <div class="stat"><span class="k">Primate species</span><span class="v">${c.spTxt}</span></div>
     <div class="bar"><div style="--w:${pct}%"></div></div>
     <div class="stat"><span class="k">${c.isPick?'Monkey':'Star monkey'}</span><span class="v">${c.m}${c.sci?`<br><i>${c.sci}</i>`:''}</span></div>
@@ -1333,6 +1353,13 @@ const PLOOK={
  'Puma':{kind:'quad',fur:'#c49464',belly:'#ecd8bd',big:true},
  'Tayra':{kind:'quad',fur:'#3a2a20',head:'#a58a66',belly:'#3a2a20',long:true},
  'Pampas fox':{kind:'quad',fur:'#9a9188',belly:'#d8d0c4',fox:true,head:'#b88a5e'},
+ 'Margay':{kind:'quad',fur:'#c99a52',spots:'#3a2614',belly:'#f1e2c0',small:true},
+ 'Jaguarundi':{kind:'quad',fur:'#5e5650',belly:'#6c645d',long:true,small:true},
+ 'Green anaconda':{kind:'snake',body:'#4d5a2c',spots:'#16140e',big:true},
+ 'Crested eagle':{kind:'bird',body:'#6e6052',head:'#cfc8bc',wing:'#3a2f28',crest:'#2a2420',belly:'#f2ece0',big:true},
+ 'Black hawk-eagle':{kind:'bird',body:'#1d1a18',head:'#24201d',wing:'#141210',crest:'#141210',belly:'#e9e3d6'},
+ 'Spectacled owl':{kind:'bird',body:'#4a3428',head:'#3a2a20',wing:'#33241b',belly:'#f0d48a',owl:true,specs:true},
+ 'Crowned eagle':{kind:'bird',body:'#86878a',head:'#8e8f92',wing:'#64656a',crest:'#55565a',belly:'#b4b5b4',big:true},
  'Culpeo fox':{kind:'quad',fur:'#a8704a',belly:'#e3cdb2',fox:true,head:'#c4834f'},
  'Crested caracara':{kind:'bird',body:'#3a2a20',head:'#f0e6d2',wing:'#2a1d16',crest:'#1d1a18',belly:'#e8e0d0'},
  'Ornate hawk-eagle':{kind:'bird',body:'#6b4a2e',head:'#c4692c',wing:'#3a2a20',crest:'#1d1a18',belly:'#f2ece0'},
@@ -1350,7 +1377,7 @@ function predatorSVG(L){
   }
   if(L.kind==='bird'){
     const crest=L.crest?`<path d="M118 34 L100 6 L124 26 L122 2 L134 28Z" fill="${L.crest}"/>`:'';
-    const eyes=L.owl?`<circle cx="128" cy="52" r="11" fill="#ffc21a"/><circle cx="152" cy="52" r="11" fill="#ffc21a"/><circle cx="130" cy="53" r="5" fill="#111"/><circle cx="154" cy="53" r="5" fill="#111"/><path d="M120 30 L124 14 L132 32 M160 30 L156 14 L148 32" stroke="${L.head}" stroke-width="7" stroke-linecap="round"/>`
+    const eyes=L.owl?`${L.specs?'<circle cx="128" cy="52" r="15" fill="none" stroke="#f4f0e6" stroke-width="4"/><circle cx="152" cy="52" r="15" fill="none" stroke="#f4f0e6" stroke-width="4"/>':''}<circle cx="128" cy="52" r="11" fill="#ffc21a"/><circle cx="152" cy="52" r="11" fill="#ffc21a"/><circle cx="130" cy="53" r="5" fill="#111"/><circle cx="154" cy="53" r="5" fill="#111"/>${L.specs?'':`<path d="M120 30 L124 14 L132 32 M160 30 L156 14 L148 32" stroke="${L.head}" stroke-width="7" stroke-linecap="round"/>`}`
       :`<circle cx="150" cy="48" r="7" fill="#ffd23a"/><circle cx="152" cy="48" r="3.5" fill="#111"/><path d="M138 41 L160 40" stroke="#111" stroke-width="3" stroke-linecap="round"/>`;
     const beak=L.owl?`<g class="pmouth"><ellipse cx="140" cy="75" rx="4.5" ry="5" fill="#3a1414"/></g><path d="M136 62 L140 72 L144 62Z" fill="#3a3a3a"/>`
       :`<g class="pmouth"><path d="M160 57 L180 62 L164 70Z" fill="#5a1414"/><path d="M160 61 Q174 68 170 76 Q163 70 158 64Z" fill="#3a3a3a"/></g><path d="M162 50 Q182 50 176 66 Q170 60 160 60Z" fill="#3a3a3a"/>`;
@@ -1389,12 +1416,12 @@ async function chase(id){
   // dir=+1: predator from left, monkey flees right; dir=-1: mirror
   async function pass(dir,pname){
     const L=PLOOK[pname];
-    const p=document.createElement('div'); p.className='predator '+L.kind;
+    const p=document.createElement('div'); p.className='predator '+L.kind+(L.small?' small':'')+(L.big?' big':'');
     p.innerHTML=`<div style="transform:scaleX(${dir})">${predatorSVG(L)}</div>`;
     p.style.bottom=(L.kind==='bird'? mb+150 : mb-10)+'px';
     stage.appendChild(p);
     const startY=L.kind==='bird'?-200:0, midY=L.kind==='bird'?-40:0;
-    const gap = L.kind==='bird' ? W*.33 : Math.max(W*.33, (isPhone()?215:280) + (L.kind==='snake'?60:0));  // keep ground predators clear of the monkey
+    const gap = L.kind==='bird' ? W*.33 : Math.max(W*.33, (isPhone()?215:280) + (L.kind==='snake'?30:0));  // keep ground predators clear of the monkey
     const pin=p.animate([{transform:`translate(${-dir*W}px,${startY}px)`},{transform:`translate(${-dir*gap}px,${midY}px)`}],{duration:1300,easing:'ease-out',fill:'forwards'});
     await wait(450); if(!ok()) return false;
     p.classList.add('speak'); predatorVoice(pname,-dir*.5); setTimeout(()=>p.classList.remove('speak'),700);
@@ -1540,6 +1567,7 @@ function startQuiz(){setPick(null);score=0;tries=0;remaining=shuffle(Object.keys
 const bE=document.getElementById('mExplore'), bQ=document.getElementById('mQuiz');
 bE.onclick=()=>{mode='explore';bE.classList.add('on');bQ.classList.remove('on');document.body.classList.remove('quiz');setPick(null);};
 bQ.onclick=()=>{mode='quiz';bQ.classList.add('on');bE.classList.remove('on');document.body.classList.add('quiz');startQuiz();};
+bubble.addEventListener('click',e=>{ if(e.target.closest('.newbtn')){ stopAll(); if(mode==='explore') setPick(null); Object.values(groups).forEach(g=>g.classList.remove('sel','bad','range')); window.scrollTo({top:0,behavior:'smooth'}); } });
 </script>
 </body>
 </html>

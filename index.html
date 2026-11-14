@@ -208,6 +208,9 @@
   .flybug{position:absolute;z-index:7;pointer-events:none;line-height:1;left:0;top:0}
   .flybug span{display:inline-block}
   .flybug.flail span{animation:flail .14s ease-in-out infinite alternate}
+  .predator .snrear{display:none}
+  .predator.rear .snrear{display:inline}
+  .predator.rear .snflat{display:none}
   .saphat{position:absolute;z-index:2;pointer-events:none;line-height:1}
   .saphat span{display:inline-block;transform:rotate(180deg)}
   .saphat i{position:absolute;width:6px;height:9px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;background:#e8a317;top:85%;animation:sapdrip 1s ease-in infinite}
@@ -1635,8 +1638,10 @@ function predatorSVG(L){
     const tl=L.long?`<path d="M14 88 C-6 104 -26 108 -44 98" stroke="${L.body}" stroke-width="17" fill="none" stroke-linecap="round"/><path d="M-40 100 C-52 92 -60 94 -66 102" stroke="${L.body}" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M14 88 C-6 104 -26 108 -44 98" stroke="${L.spots}" stroke-width="8" fill="none" stroke-dasharray="8 16" stroke-linecap="round"/>`:'';
     return `<svg viewBox="${L.long?'-70 0 310 120':'0 0 240 120'}"><g class="slither">${tl}<path d="M10 90 C40 50 70 110 100 80 S160 50 190 80" stroke="${L.body}" stroke-width="22" fill="none" stroke-linecap="round"/>
       <path d="M10 90 C40 50 70 110 100 80 S160 50 190 80" stroke="${L.spots}" stroke-width="10" fill="none" stroke-dasharray="8 16" stroke-linecap="round"/>
-      <g class="pmouth"><path d="M206 82 L236 70 L236 96Z" fill="#5a1414"/><path d="M226 74 l2 7 l2 -8 M226 92 l2 -7 l2 8" fill="#fff"/></g><ellipse cx="200" cy="80" rx="24" ry="15" fill="${L.body}"/><circle cx="208" cy="73" r="5" fill="#ffd23a"/><rect x="207" y="70" width="2" height="7" fill="#111"/>
-      <path d="M222 84 l14 2 m-14 -2 l13 -5" stroke="#c22" stroke-width="2.5" stroke-linecap="round"/></g></svg>`;
+      <g class="snflat"><g class="pmouth"><path d="M206 82 L236 70 L236 96Z" fill="#5a1414"/><path d="M226 74 l2 7 l2 -8 M226 92 l2 -7 l2 8" fill="#fff"/></g><ellipse cx="200" cy="80" rx="24" ry="15" fill="${L.body}"/><circle cx="208" cy="73" r="5" fill="#ffd23a"/><rect x="207" y="70" width="2" height="7" fill="#111"/>
+      <path d="M222 84 l14 2 m-14 -2 l13 -5" stroke="#c22" stroke-width="2.5" stroke-linecap="round"/></g>
+      <g class="snrear"><path d="M168 70 C196 90 202 72 200 34" stroke="${L.body}" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M168 70 C196 90 202 72 200 34" stroke="${L.spots}" stroke-width="10" fill="none" stroke-dasharray="8 16" stroke-linecap="round"/>
+        <ellipse cx="200" cy="26" rx="15" ry="19" fill="${L.body}"/><circle cx="194" cy="38" r="4.5" fill="#ffd23a"/><circle cx="206" cy="38" r="4.5" fill="#ffd23a"/><rect x="193" y="35" width="2" height="6" fill="#111"/><rect x="205" y="35" width="2" height="6" fill="#111"/></g></g></svg>`;
   }
   if(L.kind==='bird'){
     const crest=L.crest?`<path d="M118 34 L100 6 L124 26 L122 2 L134 28Z" fill="${L.crest}"/>`:'';
@@ -1721,14 +1726,17 @@ async function chase(id){
       const fr=f.getBoundingClientRect(); f.style.visibility='hidden';
       bug=document.createElement('div'); bug.className='flybug'; bug.innerHTML=`<span>${f.firstChild.textContent}</span>`; bug.style.fontSize=getComputedStyle(f).fontSize; stage.appendChild(bug);
       const from={x:fr.left-SR().left, y:fr.top-SR().top}, fsz=fr.height; sfxThrow();
-      if(trick==='sap'){ // the pot of sap lands upside down on the snake's head like a hat
-        const C2=L.long?{w:310,x0:70}:{w:240,x0:0}, head=()=>{ const r=p.querySelector('svg').getBoundingClientRect(), fx=(200+C2.x0)/C2.w; return {x:r.left+r.width*(dir>0?fx:1-fx), y:r.top+r.height*.5}; };
+      if(trick==='sap'){ // the snake rears its head straight up and the pot lands over it like a helmet
+        const C2=L.long?{w:310,x0:70}:{w:240,x0:0};
+        const head=()=>{ const r=p.querySelector('svg').getBoundingClientRect(), k=r.height/120, fx=(200+C2.x0)/C2.w; return {x:r.left+r.width*(dir>0?fx:1-fx), top:r.top+2*k, k}; };
+        setTimeout(()=>p.classList.add('rear'),180);
+        const pot=()=>Math.round(38*head().k); bug.style.transition='font-size .45s'; bug.style.fontSize=pot()+'px';
         bug.firstChild.animate([{transform:'rotate(0)'},{transform:'rotate(540deg)'}],{duration:480,easing:'ease-out',fill:'forwards'});
-        await flyTo(bug,from,()=>{ const h=head(); return {x:h.x-SR().left-fsz*.5, y:h.y-SR().top-fsz*.95}; },480,80); if(!ok()) return false;
-        bug.remove(); bug=null; regrow=true; sfxPlop();
-        const pr=p.getBoundingClientRect(), h=head(), hat=document.createElement('div'); hat.className='saphat'; hat.innerHTML='<span>🍯</span><i></i><i></i>'; hat.style.fontSize=fsz*.95+'px';
-        hat.style.left=(h.x-pr.left-fsz*.48)+'px'; hat.style.top=(h.y-pr.top-fsz*.95)+'px'; p.appendChild(hat);
-        run.pause(); const q=document.createElement('div'); q.className='alert'; q.textContent='❓'; q.style.left=(h.x-SR().left)+'px'; q.style.marginLeft='-16px'; q.style.bottom=(SR().bottom-h.y+fsz*1.1)+'px'; q.style.fontSize='38px'; stage.appendChild(q);
+        await flyTo(bug,from,()=>{ const h=head(); return {x:h.x-SR().left-pot()/2, y:h.top-SR().top}; },480,80); if(!ok()) return false;
+        bug.remove(); bug=null; regrow=true; sfxPlop(); p.classList.add('rear');
+        const pr=p.getBoundingClientRect(), h=head(), ps=pot(), hat=document.createElement('div'); hat.className='saphat'; hat.innerHTML='<span>🍯</span><i></i><i></i>'; hat.style.fontSize=ps+'px';
+        hat.style.left=(h.x-pr.left-ps/2)+'px'; hat.style.top=(h.top-pr.top)+'px'; p.appendChild(hat);
+        run.pause(); const q=document.createElement('div'); q.className='alert'; q.textContent='❓'; q.style.left=(h.x-SR().left)+'px'; q.style.marginLeft='-16px'; q.style.bottom=(SR().bottom-h.top+6)+'px'; q.style.fontSize='38px'; stage.appendChild(q);
         await wait(700); if(!ok()) return false; q.remove();
         run.play(); await run.finished.catch(()=>{}); if(!ok()) return false; p.remove();
       } else

@@ -135,6 +135,19 @@
   .vine{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
   .monkey{position:absolute;left:50%;bottom:60px;width:210px;margin-left:-105px;z-index:3;transform-origin:50% 100%}
   .monkey.tossing{z-index:6}
+  .onsen{position:absolute;pointer-events:none}
+  .onsen svg{width:100%;height:100%;display:block}
+  .onsen-back{z-index:2}
+  .onsen-front{z-index:5}
+  .onsenplush{z-index:6}
+  .onsenplush svg{height:auto}
+  .splashdrop{width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#b8e6ee;z-index:6;box-shadow:0 0 0 1px rgba(255,255,255,.6)}
+  .monkey.noplush .plush{display:none}
+  .sleepy{display:none}
+  .twig{display:none}
+  .monkey.relax .twig,.baby.relax .twig{display:inline}
+  .monkey.relax .eyes,.baby.relax .eyes{display:none}
+  .monkey.relax .sleepy,.baby.relax .sleepy{display:inline}
   .stage .predator>svg,.stage .monkey>svg,.stage .baby svg{filter:drop-shadow(0 0 1.3px rgba(30,20,10,.6))}
   /* each continent gets its own landscape */
   .scene-af,.scene-as{display:none}
@@ -1481,6 +1494,7 @@ function monkeySVG(L){
   // eyes
   const er=L.bigeyes?10:7.5, pr=L.bigeyes?6:4.2;
   s+=`<g class="eyes"><circle cx="86" cy="90" r="${er}" fill="#fff"/><circle cx="114" cy="90" r="${er}" fill="#fff"/>${L.humanEyes?`<circle cx="87" cy="91" r="5" fill="#8a5a2a"/><circle cx="115" cy="91" r="5" fill="#8a5a2a"/>`:''}<circle cx="87.5" cy="91" r="${L.humanEyes?2.6:pr}" fill="#1b1410"/><circle cx="115.5" cy="91" r="${L.humanEyes?2.6:pr}" fill="#1b1410"/><circle cx="89" cy="89" r="1.6" fill="#fff"/><circle cx="117" cy="89" r="1.6" fill="#fff"/></g>`;
+  s+=`<g class="sleepy"><path d="M76 91 q10 8 20 0 M104 91 q10 8 20 0" stroke="#1b1410" stroke-width="3.2" fill="none" stroke-linecap="round"/></g>`;
   if(L.lids) s+=`<path d="M77 86 Q86 77 95 86 M105 86 Q114 77 123 86" stroke="#f6f2ea" stroke-width="4.5" fill="none" stroke-linecap="round"/>`;
   if(L.sad) s+=`<path d="M76 80 L94 74 M124 80 L106 74" stroke="#4a3626" stroke-width="3" stroke-linecap="round"/>`;
   // nose + mouth
@@ -1500,6 +1514,7 @@ function monkeySVG(L){
   s+=`<path d="M74 72 Q86 64 96 72 M104 72 Q114 64 126 72" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
   s+=`<ellipse cx="100" cy="${120+so}" rx="6" ry="8" fill="#3a1010"/>`;
   s+=`</g>`;
+  s+=`<g class="twig"><path d="M104 ${121+so} L138 ${108+so}" stroke="#7a5636" stroke-width="4" stroke-linecap="round"/><path d="M126 ${112+so} l6 -9" stroke="#7a5636" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="134" cy="${101+so}" rx="5" ry="2.6" fill="#7aa04a" transform="rotate(-40 134 ${101+so})"/></g>`;
   if(L.bigNose) s+=`<path d="M93 98 Q84 120 90 136 Q100 146 110 136 Q116 120 107 98Z" fill="${L.bigNose}" stroke="rgba(0,0,0,.18)" stroke-width="1.5"/><ellipse cx="96" cy="133" rx="2.4" ry="1.6" fill="#5a2a20"/><ellipse cx="104" cy="133" rx="2.4" ry="1.6" fill="#5a2a20"/>`;
   if(L.mustache) s+=`<g fill="none" stroke="#f7f4ee" stroke-width="5" stroke-linecap="round"><path d="M98 110 C 85 112, 72 120, 66 142"/><path d="M102 110 C 115 112, 128 120, 134 142"/></g>`;
   s+=`</g></svg>`;
@@ -1828,7 +1843,7 @@ let currentId=null;
 function stopAll(){
   stopMusic();
   clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++;
-  stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch,.react,.airleaf,.flybug').forEach(e=>e.remove()); clearTimeout(leafTimer);
+  stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch,.react,.airleaf,.flybug,.onsen').forEach(e=>e.remove()); clearTimeout(leafTimer);
   monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running');
   monkey.className='monkey'; monkey.innerHTML='';
   bubble.classList.remove('show','scared'); bubble.innerHTML='';
@@ -2661,7 +2676,50 @@ async function chase(id){
 
   await wait(6000); if(!ok()) return;
   showFamily(c);
+  if(c.sci==='Macaca fuscata' && currentId==='japan'){ await wait(3200); if(!ok()) return; await onsenEnding(ok); }   // snow monkeys end the day in the hot spring
 }
+
+/* ---------------- Japan finale: everyone hops into the hot spring ---------------- */
+function sfxSplash(pan=0,big=1){ if(!sfxReady()) return; const d=sfxOut(2.6*big,pan),t=AC.currentTime;
+  noiseSweep(d,t,.35,.4,'lowpass',2600,500,.8,.005); noiseSweep(d,t+.02,.25,.18,'bandpass',1800,900,1.2,.01);
+  for(let k=0;k<5;k++){ const tt=t+.08+k*.07+Math.random()*.04, f=500+Math.random()*500; sweepTone(d,'sine',f,f*2.2,tt,.06,.08); } }
+function sfxAhh(){ if(!sfxReady()) return; const d=sfxOut(2.4,0),t=AC.currentTime; voicedSigh(d,t,240,170,1.3,.2); bellTone(d,440,t+.3,.05,1.6,0,[[1,1],[1.01,.7]]); }
+function plushOnlySVG(){ return monkeySVG({fur:'none',face:'none',plush:true}).replace(/<svg viewBox="0 0 200 250"/,'<svg viewBox="8 160 72 92"'); }
+function onsenEnding(ok){ return new Promise(async res=>{
+  const sr=stage.getBoundingClientRect(), mr=monkey.getBoundingClientRect();
+  const cx=mr.left+mr.width/2-sr.left, base=sr.bottom-mr.bottom, W=Math.min(sr.width*.94,mr.width*2.5), H=W*.3;
+  const box=`left:${(cx-W/2).toFixed(0)}px;bottom:${(base-H*.42).toFixed(0)}px;width:${W.toFixed(0)}px;height:${H.toFixed(0)}px`;
+  const rocks=(y,n,c)=>[...Array(n)].map((_,i)=>{ const x=6+i*(188/(n-1)); return `<ellipse cx="${x.toFixed(0)}" cy="${(y+Math.sin(i*1.7)*3).toFixed(0)}" rx="${(11+i%3*3)}" ry="${(7+i%2*2)}" fill="${c}"/><ellipse cx="${(x-2).toFixed(0)}" cy="${(y-5+Math.sin(i*1.7)*3).toFixed(0)}" rx="${(8+i%3*2)}" ry="3" fill="#fff"/>`; }).join('');
+  const back=document.createElement('div'); back.className='onsen onsen-back'; back.style.cssText=box;
+  back.innerHTML=`<svg viewBox="0 0 200 60" preserveAspectRatio="none">${rocks(14,9,'#7c828c')}<ellipse cx="100" cy="32" rx="94" ry="22" fill="#6fb4c2"/><ellipse cx="100" cy="28" rx="80" ry="12" fill="#9ed2dc"/></svg>`;
+  const front=document.createElement('div'); front.className='onsen onsen-front'; front.style.cssText=box;
+  front.innerHTML=`<svg viewBox="0 0 200 60" preserveAspectRatio="none" overflow="visible"><path d="M6 34 Q100 58 194 34 L200 60 L0 60Z" fill="#6fb4c2"/><path d="M6 34 Q100 52 194 34" stroke="#c4e8ee" stroke-width="2" fill="none"/>${rocks(52,10,'#868c96')}
+    <g class="steam" fill="#fff">${[30,62,96,130,164].map((x,i)=>`<ellipse cx="${x}" cy="24" rx="12" ry="8" style="animation-delay:-${(i*.7).toFixed(1)}s"/>`).join('')}</g></svg>`;
+  stage.insertBefore(back,monkey); stage.appendChild(front);
+  [back,front].forEach(e=>e.animate([{opacity:0,transform:'scale(.7)'},{opacity:1,transform:'scale(1)'}],{duration:500,easing:'ease-out'}));
+  await wait(700); if(!ok()) return res();
+  // the plush gets a dry seat on the rocks at the edge
+  if(monkey.querySelector('.plush')){ const pl=document.createElement('div'); pl.className='onsen onsenplush'; pl.innerHTML=plushOnlySVG();
+    const pw=mr.width*.36; pl.style.cssText=`width:${pw.toFixed(0)}px;left:${(cx-W/2+W*.01).toFixed(0)}px;bottom:${(base+H*.36).toFixed(0)}px`; stage.appendChild(pl);
+    monkey.classList.add('noplush'); pl.animate([{transform:`translate(${(W*.3).toFixed(0)}px,-40px) rotate(15deg)`,opacity:0},{transform:'translate(0,0) rotate(0)',opacity:1}],{duration:550,easing:'ease-out'}); }
+  // big hop into the water
+  const sink=mr.height*.4, hop=monkey.animate([{transform:'translate(0,0)'},{transform:'translate(0,-90px)',offset:.45},{transform:`translate(0,${sink.toFixed(0)}px)`,offset:.85},{transform:`translate(0,${(sink-6).toFixed(0)}px)`}],{duration:900,easing:'ease-in-out',fill:'forwards'});
+  setTimeout(()=>{ if(!ok()) return; sfxSplash(0,1); splashAt(cx,base+H*.18); },720);
+  await hop.finished.catch(()=>{}); if(!ok()) return res(); monkey.classList.add('relax');
+  // the babies follow, one from each side
+  const babies=[...stage.querySelectorAll('.baby')];
+  babies.forEach((b,i)=>{ setTimeout(()=>{ if(!ok()) return; const br=b.getBoundingClientRect(), bx=br.left+br.width/2-sr.left, tx=cx+(i?1:-1)*W*.3-bx, ty=(sr.bottom-br.bottom)-(base-br.height*.38);
+      b.style.zIndex=3; b.getAnimations().forEach(a=>a.cancel());
+      b.animate([{transform:'translate(0,0)'},{transform:`translate(${(tx*.5).toFixed(0)}px,-70px)`,offset:.45},{transform:`translate(${tx.toFixed(0)}px,${ty.toFixed(0)}px)`}],{duration:750,easing:'ease-in-out',fill:'forwards'});
+      setTimeout(()=>{ if(!ok()) return; sfxSplash(i?.4:-.4,.6); splashAt(cx+(i?1:-1)*W*.3,base+H*.18,.6); b.classList.add('relax'); },650); },350+i*450); });
+  await wait(1600); if(!ok()) return res(); sfxAhh();
+  const row=document.createElement('div'); row.className='stat new'; row.innerHTML=`<span class="k">End of the day</span><span class="v">♨️ Everyone hops into the hot spring to warm up, while the plush waits on the rocks!</span>`;
+  const mus=bubble.querySelector('.music'); if(mus){ mus.before(row); layoutStage(); }
+  res(); }); }
+function splashAt(x,y,k=1){ for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='onsen splashdrop'; const a=-Math.PI*(.15+.7*i/8), v=(60+Math.random()*50)*k;
+    d.style.left=x+'px'; d.style.bottom=y+'px'; stage.appendChild(d);
+    d.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${(Math.cos(a)*v).toFixed(0)}px,${(Math.sin(a)*v).toFixed(0)}px) scale(.6)`,opacity:.9,offset:.5},{transform:`translate(${(Math.cos(a)*v*1.4).toFixed(0)}px,${(Math.sin(a)*v*.2+30).toFixed(0)}px) scale(.3)`,opacity:0}],{duration:700,easing:'ease-out',fill:'forwards'});
+    setTimeout(()=>d.remove(),750); } }
 /* ---------------- howlers: a big pile of leaves ---------------- */
 const isLeafy=c=>!!(c.sci&&c.sci.startsWith('Alouatta')&&(c.food==='🍃'||c.food==='🌿'));
 function lotsTxt(t){ const m=t.match(/^(?:ramón )?leaves(.*)$/i); let tail=m?m[1].replace(/\s*—\s*lots of them\s*/i,' ').trim():'';

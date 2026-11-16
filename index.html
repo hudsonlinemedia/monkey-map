@@ -302,6 +302,7 @@
   .bflag{flex:none;width:54px;height:36px;border-radius:4px;overflow:hidden;box-shadow:0 0 0 1.5px #2b2b2b,0 2px 4px rgba(0,0,0,.2)}
   .bflag svg{width:100%;height:100%;display:block}
   .btitle h2{line-height:1.1}
+  .emo{display:inline-block;width:1em;height:1em;vertical-align:-.12em}
   .pinlink{color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-decoration-color:rgba(47,111,48,.45);text-underline-offset:4px;cursor:pointer}
   .pinlink:hover{text-decoration-color:#2f6f30}
   .pinarrow{font-size:.55em;margin-left:4px;vertical-align:super;color:#2f6f30}
@@ -2102,23 +2103,23 @@ function pickPred2(c,id){ const pool=(PRED2[id]||[c.pred2]).filter(p=>p&&p!==c.p
 /* ---------------- named wild fruits by country (used when the favorite is fruit) ---------------- */
 const FRUITS={
  brazil:[['🍇','Jabuticaba berries'],['🍒','Pitanga cherries'],['🍈','Wild guavas'],['🫐','Açaí berries'],['🍇','Wild figs']],
- peru:[['🍈','Pacay (ice-cream bean) pulp'],['🍇','Wild figs'],['🫐','Açaí berries'],['🍑','Ubos hog plums']],
- colombia:[['🍇','Wild figs'],['🍑','Jobo hog plums'],['🍈','Cecropia fruit'],['🍒','Nance berries']],
- bolivia:[['🍈','Cecropia fruit'],['🍇','Wild figs'],['🫐','Açaí berries'],['🍑','Hog plums']],
- ecuador:[['🍈','Cecropia fruit'],['🍇','Wild figs'],['🍑','Hog plums']],
- venezuela:[['🍇','Wild figs'],['🍈','Cecropia fruit'],['🍑','Jobo hog plums'],['🫐','Moriche palm fruit']],
- guyana:[['🍇','Wild figs'],['🍈','Inga pods'],['🍑','Hog plums'],['🫐','Awara palm fruit']],
- suriname:[['🍇','Wild figs'],['🍈','Inga pods'],['🍑','Mope hog plums'],['🫐','Awara palm fruit']],
- frenchguiana:[['🍇','Wild figs'],['🍈','Inga pods'],['🍑','Mombin hog plums'],['🫐','Awara palm fruit']],
+ peru:[['🍈','Pacay (ice-cream bean) pulp'],['🍇','Wild figs'],['🫐','Açaí berries'],['🟣','Ubos hog plums']],
+ colombia:[['🍇','Wild figs'],['🟣','Jobo hog plums'],['🍈','Cecropia fruit'],['🍒','Nance berries']],
+ bolivia:[['🍈','Cecropia fruit'],['🍇','Wild figs'],['🫐','Açaí berries'],['🟣','Hog plums']],
+ ecuador:[['🍈','Cecropia fruit'],['🍇','Wild figs'],['🟣','Hog plums']],
+ venezuela:[['🍇','Wild figs'],['🍈','Cecropia fruit'],['🟣','Jobo hog plums'],['🫐','Moriche palm fruit']],
+ guyana:[['🍇','Wild figs'],['🍈','Inga pods'],['🟣','Hog plums'],['🫐','Awara palm fruit']],
+ suriname:[['🍇','Wild figs'],['🍈','Inga pods'],['🟣','Mope hog plums'],['🫐','Awara palm fruit']],
+ frenchguiana:[['🍇','Wild figs'],['🍈','Inga pods'],['🟣','Mombin hog plums'],['🫐','Awara palm fruit']],
  paraguay:[['🍒','Pindó palm fruit'],['🍈','Guavirá berries'],['🍇','Wild figs'],['🍑','Ñangapirí cherries']],
  argentina:[['🍒','Pindó palm fruit'],['🍇','Wild figs'],['🍈','Mburucuyá passion fruit'],['🍑','Ñangapirí cherries']],
- belize:[['🍈','Ramón (breadnut) fruit'],['🍇','Wild figs'],['🍑','Hog plums'],['🍒','Craboo (nance) berries']],
- guatemala:[['🍈','Ramón fruit'],['🍇','Wild figs'],['🍑','Jocote plums'],['🍒','Nance berries']],
- elsalvador:[['🍑','Jocote plums'],['🍇','Wild figs'],['🍒','Nance berries'],['🍈','Wild zapote']],
- honduras:[['🍇','Wild figs'],['🍑','Jocote plums'],['🍒','Nance berries'],['🍈','Ramón fruit']],
- nicaragua:[['🍇','Wild figs'],['🍑','Jocote plums'],['🍒','Nance berries'],['🍈','Wild zapote']],
- costarica:[['🍇','Wild figs'],['🍒','Nance berries'],['🍈','Cecropia fruit'],['🍑','Jocote plums']],
- panama:[['🍒','Nance berries'],['🍈','Cecropia fruit'],['🍇','Wild figs'],['🍑','Jobo hog plums']]
+ belize:[['🍈','Ramón (breadnut) fruit'],['🍇','Wild figs'],['🟣','Hog plums'],['🍒','Craboo (nance) berries']],
+ guatemala:[['🍈','Ramón fruit'],['🍇','Wild figs'],['🟣','Jocote plums'],['🍒','Nance berries']],
+ elsalvador:[['🟣','Jocote plums'],['🍇','Wild figs'],['🍒','Nance berries'],['🍈','Wild zapote']],
+ honduras:[['🍇','Wild figs'],['🟣','Jocote plums'],['🍒','Nance berries'],['🍈','Ramón fruit']],
+ nicaragua:[['🍇','Wild figs'],['🟣','Jocote plums'],['🍒','Nance berries'],['🍈','Wild zapote']],
+ costarica:[['🍇','Wild figs'],['🍒','Nance berries'],['🍈','Cecropia fruit'],['🟣','Jocote plums']],
+ panama:[['🍒','Nance berries'],['🍈','Cecropia fruit'],['🍇','Wild figs'],['🟣','Jobo hog plums']]
 };
 
 /* ---------------- randomized favorite foods (top-tier staples only) ---------------- */
@@ -2569,7 +2570,9 @@ function predatorSVG(L){
     <path d="M190 58 L208 62" stroke="#111" stroke-width="3" stroke-linecap="round"/></svg>`;
 }
 /* ---------------- bug-toss gag: monkey throws a live snack at the cat ---------------- */
-const FRUITFOOD=['🍇','🍈','🍑','🍒','🫐','🍌','🍊','🍎','🍐','🥭','🍓'];
+const PLUMSVG='<svg class="emo" viewBox="0 0 64 64" aria-hidden="true"><path d="M33 13 C32 9 33 6 36 4" stroke="#5b3a1e" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M35 9 C41 2 51 3 55 8 C49 13 41 13 35 9Z" fill="#5c9a3c"/><path d="M36 9 C43 7 49 7 54 8" stroke="#3f7a2a" stroke-width="1.4" fill="none"/><ellipse cx="32" cy="38" rx="21" ry="24" fill="#6b2a6e"/><path d="M32 15 C26 26 26 50 32 61" stroke="#4e1a52" stroke-width="2.2" fill="none" opacity=".75"/><ellipse cx="24" cy="30" rx="6" ry="9" fill="#b07ab8" opacity=".55"/><ellipse cx="22" cy="27" rx="2.4" ry="3.6" fill="#f2e2f4" opacity=".8"/></svg>';   // there is no plum emoji, so plums are drawn
+const emo=x=>String(x).replace(/🟣/g,PLUMSVG);
+const FRUITFOOD=['🟣','🍇','🍈','🍑','🍒','🫐','🍌','🍊','🍎','🍐','🥭','🍓'];
 const LIVEFOOD=['🦗','🐛','🕷️','🐞','🦋','🐜','🦎','🐸','🐌','🐝','🪲'];
 function sfxThrow(){ if(!sfxReady()) return; const d=sfxOut(1.6,0),t=AC.currentTime; noiseSweep(d,t,.28,.16,'bandpass',1400,4200,2,.02); }
 function sfxBonk(){ if(!sfxReady()) return; const d=sfxOut(2.4,0),t=AC.currentTime; sweepTone(d,'sine',950,260,t,.16,.32); noiseSweep(d,t,.05,.2,'bandpass',2000,1200,1.5,.003); }
@@ -2624,7 +2627,7 @@ async function chase(id){
       await wait(260); if(!ok()) return false;
       // the monkey hurls its bug back at the cat
       const fr=f.getBoundingClientRect(); f.style.visibility='hidden';
-      bug=document.createElement('div'); bug.className='flybug'; bug.innerHTML=`<span>${f.firstChild.textContent}</span>`; bug.style.fontSize=getComputedStyle(f).fontSize; stage.appendChild(bug);
+      bug=document.createElement('div'); bug.className='flybug'; bug.innerHTML=`<span>${f.firstChild.innerHTML}</span>`; bug.style.fontSize=getComputedStyle(f).fontSize; stage.appendChild(bug);
       const from={x:fr.left-SR().left, y:fr.top-SR().top}, fsz=fr.height; sfxThrow();
       if(trick==='sap'){ // the snake rears its head straight up and the pot lands over it like a helmet
         const C2=L.long?{w:380,x0:140}:{w:240,x0:0};
@@ -2790,7 +2793,7 @@ function addLeafStack(f,c,row){
     [[-.12,.05,-25],[.3,.32,20],[.02,.62,-8]].forEach(([x,y,r],i)=>{ const lf=document.createElement('span'); lf.className='lf'; lf.textContent=c.food;
       lf.style.left=x+'em'; lf.style.bottom=y+'em'; lf.style.rotate=r+'deg'; lf.style.animationDelay=(i*.14)+'s'; st.appendChild(lf); });
     f.appendChild(st); setTimeout(sfxRustle,350);
-    row.querySelector('.v').textContent=`${c.food}${c.food}${c.food} ${lotsTxt(c.foodTxt)}`; row.classList.remove('new'); void row.offsetWidth; row.classList.add('new');
+    row.querySelector('.v').innerHTML=emo(`${c.food}${c.food}${c.food} ${lotsTxt(c.foodTxt)}`); row.classList.remove('new'); void row.offsetWidth; row.classList.add('new');
   },1400);
 }
 function leafDrift(el,i){ // slow, gusty wandering while airborne
@@ -2838,9 +2841,9 @@ function serveFood(id){
   const sn=document.getElementById('snack');
   const row=document.createElement('div'); row.className='stat new';
   const leafy=isLeafy(c);
-  row.innerHTML=`<span class="k">Favorite food</span><span class="v">${c.food} ${leafy?'Leaves':c.foodTxt}</span>`;
+  row.innerHTML=`<span class="k">Favorite food</span><span class="v">${emo(c.food)} ${leafy?'Leaves':c.foodTxt}</span>`;
   if(sn) sn.replaceWith(row); else bubble.querySelector('.fact').before(row);
-  const f=document.createElement('div'); f.className='food'; f.innerHTML=`<span class="fe">${c.food}</span>`;
+  const f=document.createElement('div'); f.className='food'; f.innerHTML=`<span class="fe">${emo(c.food)}</span>`;
   if(isAF()){ monkey.appendChild(f); tossSnack(f); } else if(isAS()){ monkey.appendChild(f); floatSnack(f); } else { snackTrail(); monkey.appendChild(f); } monkey.classList.add('holding'); sfxSnack();
   if(leafy) addLeafStack(f,c,row);
   monkey.classList.remove('pop','hop'); void monkey.offsetWidth; monkey.classList.add('hop');
@@ -3066,8 +3069,8 @@ Object.assign(FAVS,{
 });
 const FR_SAHEL=[['🍈','Baobab fruit ("monkey bread")'],['🍇','Wild figs'],['🍒','Jujube berries'],['🍑','Shea fruit']];
 const FR_WEST=[['🥭','Bush mango'],['🍇','Wild figs'],['🍑','African star apples'],['🍒','Wild African cherries']];
-const FR_CENT=[['🥭','Bush mango'],['🍇','Wild figs'],['🍑','Safou (African plum)'],['🫐','Wild forest berries']];
-const FR_EAST=[['🍇','Wild figs'],['🍑','Wild plums'],['🍈','Baobab fruit ("monkey bread")'],['🫐','Wild berries']];
+const FR_CENT=[['🥭','Bush mango'],['🍇','Wild figs'],['🟣','Safou (African plum)'],['🫐','Wild forest berries']];
+const FR_EAST=[['🍇','Wild figs'],['🟣','Wild plums'],['🍈','Baobab fruit ("monkey bread")'],['🫐','Wild berries']];
 const FR_SOUTH=[['🍑','Marula fruit'],['🍈','Baobab fruit ("monkey bread")'],['🍇','Wild figs'],['🍒','Mobola plums']];
 Object.assign(FRUITS,{
  morocco:[['🍒','Wild cherries'],['🍇','Wild figs']],algeria:[['🍒','Wild cherries'],['🍇','Wild figs']],

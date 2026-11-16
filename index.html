@@ -302,6 +302,7 @@
   .bflag{flex:none;width:54px;height:36px;border-radius:4px;overflow:hidden;box-shadow:0 0 0 1.5px #2b2b2b,0 2px 4px rgba(0,0,0,.2)}
   .bflag svg{width:100%;height:100%;display:block}
   .btitle h2{line-height:1.1}
+  .bscroll>*{zoom:var(--bz,1)}
   .emo{display:inline-block;width:1em;height:1em;vertical-align:-.12em}
   .pinlink{color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-decoration-color:rgba(47,111,48,.45);text-underline-offset:4px;cursor:pointer}
   .pinlink:hover{text-decoration-color:#2f6f30}
@@ -2350,6 +2351,9 @@ function showCountry(id,sp){
   requestAnimationFrame(layoutStage);
 }
 const isPhone=()=>window.innerWidth<=820;
+// shrink the info text (down to 78%) so the facts fit the panel without scrolling; only scroll past that
+function fitBubble(sc){ if(!sc) return; let z=parseFloat(sc.style.getPropertyValue('--bz'))||1;
+  while(z>0.78 && sc.scrollHeight>sc.clientHeight+1){ z=Math.round((z-0.04)*100)/100; sc.style.setProperty('--bz',z); } }
 function layoutStage(){
   if(isPhone()){
     monkey.style.bottom='34px';
@@ -2357,7 +2361,7 @@ function layoutStage(){
     // size the panel to the visible screen (works inside iframes like Brightspace too)
     const vh=Math.min(window.innerHeight||800, (screen&&screen.height)||9999);
     stage.style.height=Math.max(460,vh-12)+'px';
-    const sc=bubble.querySelector('.bscroll');
+    const sc=bubble.querySelector('.bscroll'); fitBubble(sc);
     if(sc && sc.scrollHeight>sc.clientHeight+2) requestAnimationFrame(()=>{
       // show the newest section in full: start at its top; if room is left, include what follows
       const rows=sc.querySelectorAll('.stat.new'); const last=rows[rows.length-1];
@@ -2377,7 +2381,7 @@ function layoutStage(){
       stage.style.minHeight='0px'; stage.style.height=cap+'px';
       const fixedPart=bubble.offsetHeight-sc.offsetHeight;
       sc.style.maxHeight=Math.max(110,cap-mh-60-br-14-30-fixedPart)+'px'; sc.style.overflowY='auto';
-      monkey.style.bottom='40px';
+      monkey.style.bottom='40px'; fitBubble(sc);
       if(sc.scrollHeight>sc.clientHeight+2) requestAnimationFrame(()=>{
         const rows=sc.querySelectorAll('.stat.new'); const last=rows[rows.length-1];
         let top=sc.scrollHeight-sc.clientHeight;

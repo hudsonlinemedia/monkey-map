@@ -113,6 +113,7 @@
     .stage .predator.small{width:140px;margin-left:-70px}
     .stage .predator.snake.big{width:215px;margin-left:-108px}
     .stage .predator.snake.long{width:284px;margin-left:-142px}
+    .stage .predator.snake.xlong{width:344px;margin-left:-172px}
     .stage .predator.croc{width:228px;margin-left:-114px}
     .stage .predator.bird.big{width:172px;margin-left:-86px}
     .stage .food,.stage .snacktrail{font-size:42px}
@@ -356,6 +357,7 @@
   .predator.small{width:175px;margin-left:-88px}
   .predator.snake.big{width:280px;margin-left:-140px}
   .predator.snake.long{width:364px;margin-left:-182px}
+  .predator.snake.xlong{width:441px;margin-left:-220px}
   .predator.croc{width:292px;margin-left:-146px}
   .predator.bird.big{width:220px;margin-left:-110px}
   .predator .flap{transform-box:fill-box;transform-origin:50% 100%;animation:flap .22s ease-in-out infinite alternate}
@@ -963,13 +965,13 @@ const C_AF={
  mali:{name:'Mali',sp:7,spTxt:'7',
    m:'Guinea baboon',sci:'Papio papio',st:'NT',size:'about 29–57 lb',
    fact:"Guinea baboons are the smallest baboons and the most easygoing. Males get along unusually well, and these baboons even share food, which is rare for monkeys.",
-   food:'🍇',foodTxt:"Wild figs",alt:['🌱','🦗'],altTxt:"Roots & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'Spotted hyena',pred2E:'🐾',
+   food:'🟤',foodTxt:"Wild figs",alt:['🌱','🦗'],altTxt:"Roots & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'Spotted hyena',pred2E:'🐾',
    baby:{fur:'#1d1a18',belly:'#2a2420',hand:'#1d1a18',face:'#e7b9a0'},babyNote:"Baby baboons are born black with pink faces, then turn reddish-brown.",
    look:{fur:'#b07a48',face:'#3a2a2a',belly:'#c4925e',hand:'#3a2a2a',feet:'#3a2a2a',snout:1,snoutC:'#3a2a2a',mane:'#a06a3c',tailType:'arch'}},
  senegal:{name:'Senegal',sp:11,spTxt:'11',
    m:'Green monkey',sci:'Chlorocebus sabaeus',st:'LC',size:'about 7–18 lb',
    fact:"About 350 years ago, sailors carried green monkeys from West Africa to Caribbean islands like Barbados and St. Kitts. Their descendants still live there today!",
-   food:'🍇',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'Martial eagle',pred2E:'🦅',
+   food:'🟤',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'Martial eagle',pred2E:'🦅',
    baby:{fur:'#3a3228',belly:'#4a4034',hand:'#3a3228',face:'#e7b9a0'},babyNote:"Babies have dark fur and pink faces for their first few months.",
    look:{fur:'#9a9a50',face:'#2a2420',belly:'#e8e2c8',hand:'#5a5a40',cheeks:'#e8dfb0',tailType:'hang',tailTip:'#c8b860'}},
  gambia:{name:'Gambia',sp:8,spTxt:'8',
@@ -985,7 +987,7 @@ const C_AF={
  guinea:{name:'Guinea',sp:17,spTxt:'17',
    m:'King colobus',sci:'Colobus polykomos',st:'EN',size:'about 18–22 lb',
    fact:"Colobus monkeys have only a tiny bump where a thumb should be. Their long fingers work like hooks for swinging through branches. The name comes from a Greek word meaning \"cut short.\"",
-   food:'🍃',foodTxt:"Leaves",alt:['🌸','🍇'],altTxt:"Flowers & figs",pred:'Leopard',predE:'🐆',pred2:'African crowned eagle',pred2E:'🦅',
+   food:'🍃',foodTxt:"Leaves",alt:['🌸','🟤'],altTxt:"Flowers & figs",pred:'Leopard',predE:'🐆',pred2:'African crowned eagle',pred2E:'🦅',
    baby:{fur:'#f4f2ec',belly:'#f4f2ec',hand:'#f4f2ec',face:'#e7b9a0',ring:null,tail:'#f4f2ec'},babyNote:"Babies are born pure white! They turn black and white at about 3 months old.",
    look:{fur:'#141414',face:'#2a2420',belly:'#1d1d1d',hand:'#141414',ring:'#f4f2ec',goatee:'#f4f2ec',tail:'#f4f2ec',tailType:'hang',longtail:true}},
  sierraleone:{name:'Sierra Leone',sp:16,spTxt:'16',
@@ -1026,13 +1028,13 @@ const C_AF={
  burkinafaso:{name:'Burkina Faso',lbl:[-1.6,12.4],sp:7,spTxt:'7',
    m:'Tantalus monkey',sci:'Chlorocebus tantalus',st:'LC',size:'about 7–18 lb',
    fact:"Tantalus monkeys are savanna monkeys in the vervet family. They forage on the ground by day and climb into tall trees along rivers to sleep at night.",
-   food:'🍇',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'Martial eagle',pred2E:'🦅',
+   food:'🟤',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'Martial eagle',pred2E:'🦅',
    baby:{fur:'#3a3228',belly:'#4a4034',hand:'#3a3228',face:'#e7b9a0'},babyNote:"Babies have dark fur and pink faces for their first few months.",
    look:{fur:'#a8a070',face:'#2a2420',belly:'#f0ecd8',hand:'#3a3630',brow:'#f0ecd8',cheeks:'#f0ecd8',tailType:'hang'}},
  niger:{name:'Niger',sp:4,spTxt:'4',
    m:'Olive baboon',sci:'Papio anubis',st:'LC',size:'about 30–80 lb',
    fact:"Olive baboons get their name from their greenish-gray fur, which looks olive-colored from a distance. In Niger they live in W National Park, along the Niger River.",
-   food:'🌱',foodTxt:"Grass roots & seeds",alt:['🍇','🦗'],altTxt:"Figs & insects",pred:'Lion',predE:'🦁',pred2:'Leopard',pred2E:'🐆',
+   food:'🌱',foodTxt:"Grass roots & seeds",alt:['🟤','🦗'],altTxt:"Figs & insects",pred:'Lion',predE:'🦁',pred2:'Leopard',pred2E:'🐆',
    baby:{fur:'#1d1a18',belly:'#2a2420',hand:'#1d1a18',face:'#e7b9a0'},babyNote:"Baby baboons are born black with pink faces, then turn olive-gray.",
    look:{fur:'#7a7454',face:'#2a2424',belly:'#8a8462',hand:'#3a3630',feet:'#3a3630',snout:1.1,snoutC:'#2a2424',mane:'#6a6448',tailType:'arch'}},
  chad:{name:'Chad',sp:5,spTxt:'5',
@@ -1043,13 +1045,13 @@ const C_AF={
  sudan:{name:'Sudan',sp:8,spTxt:'8',
    m:'Grivet',sci:'Chlorocebus aethiops',st:'LC',size:'about 7–18 lb',
    fact:"Grivets have long white tufts of fur on their cheeks and a white band across the forehead. They live along the Nile and in dry woodlands.",
-   food:'🍇',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'Martial eagle',pred2E:'🦅',
+   food:'🟤',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'Martial eagle',pred2E:'🦅',
    baby:{fur:'#3a3228',belly:'#4a4034',hand:'#3a3228',face:'#e7b9a0'},babyNote:"Babies have dark fur and pink faces for their first few months.",
    look:{fur:'#9a9478',face:'#2a2420',belly:'#ece8d8',hand:'#3a3630',brow:'#f4f2ec',cheeks:'#f4f2ec',bigCheeks:true,tailType:'hang'}},
  southsudan:{name:'South Sudan',sp:15,spTxt:'15',
    m:'Guereza colobus',sci:'Colobus guereza',st:'LC',size:'about 12–30 lb',
    fact:"Guerezas wear a long, flowing white cape of fur and have a big bushy white tail. When they leap between trees, the cape spreads out like a parachute.",
-   food:'🍃',foodTxt:"Leaves",alt:['🍇','🌸'],altTxt:"Figs & flowers",pred:'Leopard',predE:'🐆',pred2:'African crowned eagle',pred2E:'🦅',
+   food:'🍃',foodTxt:"Leaves",alt:['🟤','🌸'],altTxt:"Figs & flowers",pred:'Leopard',predE:'🐆',pred2:'African crowned eagle',pred2E:'🦅',
    baby:{fur:'#f4f2ec',belly:'#f4f2ec',hand:'#f4f2ec',face:'#e7b9a0',ring:null,cape:null,tail:'#f4f2ec'},babyNote:"Babies are born pure white! They turn black and white at about 3 months old.",
    look:{fur:'#141414',face:'#2a2420',belly:'#1d1d1d',hand:'#141414',ring:'#f4f2ec',cape:'#f4f2ec',tail:'#141414',tuft:'#f4f2ec',tailType:'hang',longtail:true}},
  ethiopia:{name:'Ethiopia',sp:14,spTxt:'14',
@@ -1162,7 +1164,7 @@ const C_AF={
  botswana:{name:'Botswana',sp:5,spTxt:'5',
    m:'Vervet monkey',sci:'Chlorocebus pygerythrus',st:'LC',size:'about 7–18 lb',
    fact:"Vervets make different alarm calls for leopards, eagles and snakes, and the troop reacts the right way to each one: climbing trees, looking up, or standing tall to scan the grass.",
-   food:'🍇',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'Martial eagle',pred2E:'🦅',
+   food:'🟤',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'Martial eagle',pred2E:'🦅',
    baby:{fur:'#2a2420',belly:'#3a322a',hand:'#2a2420',face:'#e7b9a0'},babyNote:"Babies are born with black fur and pink faces.",
    look:{fur:'#9a9a88',face:'#1d1a18',belly:'#f0ecdf',hand:'#2a2624',brow:'#f4f2ec',cheeks:'#f4f2ec',tailType:'hang',tailTip:'#1d1a18'}},
  namibia:{name:'Namibia',sp:4,spTxt:'4',
@@ -1180,7 +1182,7 @@ const C_AF={
  eswatini:{name:'Eswatini',sp:5,spTxt:'5',
    m:'Vervet monkey',sci:'Chlorocebus pygerythrus',st:'LC',size:'about 7–18 lb',
    fact:"Vervet babies are born with black fur and bright pink faces, so the whole troop can tell they're little ones who need extra care.",
-   food:'🍇',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'African rock python',pred2E:'🐍',
+   food:'🟤',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & grasshoppers",pred:'Leopard',predE:'🐆',pred2:'African rock python',pred2E:'🐍',
    baby:{fur:'#2a2420',belly:'#3a322a',hand:'#2a2420',face:'#e7b9a0'},babyNote:"Babies are born with black fur and pink faces.",
    look:{fur:'#9a9a88',face:'#1d1a18',belly:'#f0ecdf',hand:'#2a2624',brow:'#f4f2ec',cheeks:'#f4f2ec',tailType:'hang',tailTip:'#1d1a18'}},
  lesotho:{name:'Lesotho',sp:2,spTxt:'2',
@@ -1261,7 +1263,7 @@ const C_AS={
  srilanka:{name:'Sri Lanka',sp:5,spTxt:'5',
    m:'Toque macaque',sci:'Macaca sinica',st:'EN',size:'about 7–13 lb',
    fact:"Toque macaques are named for the swirl of hair on their heads that looks like a little cap called a toque. They live only in Sri Lanka, often around its ancient temples and ruins.",
-   food:'🍇',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & insects",pred:'Leopard',predE:'🐆',pred2:'Indian rock python',pred2E:'🐍',
+   food:'🟤',foodTxt:"Wild figs",alt:['🌸','🦗'],altTxt:"Flowers & insects",pred:'Leopard',predE:'🐆',pred2:'Indian rock python',pred2E:'🐍',
    babyNote:"A toque baby rides under its mom's belly at first, then on her back.",
    look:{fur:'#b8946a',face:'#e8b8a0',belly:'#d8c4a0',toque:'#a07a50',hand:'#8a6a48',feet:'#8a6a48',tailType:'hang',longtail:true}},
  myanmar:{name:'Myanmar',sp:21,spTxt:'21',
@@ -1303,7 +1305,7 @@ const C_AS={
  taiwan:{name:'Taiwan',sp:1,spTxt:'1',
    m:'Formosan rock macaque',sci:'Macaca cyclopis',st:'LC',size:'about 11–26 lb',
    fact:"Besides people, Formosan rock macaques are Taiwan's only native primate. They live everywhere from lowland forests up to mountains over 11,000 feet high, and they stuff food into cheek pouches to eat later.",
-   food:'🍇',foodTxt:"Wild figs",alt:['🍃','🐌'],altTxt:"Tender leaves & snails",pred:'Mountain hawk-eagle',predE:'🦅',pred2:'Yellow-throated marten',pred2E:'🦡',
+   food:'🟤',foodTxt:"Wild figs",alt:['🍃','🐌'],altTxt:"Tender leaves & snails",pred:'Mountain hawk-eagle',predE:'🦅',pred2:'Yellow-throated marten',pred2E:'🦡',
    baby:{fur:'#3a3430',belly:'#4a4440'},babyNote:"Babies cling to their mom's belly for the first few weeks.",
    look:{fur:'#6e6a5e',face:'#e8c0b0',belly:'#9a968a',cheeks:'#7e7a6e',hand:'#4a4640',feet:'#4a4640',tailType:'hang'}},
  japan:{name:'Japan',sp:1,spTxt:'1',
@@ -1333,7 +1335,7 @@ const C_AS={
  indonesia:{name:'Indonesia',sp:66,spTxt:'66',
    m:'Crested macaque',sci:'Macaca nigra',st:'CR',size:'about 8–23 lb',
    fact:"Crested macaques live on the island of Sulawesi and wear a spiky punk-rock hairdo. One famously grabbed a photographer's camera and took grinning selfies. Indonesia has more kinds of primates than any country in Asia.",
-   food:'🍇',foodTxt:"Wild figs",alt:['🦗','🍃'],altTxt:"Insects & leaves",pred:'Reticulated python',predE:'🐍',pred2:'Sulawesi hawk-eagle',pred2E:'🦅',
+   food:'🟤',foodTxt:"Wild figs",alt:['🦗','🍃'],altTxt:"Insects & leaves",pred:'Reticulated python',predE:'🐍',pred2:'Sulawesi hawk-eagle',pred2E:'🦅',
    babyNote:"Babies stay close to mom for their first year, riding on her belly or back.",
    look:{fur:'#161616',face:'#1d1d1d',belly:'#222',punk:'#161616',hand:'#111',feet:'#111',tailType:'stub',thick:true}},
  philippines:{name:'Philippines',sp:3,spTxt:'3',
@@ -2069,7 +2071,7 @@ const PHEW=[
   (d,t)=>{ noiseSweep(d,t,.8,.28,'bandpass',1200,600,1.8,.05); sweepTone(d,'sine',600,820,t,.15,.04); sweepTone(d,'sine',820,450,t+.15,.55,.05); } // "whew"
 ];
 function sfxPhew(){ if(!sfxReady()) return; PHEW[Math.floor(Math.random()*PHEW.length)](sfxOut(2,0),AC.currentTime+.02); }
-function sfxFamily(kind,sex,delay,pan){ if(!sfxReady()) return; const t=AC.currentTime+delay, d=sfxOut((isAF()||isAS())?4.5:8.5,pan);   // softer pips in Africa & Asia
+function sfxFamily(kind,sex,delay,pan){ if(!sfxReady()) return; const t=AC.currentTime+delay, d=sfxOut(8.5,pan);
   let f={adult:780,young:1040,baby:1350}[kind]||900; if(sex==='m') f*=.88; if(sex==='f') f*=1.08;
   sweepTone(d,'triangle',f*.8,f*1.15,t,.1,.06); sweepTone(d,'sine',f*2,f*2.2,t,.06,.02); }
 
@@ -2103,43 +2105,43 @@ function pickPred2(c,id){ const pool=(PRED2[id]||[c.pred2]).filter(p=>p&&p!==c.p
 
 /* ---------------- named wild fruits by country (used when the favorite is fruit) ---------------- */
 const FRUITS={
- brazil:[['🍇','Jabuticaba berries'],['🍒','Pitanga cherries'],['🍈','Wild guavas'],['🫐','Açaí berries'],['🍇','Wild figs']],
- peru:[['🍈','Pacay (ice-cream bean) pulp'],['🍇','Wild figs'],['🫐','Açaí berries'],['🟣','Ubos hog plums']],
- colombia:[['🍇','Wild figs'],['🟣','Jobo hog plums'],['🍈','Cecropia fruit'],['🍒','Nance berries']],
- bolivia:[['🍈','Cecropia fruit'],['🍇','Wild figs'],['🫐','Açaí berries'],['🟣','Hog plums']],
- ecuador:[['🍈','Cecropia fruit'],['🍇','Wild figs'],['🟣','Hog plums']],
- venezuela:[['🍇','Wild figs'],['🍈','Cecropia fruit'],['🟣','Jobo hog plums'],['🫐','Moriche palm fruit']],
- guyana:[['🍇','Wild figs'],['🍈','Inga pods'],['🟣','Hog plums'],['🫐','Awara palm fruit']],
- suriname:[['🍇','Wild figs'],['🍈','Inga pods'],['🟣','Mope hog plums'],['🫐','Awara palm fruit']],
- frenchguiana:[['🍇','Wild figs'],['🍈','Inga pods'],['🟣','Mombin hog plums'],['🫐','Awara palm fruit']],
- paraguay:[['🍒','Pindó palm fruit'],['🍈','Guavirá berries'],['🍇','Wild figs'],['🍑','Ñangapirí cherries']],
- argentina:[['🍒','Pindó palm fruit'],['🍇','Wild figs'],['🍈','Mburucuyá passion fruit'],['🍑','Ñangapirí cherries']],
- belize:[['🍈','Ramón (breadnut) fruit'],['🍇','Wild figs'],['🟣','Hog plums'],['🍒','Craboo (nance) berries']],
- guatemala:[['🍈','Ramón fruit'],['🍇','Wild figs'],['🟣','Jocote plums'],['🍒','Nance berries']],
- elsalvador:[['🟣','Jocote plums'],['🍇','Wild figs'],['🍒','Nance berries'],['🍈','Wild zapote']],
- honduras:[['🍇','Wild figs'],['🟣','Jocote plums'],['🍒','Nance berries'],['🍈','Ramón fruit']],
- nicaragua:[['🍇','Wild figs'],['🟣','Jocote plums'],['🍒','Nance berries'],['🍈','Wild zapote']],
- costarica:[['🍇','Wild figs'],['🍒','Nance berries'],['🍈','Cecropia fruit'],['🟣','Jocote plums']],
- panama:[['🍒','Nance berries'],['🍈','Cecropia fruit'],['🍇','Wild figs'],['🟣','Jobo hog plums']]
+ brazil:[['🍇','Jabuticaba berries'],['🍒','Pitanga cherries'],['🍈','Wild guavas'],['🫐','Açaí berries'],['🟤','Wild figs']],
+ peru:[['🍈','Pacay (ice-cream bean) pulp'],['🟤','Wild figs'],['🫐','Açaí berries'],['🟣','Ubos hog plums']],
+ colombia:[['🟤','Wild figs'],['🟣','Jobo hog plums'],['🍈','Cecropia fruit'],['🍒','Nance berries']],
+ bolivia:[['🍈','Cecropia fruit'],['🟤','Wild figs'],['🫐','Açaí berries'],['🟣','Hog plums']],
+ ecuador:[['🍈','Cecropia fruit'],['🟤','Wild figs'],['🟣','Hog plums']],
+ venezuela:[['🟤','Wild figs'],['🍈','Cecropia fruit'],['🟣','Jobo hog plums'],['🫐','Moriche palm fruit']],
+ guyana:[['🟤','Wild figs'],['🍈','Inga pods'],['🟣','Hog plums'],['🫐','Awara palm fruit']],
+ suriname:[['🟤','Wild figs'],['🍈','Inga pods'],['🟣','Mope hog plums'],['🫐','Awara palm fruit']],
+ frenchguiana:[['🟤','Wild figs'],['🍈','Inga pods'],['🟣','Mombin hog plums'],['🫐','Awara palm fruit']],
+ paraguay:[['🍒','Pindó palm fruit'],['🍈','Guavirá berries'],['🟤','Wild figs'],['🍑','Ñangapirí cherries']],
+ argentina:[['🍒','Pindó palm fruit'],['🟤','Wild figs'],['🍈','Mburucuyá passion fruit'],['🍑','Ñangapirí cherries']],
+ belize:[['🍈','Ramón (breadnut) fruit'],['🟤','Wild figs'],['🟣','Hog plums'],['🍒','Craboo (nance) berries']],
+ guatemala:[['🍈','Ramón fruit'],['🟤','Wild figs'],['🟣','Jocote plums'],['🍒','Nance berries']],
+ elsalvador:[['🟣','Jocote plums'],['🟤','Wild figs'],['🍒','Nance berries'],['🍈','Wild zapote']],
+ honduras:[['🟤','Wild figs'],['🟣','Jocote plums'],['🍒','Nance berries'],['🍈','Ramón fruit']],
+ nicaragua:[['🟤','Wild figs'],['🟣','Jocote plums'],['🍒','Nance berries'],['🍈','Wild zapote']],
+ costarica:[['🟤','Wild figs'],['🍒','Nance berries'],['🍈','Cecropia fruit'],['🟣','Jocote plums']],
+ panama:[['🍒','Nance berries'],['🍈','Cecropia fruit'],['🟤','Wild figs'],['🟣','Jobo hog plums']]
 };
 
 /* ---------------- randomized favorite foods (top-tier staples only) ---------------- */
 const FAVS={
- 'Leontopithecus rosalia':[['🍈','Sweet ripe fruit'],['🍇','Juicy wild figs & berries'],['🦗','Crunchy insects']],
+ 'Leontopithecus rosalia':[['🍈','Sweet ripe fruit'],['🟤','Juicy wild figs & berries'],['🦗','Crunchy insects']],
  'Saguinus imperator':[['🍯','Sticky tree gum'],['🍇','Ripe wild fruit'],['🌺','Flower nectar']],
  'Saguinus oedipus':[['🦗','Insects — it hunts them all day'],['🍑','Ripe fruit'],['🍯','Tree gum']],
  'Saimiri boliviensis':[['🐛','Caterpillars & other insects'],['🦗','Grasshoppers'],['🍈','Ripe fruit']],
  'Cebuella pygmaea':[['🍯','Tree sap & gum it gnaws out of bark'],['🍯','Sweet tree gum'],['🦗','Tiny insects']],
- 'Alouatta seniculus':[['🍃','Leaves — lots of them'],['🍇','Wild figs'],['🍈','Ripe fruit']],
+ 'Alouatta seniculus':[['🍃','Leaves — lots of them'],['🟤','Wild figs'],['🍈','Ripe fruit']],
  'Saguinus midas':[['🍒','Juicy small fruits'],['🦗','Insects'],['🌺','Flower nectar']],
  'Pithecia pithecia':[['🌰','Hard seeds cracked from unripe fruit'],['🍇','Fruit pulp & seeds']],
- 'Ateles paniscus':[['🍑','Ripe fruit'],['🍇','Wild figs']],
+ 'Ateles paniscus':[['🍑','Ripe fruit'],['🟤','Wild figs']],
  'Aotus azarae':[['🍈','Ripe fruit'],['🌸','Flowers'],['🍃','Tender leaves']],
  'Alouatta caraya':[['🍃','Leaves'],['🍈','Fruit in season'],['🌼','Flowers in season']],
- 'Alouatta pigra':[['🍃','Leaves'],['🍇','Wild figs'],['🍈','Ripe fruit']],
- 'Ateles geoffroyi':[['🍑','Ripe fruit'],['🍇','Wild figs']],
+ 'Alouatta pigra':[['🍃','Leaves'],['🟤','Wild figs'],['🍈','Ripe fruit']],
+ 'Ateles geoffroyi':[['🍑','Ripe fruit'],['🟤','Wild figs']],
  'Cebus imitator':[['🍈','Ripe fruit'],['🦗','Insects it digs out of bark']],
- 'Alouatta palliata':[['🍃','Leaves — it rests for hours to digest them'],['🍇','Wild figs'],['🍈','Ripe fruit']],
+ 'Alouatta palliata':[['🍃','Leaves — it rests for hours to digest them'],['🟤','Wild figs'],['🍈','Ripe fruit']],
  'Saimiri oerstedii':[['🦗','Insects, especially grasshoppers'],['🍈','Ripe fruit']],
  'Saguinus geoffroyi':[['🍇','Small fruits & berries'],['🦗','Insects'],['🍯','Tree sap']]
 };
@@ -2154,16 +2156,16 @@ const BABYSNACKS={
  'Saguinus oedipus':[['🍑','ripe fruit'],['🍯','tree gum'],['🦗','grasshoppers'],['🐛','caterpillars'],['🍇','wild berries'],['🌸','flowers'],['🕷️','spiders']],
  'Saimiri boliviensis':[['🍈','ripe fruit'],['🌼','flowers'],['🐛','caterpillars'],['🦗','grasshoppers'],['🕷️','spiders'],['🍇','wild berries'],['🌺','flower nectar']],
  'Cebuella pygmaea':[['🐛','caterpillars'],['🌼','flower nectar'],['🍯','tree sap'],['🦗','crickets'],['🕷️','spiders'],['🦋','butterflies'],['🍇','tiny fruits']],
- 'Alouatta seniculus':[['🍈','ripe fruit'],['🌸','flowers'],['🍃','young leaves'],['🌿','leaf buds'],['🍇','wild figs'],['🌺','blossoms']],
+ 'Alouatta seniculus':[['🍈','ripe fruit'],['🌸','flowers'],['🍃','young leaves'],['🌿','leaf buds'],['🟤','wild figs'],['🌺','blossoms']],
  'Saguinus midas':[['🦗','crickets'],['🌺','flower nectar'],['🍇','wild berries'],['🍯','tree gum'],['🕷️','spiders'],['🐸','tree frogs'],['🍒','small red fruits']],
  'Pithecia pithecia':[['🍇','fruit pulp'],['🌰','hard seeds'],['🍃','young leaves'],['🌸','flowers'],['🐛','caterpillars'],['🐜','ants']],
- 'Ateles paniscus':[['🍃','young leaves'],['🌸','flowers'],['🍇','wild figs'],['🍈','ripe fruit'],['🍑','soft fruit'],['🌺','blossoms']],
+ 'Ateles paniscus':[['🍃','young leaves'],['🌸','flowers'],['🟤','wild figs'],['🍈','ripe fruit'],['🍑','soft fruit'],['🌺','blossoms']],
  'Aotus azarae':[['🍈','ripe fruit'],['🐞','beetles'],['🍃','leaves'],['🌸','flowers'],['🍇','wild berries'],['🦋','moths']],
- 'Alouatta caraya':[['🍈','ripe fruit'],['🌼','flowers'],['🍃','leaves'],['🌿','leaf buds'],['🍇','wild figs'],['🌸','blossoms']],
- 'Alouatta pigra':[['🍃','ramón leaves'],['🍈','ripe fruit'],['🌸','flowers'],['🍇','wild figs'],['🌿','leaf buds']],
- 'Ateles geoffroyi':[['🍃','young leaves'],['🌸','flowers'],['🍇','wild figs'],['🍈','ripe fruit'],['🍑','soft fruit'],['🐛','caterpillars']],
- 'Cebus imitator':[['🦗','grasshoppers'],['🥚','bird eggs'],['🦎','small lizards'],['🐛','caterpillars'],['🍈','ripe fruit'],['🍇','wild figs'],['🐜','ants'],['🌸','flowers']],
- 'Alouatta palliata':[['🍃','young leaves'],['🌸','flowers'],['🍇','wild figs'],['🍈','ripe fruit'],['🌿','leaf buds']],
+ 'Alouatta caraya':[['🍈','ripe fruit'],['🌼','flowers'],['🍃','leaves'],['🌿','leaf buds'],['🟤','wild figs'],['🌸','blossoms']],
+ 'Alouatta pigra':[['🍃','ramón leaves'],['🍈','ripe fruit'],['🌸','flowers'],['🟤','wild figs'],['🌿','leaf buds']],
+ 'Ateles geoffroyi':[['🍃','young leaves'],['🌸','flowers'],['🟤','wild figs'],['🍈','ripe fruit'],['🍑','soft fruit'],['🐛','caterpillars']],
+ 'Cebus imitator':[['🦗','grasshoppers'],['🥚','bird eggs'],['🦎','small lizards'],['🐛','caterpillars'],['🍈','ripe fruit'],['🟤','wild figs'],['🐜','ants'],['🌸','flowers']],
+ 'Alouatta palliata':[['🍃','young leaves'],['🌸','flowers'],['🟤','wild figs'],['🍈','ripe fruit'],['🌿','leaf buds']],
  'Saimiri oerstedii':[['🦗','grasshoppers'],['🐛','caterpillars'],['🕷️','spiders'],['🍈','ripe fruit'],['🌺','flower nectar'],['🍇','wild berries']],
  'Saguinus geoffroyi':[['🦗','grasshoppers'],['🍯','tree sap'],['🍇','wild berries'],['🐛','caterpillars'],['🌺','flower nectar'],['🕷️','spiders']]
 };
@@ -2319,6 +2321,7 @@ function showCountry(id,sp){
     tIdx=(tIdx+3)%TOURIST.length;
   }
   if(C[id].sp>0){ pickFavorite(c,id); pickBabySnacks(c); }
+  c.leaf=pickLeaf(c,id);
   pickPred2(c,id);
   CUR=c; hint.style.display='none'; currentId=id; setAfTheme(id);
   stage.classList.add('active');
@@ -2534,8 +2537,8 @@ function predatorSVG(L){
   if(L.chimp) return chimpSVG(L);
   if(L.croc) return crocSVG(L);
   if(L.kind==='snake'){
-    const tl=L.long?`<path d="M14 88 C-10 104 -40 110 -62 100" stroke="${L.body}" stroke-width="17" fill="none" stroke-linecap="round"/><path d="M-60 101 C-80 92 -96 90 -110 98" stroke="${L.body}" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M-108 97 C-118 104 -126 106 -134 101" stroke="${L.body}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M14 88 C-10 104 -40 110 -62 100" stroke="${L.spots}" stroke-width="8" fill="none" stroke-dasharray="8 16" stroke-linecap="round"/><path d="M-60 101 C-80 92 -96 90 -110 98" stroke="${L.spots}" stroke-width="5" fill="none" stroke-dasharray="6 12" stroke-linecap="round"/>`:'';
-    return `<svg viewBox="${L.long?'-140 0 380 120':'0 0 240 120'}"><g class="slither">${tl}<path d="M10 90 C40 50 70 110 100 80 S160 50 190 80" stroke="${L.body}" stroke-width="22" fill="none" stroke-linecap="round"/>
+    const tl=L.xlong?`<path d="M14 88 C-10 104 -40 110 -62 100" stroke="${L.body}" stroke-width="17" fill="none" stroke-linecap="round"/><path d="M-60 101 C-80 92 -96 90 -110 98" stroke="${L.body}" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M-108 97 C-122 106 -138 108 -152 101" stroke="${L.body}" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M-150 101 C-166 93 -182 92 -196 99" stroke="${L.body}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M-194 98 C-202 103 -208 104 -214 100" stroke="${L.body}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M14 88 C-10 104 -40 110 -62 100" stroke="${L.spots}" stroke-width="8" fill="none" stroke-dasharray="8 16" stroke-linecap="round"/><path d="M-60 101 C-80 92 -96 90 -110 98" stroke="${L.spots}" stroke-width="6" fill="none" stroke-dasharray="7 13" stroke-linecap="round"/><path d="M-108 97 C-122 106 -138 108 -152 101" stroke="${L.spots}" stroke-width="4.5" fill="none" stroke-dasharray="6 11" stroke-linecap="round"/><path d="M-150 101 C-166 93 -182 92 -196 99" stroke="${L.spots}" stroke-width="3" fill="none" stroke-dasharray="4 9" stroke-linecap="round"/>`:L.long?`<path d="M14 88 C-10 104 -40 110 -62 100" stroke="${L.body}" stroke-width="17" fill="none" stroke-linecap="round"/><path d="M-60 101 C-80 92 -96 90 -110 98" stroke="${L.body}" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M-108 97 C-118 104 -126 106 -134 101" stroke="${L.body}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M14 88 C-10 104 -40 110 -62 100" stroke="${L.spots}" stroke-width="8" fill="none" stroke-dasharray="8 16" stroke-linecap="round"/><path d="M-60 101 C-80 92 -96 90 -110 98" stroke="${L.spots}" stroke-width="5" fill="none" stroke-dasharray="6 12" stroke-linecap="round"/>`:'';
+    return `<svg viewBox="${L.xlong?'-220 0 460 120':L.long?'-140 0 380 120':'0 0 240 120'}"><g class="slither">${tl}<path d="M10 90 C40 50 70 110 100 80 S160 50 190 80" stroke="${L.body}" stroke-width="22" fill="none" stroke-linecap="round"/>
       <path d="M10 90 C40 50 70 110 100 80 S160 50 190 80" stroke="${L.spots}" stroke-width="10" fill="none" stroke-dasharray="8 16" stroke-linecap="round"/>
       <g class="snflat"><g class="pmouth"><path d="M206 82 L236 70 L236 96Z" fill="#5a1414"/><path d="M226 74 l2 7 l2 -8 M226 92 l2 -7 l2 8" fill="#fff"/></g><ellipse cx="200" cy="80" rx="24" ry="15" fill="${L.body}"/><circle cx="208" cy="73" r="5" fill="#ffd23a"/><rect x="207" y="70" width="2" height="7" fill="#111"/>
       <path d="M222 84 l14 2 m-14 -2 l13 -5" stroke="#c22" stroke-width="2.5" stroke-linecap="round"/></g>
@@ -2575,8 +2578,17 @@ function predatorSVG(L){
 }
 /* ---------------- bug-toss gag: monkey throws a live snack at the cat ---------------- */
 const PLUMSVG='<svg class="emo" viewBox="0 0 64 64" aria-hidden="true"><path d="M33 13 C32 9 33 6 36 4" stroke="#5b3a1e" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M35 9 C41 2 51 3 55 8 C49 13 41 13 35 9Z" fill="#5c9a3c"/><path d="M36 9 C43 7 49 7 54 8" stroke="#3f7a2a" stroke-width="1.4" fill="none"/><ellipse cx="32" cy="38" rx="21" ry="24" fill="#6b2a6e"/><path d="M32 15 C26 26 26 50 32 61" stroke="#4e1a52" stroke-width="2.2" fill="none" opacity=".75"/><ellipse cx="24" cy="30" rx="6" ry="9" fill="#b07ab8" opacity=".55"/><ellipse cx="22" cy="27" rx="2.4" ry="3.6" fill="#f2e2f4" opacity=".8"/></svg>';   // there is no plum emoji, so plums are drawn
-const emo=x=>String(x).replace(/🟣/g,PLUMSVG);
-const FRUITFOOD=['🟣','🍇','🍈','🍑','🍒','🫐','🍌','🍊','🍎','🍐','🥭','🍓'];
+const FIGSVG='<svg class="emo" viewBox="0 0 64 64" aria-hidden="true"><path d="M6 15 C20 11 36 9 58 6" stroke="#8a6a48" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M19 13 L19 22 M46 8 L45 26 M33 11 L33 32" stroke="#6b4f33" stroke-width="2.4" fill="none"/><circle cx="45" cy="36" r="13" fill="url(#fgG)"/><ellipse cx="40.06" cy="30.15" rx="2.6" ry="1.56" fill="#fff" opacity=".5"/><g fill="#fff3c4" opacity=".55"><circle cx="48.9" cy="33.4" r=".9"/><circle cx="43.7" cy="39.25" r=".9"/><circle cx="50.85" cy="40.55" r=".9"/></g><circle cx="45" cy="46.66" r="1.8200000000000003" fill="#5a2a1a"/><circle cx="19" cy="34" r="13" fill="url(#fgR)"/><ellipse cx="14.059999999999999" cy="28.15" rx="2.6" ry="1.56" fill="#fff" opacity=".5"/><g fill="#fff3c4" opacity=".55"><circle cx="22.9" cy="31.4" r=".9"/><circle cx="17.7" cy="37.25" r=".9"/><circle cx="24.85" cy="38.55" r=".9"/></g><circle cx="19" cy="44.66" r="1.8200000000000003" fill="#5a2a1a"/><circle cx="33" cy="46" r="14" fill="url(#fgO)"/><ellipse cx="27.68" cy="39.7" rx="2.8000000000000003" ry="1.68" fill="#fff" opacity=".5"/><g fill="#fff3c4" opacity=".55"><circle cx="37.2" cy="43.2" r=".9"/><circle cx="31.6" cy="49.5" r=".9"/><circle cx="39.3" cy="50.9" r=".9"/></g><circle cx="33" cy="57.48" r="1.9600000000000002" fill="#5a2a1a"/></svg>';   // there is no fig emoji either
+document.body.insertAdjacentHTML('afterbegin','<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id=\"fgR\" cx=\"38%\" cy=\"34%\" r=\"70%\"><stop offset=\"0\" stop-color=\"#f2c25c\"/><stop offset=\".55\" stop-color=\"#d9533a\"/><stop offset=\"1\" stop-color=\"#a52e25\"/></radialGradient><radialGradient id=\"fgG\" cx=\"38%\" cy=\"34%\" r=\"70%\"><stop offset=\"0\" stop-color=\"#eef0a8\"/><stop offset=\".55\" stop-color=\"#c3cb62\"/><stop offset=\"1\" stop-color=\"#8f9d3c\"/></radialGradient><radialGradient id=\"fgO\" cx=\"38%\" cy=\"34%\" r=\"70%\"><stop offset=\"0\" stop-color=\"#f6d07a\"/><stop offset=\".55\" stop-color=\"#e07a3a\"/><stop offset=\"1\" stop-color=\"#b83a2a\"/></radialGradient></defs></svg>');   // shared fig colours
+const LEAFSVG={"broad": "<svg class=\"emo\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M10 56 L18 48\" stroke=\"#4a6b2a\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M17 49 C10 30 22 10 56 6 C58 36 42 54 17 49Z\" fill=\"#3f9a3e\"/><path d=\"M17 49 C30 36 42 22 56 6\" stroke=\"#2c6e2c\" stroke-width=\"2.2\" fill=\"none\"/><path d=\"M24 42 C22 34 24 26 28 21 M30 36 C30 28 34 22 38 17 M37 29 C39 24 42 20 46 13 M28 39 C34 40 40 38 46 32 M35 32 C41 32 46 29 51 22\" stroke=\"#2c6e2c\" stroke-width=\"1.2\" fill=\"none\" opacity=\".75\"/><path d=\"M22 40 C20 30 28 18 44 12\" stroke=\"#9fd68a\" stroke-width=\"2\" fill=\"none\" opacity=\".55\" stroke-linecap=\"round\"/></svg>", "palmate": "<svg class=\"emo\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M32 36 L30 60\" stroke=\"#6b5a2e\" stroke-width=\"3\" stroke-linecap=\"round\"/><ellipse cx=\"32\" cy=\"20\" rx=\"6.5\" ry=\"15\" fill=\"#4f9a3a\" transform=\"rotate(-80 32 34)\"/><ellipse cx=\"32\" cy=\"20\" rx=\"6.5\" ry=\"15\" fill=\"#4f9a3a\" transform=\"rotate(-40 32 34)\"/><ellipse cx=\"32\" cy=\"20\" rx=\"6.5\" ry=\"15\" fill=\"#4f9a3a\" transform=\"rotate(0 32 34)\"/><ellipse cx=\"32\" cy=\"20\" rx=\"6.5\" ry=\"15\" fill=\"#4f9a3a\" transform=\"rotate(40 32 34)\"/><ellipse cx=\"32\" cy=\"20\" rx=\"6.5\" ry=\"15\" fill=\"#4f9a3a\" transform=\"rotate(80 32 34)\"/><path d=\"M32 34 L32 9\" stroke=\"#2f6e2a\" stroke-width=\"1.4\" transform=\"rotate(-80 32 34)\"/><path d=\"M32 34 L32 9\" stroke=\"#2f6e2a\" stroke-width=\"1.4\" transform=\"rotate(-40 32 34)\"/><path d=\"M32 34 L32 9\" stroke=\"#2f6e2a\" stroke-width=\"1.4\" transform=\"rotate(0 32 34)\"/><path d=\"M32 34 L32 9\" stroke=\"#2f6e2a\" stroke-width=\"1.4\" transform=\"rotate(40 32 34)\"/><path d=\"M32 34 L32 9\" stroke=\"#2f6e2a\" stroke-width=\"1.4\" transform=\"rotate(80 32 34)\"/><circle cx=\"32\" cy=\"34\" r=\"4\" fill=\"#4f9a3a\"/></svg>", "young": "<svg class=\"emo\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M30 60 C30 50 31 42 33 34\" stroke=\"#7a4a2a\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M33 36 C20 34 10 22 12 8 C26 10 34 22 33 36Z\" fill=\"#d0653f\"/><path d=\"M33 36 C26 26 20 18 12 8\" stroke=\"#a8432a\" stroke-width=\"1.6\" fill=\"none\"/><path d=\"M33 34 C40 26 52 24 58 28 C54 40 42 42 33 34Z\" fill=\"#e88a5a\"/><path d=\"M33 34 C42 31 50 29 58 28\" stroke=\"#c0603a\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M31 44 C24 44 18 40 16 34 C24 32 30 37 31 44Z\" fill=\"#9cbf4a\"/><path d=\"M18 20 C20 16 22 14 25 12\" stroke=\"#f6c2a0\" stroke-width=\"1.6\" fill=\"none\" opacity=\".7\" stroke-linecap=\"round\"/></svg>", "pinnate": "<svg class=\"emo\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M34 8 C33 26 31 44 28 60\" stroke=\"#6b5a2e\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><ellipse cx=\"24.0\" cy=\"16\" rx=\"7\" ry=\"3.6\" fill=\"#6c9a3a\" transform=\"rotate(-25 24.0 16)\"/><ellipse cx=\"41.0\" cy=\"14\" rx=\"7\" ry=\"3.6\" fill=\"#7bab44\" transform=\"rotate(25 41.0 14)\"/><ellipse cx=\"23.4\" cy=\"24\" rx=\"7\" ry=\"3.6\" fill=\"#6c9a3a\" transform=\"rotate(-25 23.4 24)\"/><ellipse cx=\"40.4\" cy=\"22\" rx=\"7\" ry=\"3.6\" fill=\"#7bab44\" transform=\"rotate(25 40.4 22)\"/><ellipse cx=\"22.8\" cy=\"32\" rx=\"7\" ry=\"3.6\" fill=\"#6c9a3a\" transform=\"rotate(-25 22.8 32)\"/><ellipse cx=\"39.8\" cy=\"30\" rx=\"7\" ry=\"3.6\" fill=\"#7bab44\" transform=\"rotate(25 39.8 30)\"/><ellipse cx=\"22.2\" cy=\"40\" rx=\"7\" ry=\"3.6\" fill=\"#6c9a3a\" transform=\"rotate(-25 22.2 40)\"/><ellipse cx=\"39.2\" cy=\"38\" rx=\"7\" ry=\"3.6\" fill=\"#7bab44\" transform=\"rotate(25 39.2 38)\"/><ellipse cx=\"21.6\" cy=\"48\" rx=\"7\" ry=\"3.6\" fill=\"#6c9a3a\" transform=\"rotate(-25 21.6 48)\"/><ellipse cx=\"38.6\" cy=\"46\" rx=\"7\" ry=\"3.6\" fill=\"#7bab44\" transform=\"rotate(25 38.6 46)\"/><ellipse cx=\"34\" cy=\"7\" rx=\"3.4\" ry=\"6\" fill=\"#7bab44\"/></svg>", "bamboo": "<svg class=\"emo\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M14 62 L24 26 L27 8\" stroke=\"#a3a050\" stroke-width=\"3.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M20 41 L25 42 M25 18 L29 19\" stroke=\"#6e6e30\" stroke-width=\"2\"/><path d=\"M0 0 C7.6000000000000005 -5.5 22.8 -6.5 38 0 C22.8 5 7.6000000000000005 4.5 0 0Z\" fill=\"#7fbf55\" transform=\"translate(24 26) rotate(-25)\"/><path d=\"M2 0 L34 0\" stroke=\"#3f6e2a\" stroke-width=\".9\" opacity=\".6\" transform=\"translate(24 26) rotate(-25)\"/><path d=\"M0 0 C8.0 -5.5 24.0 -6.5 40 0 C24.0 5 8.0 4.5 0 0Z\" fill=\"#6aa84a\" transform=\"translate(24 26) rotate(8)\"/><path d=\"M2 0 L36 0\" stroke=\"#3f6e2a\" stroke-width=\".9\" opacity=\".6\" transform=\"translate(24 26) rotate(8)\"/><path d=\"M0 0 C7.2 -5.5 21.599999999999998 -6.5 36 0 C21.599999999999998 5 7.2 4.5 0 0Z\" fill=\"#5c9a40\" transform=\"translate(24 26) rotate(38)\"/><path d=\"M2 0 L32 0\" stroke=\"#3f6e2a\" stroke-width=\".9\" opacity=\".6\" transform=\"translate(24 26) rotate(38)\"/><path d=\"M0 0 C6.0 -5.5 18.0 -6.5 30 0 C18.0 5 6.0 4.5 0 0Z\" fill=\"#76b04e\" transform=\"translate(24 26) rotate(70)\"/><path d=\"M2 0 L26 0\" stroke=\"#3f6e2a\" stroke-width=\".9\" opacity=\".6\" transform=\"translate(24 26) rotate(70)\"/></svg>", "heart": "<svg class=\"emo\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M32 58 L32 46\" stroke=\"#5b4a2a\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M32 46 C18 40 6 30 8 18 C10 8 22 6 32 14 C42 6 54 8 56 18 C58 30 46 40 32 46Z\" fill=\"#4c9a44\"/><path d=\"M32 46 L32 15 M32 34 C26 30 20 26 15 18 M32 34 C38 30 44 26 49 18 M32 24 C28 21 24 18 21 13 M32 24 C36 21 40 18 43 13\" stroke=\"#2f6a2c\" stroke-width=\"1.4\" fill=\"none\"/></svg>"};   // the leaf menu is drawn, not one emoji
+const LEAFSET={am:['broad','palmate','young','heart'],af:['broad','pinnate','young','heart'],as:['bamboo','young','broad','heart']};
+function pickLeaf(c,id){ const t=((c.foodTxt||'')+' '+(c.altTxt||'')+' '+(c.fact||'')).toLowerCase(), reg=(C[id]&&C[id].reg)||'am';
+  if(/bamboo/.test(t)) return 'bamboo';
+  const set=LEAFSET[reg].slice(); if(/young|tender|bud|shoot/.test(t)) set.push('young','young');   // young-leaf eaters get red new leaves more often
+  return set[Math.floor(Math.random()*set.length)]; }
+const RAMBSVG='<svg class="emo" viewBox="0 0 64 64" aria-hidden="true"><path d="M30 6 C30 14 22 20 20 24 M30 6 C34 14 42 22 44 28" stroke="#6b4f33" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="20" cy="38" r="13" fill="#d4302a"/><path d="M30.7 38.0 Q35.8 40.4 36.9 44.2" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M30.2 41.0 Q34.5 44.8 34.5 48.7" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M29.0 43.8 Q32.0 48.6 30.9 52.3" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M27.0 46.1 Q28.6 51.5 26.4 54.8" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M24.4 47.7 Q24.4 53.4 21.4 55.9" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M21.5 48.6 Q19.9 54.0 16.3 55.6" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M18.5 48.6 Q15.4 53.3 11.5 53.9" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M15.6 47.7 Q11.3 51.4 7.4 50.8" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M13.0 46.1 Q7.8 48.4 4.3 46.7" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M11.0 43.8 Q5.4 44.5 2.4 41.9" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M9.8 41.0 Q4.1 40.2 2.0 36.8" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M9.3 38.0 Q4.2 35.6 3.1 31.8" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M9.8 35.0 Q5.5 31.2 5.5 27.3" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M11.0 32.2 Q8.0 27.4 9.1 23.7" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M13.0 29.9 Q11.4 24.5 13.6 21.2" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M15.6 28.3 Q15.6 22.6 18.6 20.1" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M18.5 27.4 Q20.1 22.0 23.7 20.4" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M21.5 27.4 Q24.6 22.7 28.5 22.1" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M24.4 28.3 Q28.7 24.6 32.6 25.2" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M27.0 29.9 Q32.2 27.6 35.7 29.3" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M29.0 32.2 Q34.6 31.5 37.6 34.1" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M30.2 35.0 Q35.9 35.8 38.0 39.2" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M26.2 39.9 l0.8 2.9" stroke="#8e1a16" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M23.5 43.5 l-1.2 2.7" stroke="#8e1a16" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M19.2 44.4 l-2.7 1.3" stroke="#8e1a16" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M15.2 42.4 l-2.9 -0.8" stroke="#8e1a16" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M13.5 38.3 l-1.7 -2.4" stroke="#8e1a16" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M14.8 34.1 l0.2 -3.0" stroke="#8e1a16" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M18.6 31.7 l2.1 -2.1" stroke="#8e1a16" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M23.0 32.2 l3.0 -0.3" stroke="#8e1a16" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M26.0 35.5 l2.5 1.7" stroke="#8e1a16" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><ellipse cx="15.45" cy="32.8" rx="2.86" ry="1.69" fill="#fff" opacity=".4"/><circle cx="44" cy="42" r="13" fill="#e2442e"/><path d="M54.7 42.0 Q59.8 44.4 60.9 48.2" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M54.2 45.0 Q58.5 48.8 58.5 52.7" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M53.0 47.8 Q56.0 52.6 54.9 56.3" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M51.0 50.1 Q52.6 55.5 50.4 58.8" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M48.4 51.7 Q48.4 57.4 45.4 59.9" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M45.5 52.6 Q43.9 58.0 40.3 59.6" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M42.5 52.6 Q39.4 57.3 35.5 57.9" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M39.6 51.7 Q35.3 55.4 31.4 54.8" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M37.0 50.1 Q31.8 52.4 28.3 50.7" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M35.0 47.8 Q29.4 48.5 26.4 45.9" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M33.8 45.0 Q28.1 44.2 26.0 40.8" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M33.3 42.0 Q28.2 39.6 27.1 35.8" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M33.8 39.0 Q29.5 35.2 29.5 31.3" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M35.0 36.2 Q32.0 31.4 33.1 27.7" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M37.0 33.9 Q35.4 28.5 37.6 25.2" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M39.6 32.3 Q39.6 26.6 42.6 24.1" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M42.5 31.4 Q44.1 26.0 47.7 24.4" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M45.5 31.4 Q48.6 26.7 52.5 26.1" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M48.4 32.3 Q52.7 28.6 56.6 29.2" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M51.0 33.9 Q56.2 31.6 59.7 33.3" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M53.0 36.2 Q58.6 35.5 61.6 38.1" stroke="#e04a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M54.2 39.0 Q59.9 39.8 62.0 43.2" stroke="#c9d24a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M50.2 43.9 l0.8 2.9" stroke="#9c2018" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M47.5 47.5 l-1.2 2.7" stroke="#9c2018" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M43.2 48.4 l-2.7 1.3" stroke="#9c2018" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M39.2 46.4 l-2.9 -0.8" stroke="#9c2018" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M37.5 42.3 l-1.7 -2.4" stroke="#9c2018" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M38.8 38.1 l0.2 -3.0" stroke="#9c2018" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M42.6 35.7 l2.1 -2.1" stroke="#9c2018" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M47.0 36.2 l3.0 -0.3" stroke="#9c2018" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M50.0 39.5 l2.5 1.7" stroke="#9c2018" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><ellipse cx="39.45" cy="36.8" rx="2.86" ry="1.69" fill="#fff" opacity=".4"/></svg>';   // hairy red rambutans
+const emo=x=>String(x).replace(/🟣/g,PLUMSVG).replace(/🟤/g,FIGSVG).replace(/🟥/g,RAMBSVG).replace(/🍃/g,()=>LEAFSVG[(CUR&&CUR.leaf)||'broad']);
+const FRUITFOOD=['🟣','🟤','🟥','🍇','🍈','🍑','🍒','🫐','🍌','🍊','🍎','🍐','🥭','🍓'];
 const LIVEFOOD=['🦗','🐛','🕷️','🐞','🦋','🐜','🦎','🐸','🐌','🐝','🪲'];
 function sfxThrow(){ if(!sfxReady()) return; const d=sfxOut(1.6,0),t=AC.currentTime; noiseSweep(d,t,.28,.16,'bandpass',1400,4200,2,.02); }
 function sfxBonk(){ if(!sfxReady()) return; const d=sfxOut(2.4,0),t=AC.currentTime; sweepTone(d,'sine',950,260,t,.16,.32); noiseSweep(d,t,.05,.2,'bandpass',2000,1200,1.5,.003); }
@@ -2601,14 +2613,14 @@ async function chase(id){
   // dir=+1: predator from left, monkey flees right; dir=-1: mirror
   async function pass(dir,pname,trick){
     const L=PLOOK[pname];
-    const p=document.createElement('div'); p.className='predator '+L.kind+(L.small?' small':'')+(L.big?' big':'')+(L.long&&(L.kind==='snake'||L.croc)?' long':'')+(L.croc?' croc':'');
+    const p=document.createElement('div'); p.className='predator '+L.kind+(L.small?' small':'')+(L.big?' big':'')+(L.long&&(L.kind==='snake'||L.croc)?' long':'')+(L.xlong?' xlong':'')+(L.croc?' croc':'');
     p.innerHTML=`<div style="transform:scaleX(${dir})">${predatorSVG(L)}</div>`;
     p.style.bottom=(L.kind==='bird'? mb+150 : mb-10)+'px';
     stage.appendChild(p);
     const startY=L.kind==='bird'?-200:0, midY=L.kind==='bird'?-40:0;
-    const gap = L.kind==='bird' ? Math.min(W*.33, W/2 - p.offsetWidth/2 - 8) : Math.max(W*.33, (isPhone()?215:280) + (L.kind==='snake'?10:0) + (L.long&&L.kind==='snake'?(isPhone()?52:67):0)+(L.croc?(isPhone()?28:36):0));  // birds hover fully in frame  // keep ground predators clear of the monkey
+    const gap = L.kind==='bird' ? Math.min(W*.33, W/2 - p.offsetWidth/2 - 8) : Math.max(W*.33, (isPhone()?215:280) + (L.kind==='snake'?10:0) + (L.long&&L.kind==='snake'?(isPhone()?52:67):0)+(L.xlong?(isPhone()?30:39):0)+(L.croc?(isPhone()?28:36):0));  // birds hover fully in frame  // keep ground predators clear of the monkey
     // keep the head and neck on screen: the leading slice of the body must stay inside the stage
-    const hf=L.kind==='snake'?(L.long?.2:.3):L.croc?.28:L.kind==='bird'?.4:.36, pw=p.offsetWidth;
+    const hf=L.kind==='snake'?(L.xlong?.17:L.long?.2:.3):L.croc?.28:L.kind==='bird'?.4:.36, pw=p.offsetWidth;
     const gapMax=W/2+pw/2-hf*pw-6; const gap2=L.kind==='bird'?gap:Math.min(gap,gapMax);
     const pin=p.animate([{transform:`translate(${-dir*W}px,${startY}px)`},{transform:`translate(${-dir*gap2}px,${midY}px)`}],{duration:1300,easing:'ease-out',fill:'forwards'});
     await wait(L.kind==='bird'?1300:450); if(!ok()) return false;   // birds land fully in view before calling
@@ -2634,7 +2646,7 @@ async function chase(id){
       bug=document.createElement('div'); bug.className='flybug'; bug.innerHTML=`<span>${f.firstChild.innerHTML}</span>`; bug.style.fontSize=getComputedStyle(f).fontSize; stage.appendChild(bug);
       const from={x:fr.left-SR().left, y:fr.top-SR().top}, fsz=fr.height; sfxThrow();
       if(trick==='sap'){ // the snake rears its head straight up and the pot lands over it like a helmet
-        const C2=L.long?{w:380,x0:140}:{w:240,x0:0};
+        const C2=L.xlong?{w:460,x0:220}:L.long?{w:380,x0:140}:{w:240,x0:0};
         const head=()=>{ const r=p.querySelector('svg').getBoundingClientRect(), k=r.height/120, fx=(200+C2.x0)/C2.w; return {x:r.left+r.width*(dir>0?fx:1-fx), top:r.top+2*k, k}; };
         setTimeout(()=>p.classList.add('rear'),180);
         const pot=()=>Math.round(38*head().k); bug.style.transition='font-size .45s'; bug.style.fontSize=pot()+'px';
@@ -2703,7 +2715,7 @@ async function chase(id){
   const hang = c.sp>0 && (c.look.tailType||'curl')==='curl';
   const BR = BRANCH[currentId]||BRANCH._;
   const row2=document.createElement('div'); row2.className='stat new';
-  row2.innerHTML=`<span class="k">Babies' snacks</span><span class="v">${c.alt[0]} ${c.alt[1]} ${c.altTxt}${c.babyNote?`<br><i>${c.babyNote}</i>`:''}${hang?`<br>🌿 Hanging by their tails from ${BR[0]}`:''}</span>`;
+  row2.innerHTML=`<span class="k">Babies' snacks</span><span class="v">${emo(c.alt[0])} ${emo(c.alt[1])} ${c.altTxt}${c.babyNote?`<br><i>${c.babyNote}</i>`:''}${hang?`<br>🌿 Hanging by their tails from ${BR[0]}`:''}</span>`;
   bubble.querySelector('.music').before(row2); layoutStage();
   await wait(250); if(!ok()) return;
   if(hang){ const br=document.createElement('div'); br.className='branch'; br.innerHTML=branchSVG(BR[1],BR[2]); stage.appendChild(br); positionHang(); }
@@ -2721,11 +2733,11 @@ async function chase(id){
       sfxBaby(hang, n?.4:-.4);
       if(hang){
         b.className='baby hang holding';
-        b.innerHTML=`<div class="flip">${monkeySVG(Object.assign({},L,{hangTail:true}))}</div><div class="bfood hfood">${c.alt[k]}</div>`;
+        b.innerHTML=`<div class="flip">${monkeySVG(Object.assign({},L,{hangTail:true}))}</div><div class="bfood hfood">${emo(c.alt[k])}</div>`;
         stage.appendChild(b); positionHang();
       } else {
         b.className='baby pop holding'; b.style.bottom=(mb+8)+'px';
-        b.innerHTML=monkeySVG(L)+`<div class="bfood"><span class="fe">${c.alt[k]}</span></div>`;
+        b.innerHTML=monkeySVG(L)+`<div class="bfood"><span class="fe">${emo(c.alt[k])}</span></div>`;
         if(isAF()){ b.className='baby holding'; stage.appendChild(b); babyRunIn(b,!n,isPhone()?160:260); } else if(isAS()){ b.className='baby holding'; stage.appendChild(b); babyDropIn(b,!n); } else stage.appendChild(b);
       }
     }, n*450);
@@ -2794,7 +2806,7 @@ let leafTimer=null;
 function addLeafStack(f,c,row){
   leafTimer=setTimeout(()=>{ if(!monkey.contains(f)) return;
     const st=document.createElement('div'); st.className='leafstack';
-    [[-.12,.05,-25],[.3,.32,20],[.02,.62,-8]].forEach(([x,y,r],i)=>{ const lf=document.createElement('span'); lf.className='lf'; lf.textContent=c.food;
+    [[-.12,.05,-25],[.3,.32,20],[.02,.62,-8]].forEach(([x,y,r],i)=>{ const lf=document.createElement('span'); lf.className='lf'; lf.innerHTML=emo(c.food);
       lf.style.left=x+'em'; lf.style.bottom=y+'em'; lf.style.rotate=r+'deg'; lf.style.animationDelay=(i*.14)+'s'; st.appendChild(lf); });
     f.appendChild(st); setTimeout(sfxRustle,350);
     row.querySelector('.v').innerHTML=emo(`${c.food}${c.food}${c.food} ${lotsTxt(c.foodTxt)}`); row.classList.remove('new'); void row.offsetWidth; row.classList.add('new');
@@ -2806,7 +2818,7 @@ function leafDrift(el,i){ // slow, gusty wandering while airborne
 function leavesUp(){ // extra leaves fly up and get blown around while the monkey runs
   const st=monkey.querySelector('.leafstack'); if(!st) return; const sr=stage.getBoundingClientRect();
   st.querySelectorAll('.lf').forEach((lf,i)=>{ if(lf.style.visibility==='hidden') return; const r=lf.getBoundingClientRect();
-    const a=document.createElement('div'); a.className='airleaf'; a.innerHTML=`<i class="drift" style="display:inline-block"><span style="animation-delay:${-i*.27}s">${lf.textContent}</span></i>`;
+    const a=document.createElement('div'); a.className='airleaf'; a.innerHTML=`<i class="drift" style="display:inline-block"><span style="animation-delay:${-i*.27}s">${lf.innerHTML}</span></i>`;
     a.style.left=(r.left-sr.left)+'px'; a.style.top=(r.top-sr.top)+'px'; a.style.fontSize=getComputedStyle(lf).fontSize; a._lf=lf; a._x0=r.left-sr.left; a._y0=r.top-sr.top; stage.appendChild(a); lf.style.visibility='hidden';
     const top0=r.top-sr.top, ceil=bubble.getBoundingClientRect().bottom-sr.top+14, ty=Math.max(ceil,top0-(70+i*28)), tx=(i-1)*70+Math.random()*16-8;
     a.animate([{transform:'translate(0,0)'},{transform:`translate(${tx*.6}px,${(ty-top0)*.75}px)`,offset:.5},{transform:`translate(${tx}px,${ty-top0}px)`}],{duration:900,easing:'cubic-bezier(.2,.8,.3,1)',fill:'forwards'});
@@ -3035,10 +3047,10 @@ Object.assign(FAVS,{
  'Macaca sylvanus':[['🌰','Acorns'],['🌰','Cedar seeds'],['🍃','Fresh leaves & buds'],['🐛','Caterpillars']],
  'Erythrocebus patas':[['🍯','Acacia gum'],['🦗','Grasshoppers'],['🌰','Acacia seeds']],
  'Papio papio':[['🍇','Wild fruit'],['🌱','Roots & tubers'],['🌾','Grass seeds']],
- 'Chlorocebus sabaeus':[['🍇','Wild figs'],['🌸','Flowers'],['🦗','Grasshoppers']],
+ 'Chlorocebus sabaeus':[['🟤','Wild figs'],['🌸','Flowers'],['🦗','Grasshoppers']],
  'Piliocolobus badius':[['🍃','Young leaves'],['🌸','Flower buds'],['🌰','Seeds']],
  'Cercopithecus campbelli':[['🍇','Ripe fruit'],['🦗','Insects'],['🍃','Young leaves']],
- 'Colobus polykomos':[['🍃','Leaves'],['🌰','Seeds'],['🍇','Wild figs']],
+ 'Colobus polykomos':[['🍃','Leaves'],['🌰','Seeds'],['🟤','Wild figs']],
  'Cercopithecus diana':[['🍇','Ripe fruit'],['🦗','Insects'],['🌸','Flowers']],
  'Cercocebus atys':[['🌰','Hard seeds'],['🍇','Fallen fruit'],['🥚','Frog eggs']],
  'Procolobus verus':[['🍃','Young leaves'],['🌰','Seeds'],['🌸','Flowers']],
@@ -3046,10 +3058,10 @@ Object.assign(FAVS,{
  'Cercopithecus mona':[['🍇','Ripe fruit'],['🦗','Insects'],['🍃','Young leaves']],
  'Cercopithecus erythrogaster':[['🍇','Ripe fruit'],['🍃','Leaves'],['🦗','Insects']],
  'Mandrillus leucophaeus':[['🍇','Fallen fruit'],['🌰','Nuts & seeds'],['🐛','Grubs & insects']],
- 'Chlorocebus tantalus':[['🍇','Wild figs'],['🌸','Flowers'],['🦗','Grasshoppers']],
- 'Papio anubis':[['🌱','Grass roots'],['🍇','Wild figs'],['🦗','Insects']],
- 'Chlorocebus aethiops':[['🍇','Wild figs'],['🌸','Acacia flowers'],['🦗','Grasshoppers']],
- 'Colobus guereza':[['🍃','Leaves'],['🍇','Wild figs'],['🌸','Flowers']],
+ 'Chlorocebus tantalus':[['🟤','Wild figs'],['🌸','Flowers'],['🦗','Grasshoppers']],
+ 'Papio anubis':[['🌱','Grass roots'],['🟤','Wild figs'],['🦗','Insects']],
+ 'Chlorocebus aethiops':[['🟤','Wild figs'],['🌸','Acacia flowers'],['🦗','Grasshoppers']],
+ 'Colobus guereza':[['🍃','Leaves'],['🟤','Wild figs'],['🌸','Flowers']],
  'Theropithecus gelada':[['🌱','Grass blades'],['🌾','Grass seeds'],['🌱','Roots & bulbs']],
  'Papio hamadryas':[['🌸','Acacia flowers'],['🌰','Acacia seeds'],['🌱','Roots']],
  'Papio cynocephalus':[['🌱','Grass corms'],['🍇','Wild fruit'],['🌸','Acacia flowers']],
@@ -3068,27 +3080,27 @@ Object.assign(FAVS,{
  'Papio kindae':[['🍇','Ripe fruit'],['🌱','Roots'],['🌸','Flowers']],
  'Cercopithecus mitis':[['🍇','Ripe fruit'],['🍃','Leaves'],['🦗','Insects']],
  'Cercopithecus albogularis':[['🍇','Ripe fruit'],['🍃','Leaves'],['🌸','Flowers']],
- 'Chlorocebus pygerythrus':[['🍇','Wild figs'],['🌸','Flowers'],['🦗','Grasshoppers']],
+ 'Chlorocebus pygerythrus':[['🟤','Wild figs'],['🌸','Flowers'],['🦗','Grasshoppers']],
  'Papio ursinus':[['🌱','Roots & bulbs'],['🍇','Wild fruit'],['🦗','Insects']]
 });
-const FR_SAHEL=[['🍈','Baobab fruit ("monkey bread")'],['🍇','Wild figs'],['🍒','Jujube berries'],['🍑','Shea fruit']];
-const FR_WEST=[['🥭','Bush mango'],['🍇','Wild figs'],['🍑','African star apples'],['🍒','Wild African cherries']];
-const FR_CENT=[['🥭','Bush mango'],['🍇','Wild figs'],['🟣','Safou (African plum)'],['🫐','Wild forest berries']];
-const FR_EAST=[['🍇','Wild figs'],['🟣','Wild plums'],['🍈','Baobab fruit ("monkey bread")'],['🫐','Wild berries']];
-const FR_SOUTH=[['🍑','Marula fruit'],['🍈','Baobab fruit ("monkey bread")'],['🍇','Wild figs'],['🍒','Mobola plums']];
+const FR_SAHEL=[['🍈','Baobab fruit ("monkey bread")'],['🟤','Wild figs'],['🍒','Jujube berries'],['🍑','Shea fruit']];
+const FR_WEST=[['🥭','Bush mango'],['🟤','Wild figs'],['🍑','African star apples'],['🍒','Wild African cherries']];
+const FR_CENT=[['🥭','Bush mango'],['🟤','Wild figs'],['🟣','Safou (African plum)'],['🫐','Wild forest berries']];
+const FR_EAST=[['🟤','Wild figs'],['🟣','Wild plums'],['🍈','Baobab fruit ("monkey bread")'],['🫐','Wild berries']];
+const FR_SOUTH=[['🍑','Marula fruit'],['🍈','Baobab fruit ("monkey bread")'],['🟤','Wild figs'],['🍒','Mobola plums']];
 Object.assign(FRUITS,{
- morocco:[['🍒','Wild cherries'],['🍇','Wild figs']],algeria:[['🍒','Wild cherries'],['🍇','Wild figs']],
+ morocco:[['🍒','Wild cherries'],['🟤','Wild figs']],algeria:[['🍒','Wild cherries'],['🟤','Wild figs']],
  mauritania:FR_SAHEL,mali:FR_SAHEL,senegal:FR_SAHEL,gambia:FR_SAHEL,burkinafaso:FR_SAHEL,niger:FR_SAHEL,chad:FR_SAHEL,sudan:FR_SAHEL,
  guineabissau:FR_WEST,guinea:FR_WEST,sierraleone:FR_WEST,liberia:FR_WEST,ivorycoast:FR_WEST,ghana:FR_WEST,togo:FR_WEST,benin:FR_WEST,nigeria:FR_WEST,
  cameroon:FR_CENT,eqguinea:FR_CENT,gabon:FR_CENT,congo:FR_CENT,car:FR_CENT,drc:FR_CENT,angola:FR_CENT,
  southsudan:FR_EAST,ethiopia:FR_EAST,eritrea:FR_EAST,djibouti:FR_EAST,somalia:FR_EAST,kenya:FR_EAST,uganda:FR_EAST,tanzania:FR_EAST,burundi:FR_EAST,
- rwanda:[['🫐','Wild blackberries'],['🍇','Wild figs']],
- zambia:FR_SOUTH,malawi:FR_SOUTH,mozambique:FR_SOUTH,zimbabwe:FR_SOUTH,botswana:FR_SOUTH,namibia:FR_SOUTH,southafrica:FR_SOUTH,eswatini:FR_SOUTH,lesotho:[['🍇','Wild figs'],['🍒','Wild berries']]
+ rwanda:[['🫐','Wild blackberries'],['🟤','Wild figs']],
+ zambia:FR_SOUTH,malawi:FR_SOUTH,mozambique:FR_SOUTH,zimbabwe:FR_SOUTH,botswana:FR_SOUTH,namibia:FR_SOUTH,southafrica:FR_SOUTH,eswatini:FR_SOUTH,lesotho:[['🟤','Wild figs'],['🍒','Wild berries']]
 });
 const BS_GUENON=[['🍇','ripe fruit'],['🦗','grasshoppers'],['🐛','caterpillars'],['🌸','flowers'],['🍃','young leaves'],['🕷️','spiders']];
-const BS_VERVET=[['🍇','wild figs'],['🌸','acacia flowers'],['🦗','grasshoppers'],['🌰','seeds'],['🍯','acacia gum'],['🥚','bird eggs']];
+const BS_VERVET=[['🟤','wild figs'],['🌸','acacia flowers'],['🦗','grasshoppers'],['🌰','seeds'],['🍯','acacia gum'],['🥚','bird eggs']];
 const BS_BABOON=[['🌱','roots'],['🌾','grass seeds'],['🍇','wild fruit'],['🦗','insects'],['🌸','flowers'],['🍄','mushrooms']];
-const BS_COLOBUS=[['🍃','young leaves'],['🌿','leaf buds'],['🌸','flowers'],['🌰','seeds'],['🍇','unripe figs']];
+const BS_COLOBUS=[['🍃','young leaves'],['🌿','leaf buds'],['🌸','flowers'],['🌰','seeds'],['🟤','unripe figs']];
 const BS_MANGABEY=[['🌰','hard nuts'],['🍇','fallen fruit'],['🍄','mushrooms'],['🦗','insects'],['🐛','grubs']];
 Object.assign(BABYSNACKS,{
  'Macaca sylvanus':[['🌰','acorns'],['🍃','leaf buds'],['🐛','caterpillars'],['🌸','flowers'],['🍄','mushrooms'],['🌱','roots']],
@@ -3183,7 +3195,7 @@ Object.assign(PLOOK,{
  'Fennec fox':{kind:'quad',fur:'#ead2a4',belly:'#f6ecd8',fox:true,bigEars:true,head:'#efd8ac',small:true},
  'Chimpanzee':{kind:'quad',chimp:true,fur:'#1f1a17',face:'#d8b49a'},
  'Nile crocodile':{kind:'quad',croc:true,fur:'#5a6a3a',belly:'#c8c48a',long:true},
- 'African rock python':{kind:'snake',body:'#7a6a48',spots:'#3a2a1a',big:true},
+ 'African rock python':{kind:'snake',long:true,xlong:true,body:'#7a6a48',spots:'#3a2a1a',big:true},
  'African crowned eagle':{kind:'bird',body:'#3a2e28',head:'#4a3a30',wing:'#2a201a',crest:'#2a201a',belly:'#e8d6bc',bars:'#5a3a2a',big:true},
  'Martial eagle':{kind:'bird',body:'#4a4440',head:'#4a4440',wing:'#332e2b',crest:'#3a3532',belly:'#f2ece4',bars:'#3a3532',big:true},
  "Verreaux's eagle":{kind:'bird',body:'#141414',head:'#1d1d1d',wing:'#0e0e0e',belly:'#1d1d1d',big:true},
@@ -3355,7 +3367,7 @@ sfxPhew=function(){ if(!isAF()) return _sfxPhewAM(); if(!sfxReady()) return; AF_
 sfxSwish=function(fromDir){ if(!isAF()) return _sfxSwishAM(fromDir); if(!sfxReady()) return; AF_SWISH[Math.floor(Math.random()*AF_SWISH.length)](sfxOut(3.0,-fromDir*.6),AC.currentTime+.02); };
 sfxBaby=function(hang,pan){ if(!isAF()) return _sfxBabyAM(hang,pan); if(!sfxReady()) return; const t=AC.currentTime, d=sfxOut(4.5,pan);
   const o=sweepTone(d,'sine',170,260,t,.22,.3,['lowpass',900]); drumHit(d,t,{f0:150,dec:.12,vol:.12,click:.3}); for(let k=0;k<3;k++) noiseHit(d,t+.25+k*.1,{lo:4000,dur:.05,vol:.05}); };  // talking-drum "boop" + scampering
-sfxFamily=function(kind,sex,delay,pan){ if(!isAF()) return _sfxFamilyAM(kind,sex,delay,pan); if(!sfxReady()) return; const t=AC.currentTime+delay, d=sfxOut(6,pan);
+sfxFamily=function(kind,sex,delay,pan){ if(!isAF()) return _sfxFamilyAM(kind,sex,delay,pan); if(!sfxReady()) return; const t=AC.currentTime+delay, d=sfxOut(1.6,pan);   // level-matched to the Americas pips
   let f={adult:587,young:784,baby:1047}[kind]||700; if(sex==='m') f*=.89; if(sex==='f') f*=1.06; kalimbaPlink(d,f,t,.16); kalimbaPlink(d,f*1.5,t+.06,.05); };   // kalimba plinks, higher for younger
 sfxCatch=function(){ if(!isAF()) return _sfxCatchAM(); if(!sfxReady()) return; const d=sfxOut(2,0),t=AC.currentTime; kalimbaPlink(d,1047,t,.2); kalimbaPlink(d,1568,t+.07,.14); };
 let lastThrow=-1;
@@ -3594,40 +3606,40 @@ Object.assign(FAVS,{
  'Macaca silenus':[['🍈','Jackfruit'],['🍇','Wild fruit'],['🦗','Insects'],['🌰','Seeds']],
  'Trachypithecus geei':[['🍃','Leaves'],['🌸','Flowers'],['🍇','Wild fruit']],
  'Trachypithecus phayrei':[['🎋','Bamboo shoots'],['🍃','Young leaves'],['🌸','Flowers']],
- 'Macaca sinica':[['🍇','Wild figs'],['🌸','Flowers'],['🦗','Insects']],
+ 'Macaca sinica':[['🟤','Wild figs'],['🌸','Flowers'],['🦗','Insects']],
  'Rhinopithecus strykeri':[['🎋','Bamboo shoots'],['🍃','Leaves'],['🌿','Lichens']],
  'Trachypithecus obscurus':[['🍃','Young leaves'],['🌸','Flowers'],['🌱','Green seed pods']],
  'Trachypithecus laotum':[['🍃','Leaves'],['🍇','Wild fruit'],['🌸','Flowers']],
  'Pygathrix nigripes':[['🍃','Young leaves'],['🌰','Seeds'],['🌱','Green seed pods']],
  'Pygathrix nemaeus':[['🍃','Young leaves'],['🌸','Flowers'],['🌰','Seeds']],
  'Rhinopithecus roxellana':[['🌿','Tree lichens'],['🍃','Leaf buds'],['🌰','Seeds'],['🌲','Bark']],
- 'Macaca cyclopis':[['🍇','Wild figs'],['🍃','Tender leaves'],['🐌','Snails']],
+ 'Macaca cyclopis':[['🟤','Wild figs'],['🍃','Tender leaves'],['🐌','Snails']],
  'Macaca fuscata':[['🌰','Acorns & beechnuts'],['🍃','Tree buds'],['🍄','Mushrooms'],['🐛','Insects']],
  'Nasalis larvatus':[['🍃','Young leaves'],['🌱','Green seed pods'],['🌰','Seeds']],
  'Presbytis rubicunda':[['🌰','Seeds'],['🍃','Young leaves'],['🌸','Flowers']],
  'Presbytis femoralis':[['🍃','Young leaves'],['🌰','Seeds'],['🌱','Green seed pods']],
- 'Macaca nigra':[['🍇','Wild figs'],['🦗','Insects'],['🍃','Leaves']],
+ 'Macaca nigra':[['🟤','Wild figs'],['🦗','Insects'],['🍃','Leaves']],
  'Macaca fascicularis':[['🦀','Crabs'],['🍇','Wild fruit'],['🦗','Insects']]
 });
-const FR_SASIA=[['🍈','Jackfruit'],['🍇','Wild figs'],['🍑','Wild mangoes'],['🫐','Jamun berries']];
-const FR_SEA=[['🍈','Jackfruit'],['🍇','Wild figs'],['🍑','Rambutans'],['🍒','Wild lychees']];
-const FR_BORNEO=[['🍑','Rambutans'],['🍇','Wild figs'],['🍈','Durian'],['🍒','Mangosteens']];
+const FR_SASIA=[['🍈','Jackfruit'],['🟤','Wild figs'],['🍑','Wild mangoes'],['🫐','Jamun berries']];
+const FR_SEA=[['🍈','Jackfruit'],['🟤','Wild figs'],['🟥','Rambutans'],['🍒','Wild lychees']];
+const FR_BORNEO=[['🟥','Rambutans'],['🟤','Wild figs'],['🍈','Durian'],['🍒','Mangosteens']];
 const FR_EASTASIA=[['🍒','Wild cherries'],['🍇','Wild grapes'],['🍑','Persimmons']];
 Object.assign(FRUITS,{
  afghanistan:[['🍇','Wild mulberries'],['🍒','Wild cherries']],pakistan:[['🍇','Wild mulberries'],['🍒','Wild apricots']],
  india:FR_SASIA,nepal:FR_SASIA,bhutan:FR_SASIA,bangladesh:FR_SASIA,srilanka:FR_SASIA,
  myanmar:FR_SEA,thailand:FR_SEA,laos:FR_SEA,cambodia:FR_SEA,vietnam:FR_SEA,philippines:FR_SEA,easttimor:FR_SEA,
  malaysia:FR_BORNEO,brunei:FR_BORNEO,singapore:FR_BORNEO,indonesia:FR_BORNEO,
- china:FR_EASTASIA,taiwan:[['🍇','Wild figs'],['🍒','Wild cherries']],japan:[['🍑','Persimmons'],['🍇','Wild grapes'],['🍒','Wild cherries']]
+ china:FR_EASTASIA,taiwan:[['🟤','Wild figs'],['🍒','Wild cherries']],japan:[['🍑','Persimmons'],['🍇','Wild grapes'],['🍒','Wild cherries']]
 });
 const BS_MACAQUE=[['🍇','wild fruit'],['🌰','seeds'],['🦗','grasshoppers'],['🌸','flowers'],['🍄','mushrooms'],['🐛','grubs']];
 const BS_LANGUR=[['🍃','young leaves'],['🌿','leaf buds'],['🌸','flowers'],['🌰','seeds'],['🍈','unripe fruit']];
 const BS_SNUB=[['🌿','lichens'],['🍃','leaf buds'],['🎋','bamboo shoots'],['🌰','seeds'],['🌸','flowers']];
 Object.assign(BABYSNACKS,{
  'Macaca mulatta':BS_MACAQUE,'Macaca silenus':[['🍈','jackfruit'],['🦗','insects'],['🐛','grubs'],['🌸','flowers'],['🍄','mushrooms']],
- 'Macaca sinica':BS_MACAQUE,'Macaca cyclopis':[['🍇','wild figs'],['🐌','snails'],['🍃','tender leaves'],['🦗','insects'],['🌰','seeds']],
+ 'Macaca sinica':BS_MACAQUE,'Macaca cyclopis':[['🟤','wild figs'],['🐌','snails'],['🍃','tender leaves'],['🦗','insects'],['🌰','seeds']],
  'Macaca fuscata':[['🌰','acorns'],['🍃','tree buds'],['🍄','mushrooms'],['🐛','insects'],['🌸','cherry blossoms']],
- 'Macaca nigra':[['🍇','wild figs'],['🦗','insects'],['🍃','leaves'],['🐛','grubs'],['🌸','flowers']],
+ 'Macaca nigra':[['🟤','wild figs'],['🦗','insects'],['🍃','leaves'],['🐛','grubs'],['🌸','flowers']],
  'Macaca fascicularis':[['🦀','little crabs'],['🍇','wild fruit'],['🦗','insects'],['🌸','flowers'],['🐌','snails']],
  'Semnopithecus schistaceus':BS_LANGUR,'Trachypithecus geei':BS_LANGUR,'Trachypithecus phayrei':[['🎋','bamboo shoots'],['🍃','young leaves'],['🌸','flowers'],['🌰','seeds']],
  'Trachypithecus obscurus':BS_LANGUR,'Trachypithecus laotum':BS_LANGUR,'Pygathrix nigripes':BS_LANGUR,'Pygathrix nemaeus':BS_LANGUR,
@@ -3695,9 +3707,9 @@ Object.assign(PLOOK,{
  'Yellow-throated marten':{kind:'quad',fur:'#3a2a1e',head:'#2a1e16',belly:'#f0b830',long:true},
  'Japanese marten':{kind:'quad',fur:'#c8962e',head:'#ecdcb8',belly:'#e8b840',long:true},
  'Raccoon dog':{kind:'quad',fur:'#8a7a66',head:'#a89880',belly:'#c8bca8',fox:true},
- 'Reticulated python':{kind:'snake',body:'#8a7a52',spots:'#2a2018',big:true,long:true},
- 'Burmese python':{kind:'snake',body:'#b0904e',spots:'#5a3a1e',big:true,long:true},
- 'Indian rock python':{kind:'snake',body:'#9a8a6a',spots:'#4a3a2a',big:true},
+ 'Reticulated python':{kind:'snake',long:true,xlong:true,body:'#8a7a52',spots:'#2a2018',big:true,long:true},
+ 'Burmese python':{kind:'snake',long:true,xlong:true,body:'#b0904e',spots:'#5a3a1e',big:true,long:true},
+ 'Indian rock python':{kind:'snake',long:true,xlong:true,body:'#9a8a6a',spots:'#4a3a2a',big:true},
  'Saltwater crocodile':{kind:'quad',croc:true,fur:'#4e5e36',belly:'#dcd4a4',long:true},
  'Golden eagle':{kind:'bird',body:'#4a3020',head:'#c89a4a',wing:'#3a2418',belly:'#5a3a24',big:true},
  'Crested hawk-eagle':{kind:'bird',body:'#5a4430',head:'#6a5038',wing:'#3a2a1e',crest:'#2a1d14',belly:'#e8dcc8',bars:'#7a5a3a'},
@@ -3800,7 +3812,7 @@ sfxSwish=function(fromDir){ if(!isAS()) return _swishAF(fromDir); if(!sfxReady()
 sfxBaby=function(hang,pan){ if(!isAS()) return _babyAF(hang,pan); if(!sfxReady()) return; const t=AC.currentTime, d=sfxOut(4.2,pan);
   sweepTone(d,'sine',1400,500,t,.55,.12);                                             // slide-whistle drop from the treetops
   const k=AC.createGain(); k.gain.value=1; k.connect(d); PERC.kotsuzumi(k,t+.6,true); };     // soft "pon" as it lands
-sfxFamily=function(kind,sex,delay,pan){ if(!isAS()) return _familyAF(kind,sex,delay,pan); if(!sfxReady()) return; const t=AC.currentTime+delay, d=sfxOut(6,pan);
+sfxFamily=function(kind,sex,delay,pan){ if(!isAS()) return _familyAF(kind,sex,delay,pan); if(!sfxReady()) return; const t=AC.currentTime+delay, d=sfxOut(1.7,pan);   // level-matched to the Americas pips
   let f={adult:659,young:880,baby:1175}[kind]||784; if(sex==='m') f*=.89; if(sex==='f') f*=1.06; bellTone(d,f,t,.13,.7,0,[[1,1],[2.76,.25],[5.4,.08]]); };   // gamelan-bell plinks
 sfxCatch=function(){ if(!isAS()) return _catchAF(); if(!sfxReady()) return; const d=sfxOut(2,0),t=AC.currentTime; bellTone(d,1319,t,.16,.6,0); bellTone(d,1760,t+.08,.12,.6,0); };
 let lastDrop=-1;

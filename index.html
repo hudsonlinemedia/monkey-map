@@ -150,6 +150,8 @@
   @keyframes steamlow{0%{transform:translate(0,0) scale(.6);opacity:0}30%{opacity:.5}100%{transform:translate(0,-22px) scale(1.3);opacity:0}}
   .onsenplush{z-index:6}
   .onsenplush svg{height:auto}
+  .ptwig{display:none}
+  .onsenplush.chew .ptwig{display:inline}
   .splashdrop{width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#b8e6ee;z-index:6;box-shadow:0 0 0 1px rgba(255,255,255,.6)}
   .monkey.noplush .plush{display:none}
   .sleepy{display:none}
@@ -467,8 +469,9 @@
   <div class="modes">
     <button id="mExplore" class="on">Explore</button>
     <button id="mQuiz"><span class="long">Find-the-country quiz</span><span class="short">Quiz</span></button>
-    <button id="mute" title="Music on/off">🔊 Music</button>
-    <button id="stopBtn" title="Stop everything (Space or Esc)">⏹ Stop</button>
+    <button id="mute" title="Music on/off" aria-label="Music on/off">🔊<span class="long"> Music</span></button>
+    <button id="randBtn" title="Meet a random monkey in a random country" aria-label="Random monkey">🎲<span class="long"> Random</span></button>
+    <button id="stopBtn" title="Stop everything (Space or Esc)" aria-label="Stop">⏹<span class="long"> Stop</span></button>
   </div>
 </header>
 <noscript><div style="margin:10px 16px;padding:14px 16px;background:#fff3cf;color:#3a2a00;border:3px solid #2b2b2b;border-radius:16px;font-size:17px;line-height:1.4">
@@ -632,7 +635,7 @@
       <g fill="#8a8e96"><ellipse cx="212" cy="500" rx="10" ry="6"/><ellipse cx="212" cy="496.4" rx="8.0" ry="2.7" fill="#fff"/><ellipse cx="222" cy="505" rx="7" ry="4"/><ellipse cx="222" cy="502.6" rx="5.6" ry="1.8" fill="#fff"/><ellipse cx="304" cy="500" rx="11" ry="6"/><ellipse cx="304" cy="496.4" rx="8.8" ry="2.7" fill="#fff"/><ellipse cx="294" cy="506" rx="7" ry="4"/><ellipse cx="294" cy="503.6" rx="5.6" ry="1.8" fill="#fff"/></g>
       <g class="steam" fill="#fff"><ellipse cx="234" cy="490" rx="10" ry="7.0" style="animation-delay:-0s"/><ellipse cx="256" cy="490" rx="13" ry="9.1" style="animation-delay:-1.2s"/><ellipse cx="276" cy="490" rx="11" ry="7.7" style="animation-delay:-2.4s"/><ellipse cx="248" cy="490" rx="9" ry="6.3" style="animation-delay:-3.1s"/><ellipse cx="268" cy="490" rx="12" ry="8.4" style="animation-delay:-0.6s"/></g>
     </svg>
-    <svg class="prop prop-l scene-as th-snow" viewBox="0 0 90 560" preserveAspectRatio="xMinYMax meet"><path d="M-45.6 560.0 L30.0 484.4 L105.6 560.0Z" fill="#3e5e52"/><path d="M-11.6 529.4 L30.0 484.4 L71.6 529.4 Q30.0 538.4 -11.6 529.4Z" fill="#fff"/><path d="M-45.6 560.0 Q30.0 555.0 105.6 560.0" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M-26.7 509.6 L30.0 434.0 L86.7 509.6Z" fill="#3e5e52"/><path d="M-1.2 479.0 L30.0 434.0 L61.2 479.0 Q30.0 488.0 -1.2 479.0Z" fill="#fff"/><path d="M-26.7 509.6 Q30.0 504.6 86.7 509.6" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M-7.8 459.2 L30.0 383.6 L67.8 459.2Z" fill="#3e5e52"/><path d="M9.2 428.6 L30.0 383.6 L50.8 428.6 Q30.0 437.6 9.2 428.6Z" fill="#fff"/><path d="M-7.8 459.2 Q30.0 454.2 67.8 459.2" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M-33.0 420.0 L30.0 357.0 L93.0 420.0Z" fill="#3e5e52"/><path d="M-4.7 394.5 L30.0 357.0 L64.7 394.5 Q30.0 402.0 -4.7 394.5Z" fill="#fff"/><path d="M-33.0 420.0 Q30.0 415.0 93.0 420.0" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M-17.2 378.0 L30.0 315.0 L77.2 378.0Z" fill="#3e5e52"/><path d="M4.0 352.5 L30.0 315.0 L56.0 352.5 Q30.0 360.0 4.0 352.5Z" fill="#fff"/><path d="M-17.2 378.0 Q30.0 373.0 77.2 378.0" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M-1.5 336.0 L30.0 273.0 L61.5 336.0Z" fill="#3e5e52"/><path d="M12.7 310.5 L30.0 273.0 L47.3 310.5 Q30.0 318.0 12.7 310.5Z" fill="#fff"/><path d="M-1.5 336.0 Q30.0 331.0 61.5 336.0" stroke="#fff" stroke-width="2.5" fill="none"/><rect x="26" y="540" width="8" height="20" fill="#5a4636"/></svg>
+    <svg class="prop prop-l scene-as th-snow" viewBox="0 0 90 560" preserveAspectRatio="xMinYMax meet"><path d="M-45.6 560.0 L30.0 484.4 L105.6 560.0Z" fill="#3e5e52"/><path d="M-11.6 529.4 L30.0 484.4 L71.6 529.4 Q30.0 538.4 -11.6 529.4Z" fill="#fff"/><path d="M-45.6 560.0 Q30.0 555.0 105.6 560.0" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M-26.7 509.6 L30.0 434.0 L86.7 509.6Z" fill="#3e5e52"/><path d="M-1.2 479.0 L30.0 434.0 L61.2 479.0 Q30.0 488.0 -1.2 479.0Z" fill="#fff"/><path d="M-26.7 509.6 Q30.0 504.6 86.7 509.6" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M-7.8 459.2 L30.0 383.6 L67.8 459.2Z" fill="#3e5e52"/><path d="M9.2 428.6 L30.0 383.6 L50.8 428.6 Q30.0 437.6 9.2 428.6Z" fill="#fff"/><path d="M-7.8 459.2 Q30.0 454.2 67.8 459.2" stroke="#fff" stroke-width="2.5" fill="none"/><g transform="translate(30 420) scale(.72) translate(-30 -380)"><path d="M-33.0 420.0 L30.0 357.0 L93.0 420.0Z" fill="#3e5e52"/><path d="M-4.7 394.5 L30.0 357.0 L64.7 394.5 Q30.0 402.0 -4.7 394.5Z" fill="#fff"/><path d="M-33.0 420.0 Q30.0 415.0 93.0 420.0" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M-17.2 378.0 L30.0 315.0 L77.2 378.0Z" fill="#3e5e52"/><path d="M4.0 352.5 L30.0 315.0 L56.0 352.5 Q30.0 360.0 4.0 352.5Z" fill="#fff"/><path d="M-17.2 378.0 Q30.0 373.0 77.2 378.0" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M-1.5 336.0 L30.0 273.0 L61.5 336.0Z" fill="#3e5e52"/><path d="M12.7 310.5 L30.0 273.0 L47.3 310.5 Q30.0 318.0 12.7 310.5Z" fill="#fff"/><path d="M-1.5 336.0 Q30.0 331.0 61.5 336.0" stroke="#fff" stroke-width="2.5" fill="none"/></g><rect x="26" y="540" width="8" height="20" fill="#5a4636"/></svg>
     <svg class="prop prop-r scene-as th-snow" viewBox="0 0 90 560" preserveAspectRatio="xMaxYMax meet"><path d="M-9.4 560.0 L62.0 488.6 L133.4 560.0Z" fill="#3e5e52"/><path d="M22.7 531.1 L62.0 488.6 L101.3 531.1 Q62.0 539.6 22.7 531.1Z" fill="#fff"/><path d="M-9.4 560.0 Q62.0 555.0 133.4 560.0" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M8.5 512.4 L62.0 441.0 L115.5 512.4Z" fill="#3e5e52"/><path d="M32.5 483.5 L62.0 441.0 L91.5 483.5 Q62.0 492.0 32.5 483.5Z" fill="#fff"/><path d="M8.5 512.4 Q62.0 507.4 115.5 512.4" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M26.3 464.8 L62.0 393.4 L97.7 464.8Z" fill="#3e5e52"/><path d="M42.4 435.9 L62.0 393.4 L81.6 435.9 Q62.0 444.4 42.4 435.9Z" fill="#fff"/><path d="M26.3 464.8 Q62.0 459.8 97.7 464.8" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M3.2 428.0 L62.0 369.2 L120.8 428.0Z" fill="#3e5e52"/><path d="M29.7 404.2 L62.0 369.2 L94.3 404.2 Q62.0 411.2 29.7 404.2Z" fill="#fff"/><path d="M3.2 428.0 Q62.0 423.0 120.8 428.0" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M17.9 388.8 L62.0 330.0 L106.1 388.8Z" fill="#3e5e52"/><path d="M37.7 365.0 L62.0 330.0 L86.3 365.0 Q62.0 372.0 37.7 365.0Z" fill="#fff"/><path d="M17.9 388.8 Q62.0 383.8 106.1 388.8" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M32.6 349.6 L62.0 290.8 L91.4 349.6Z" fill="#3e5e52"/><path d="M45.8 325.8 L62.0 290.8 L78.2 325.8 Q62.0 332.8 45.8 325.8Z" fill="#fff"/><path d="M32.6 349.6 Q62.0 344.6 91.4 349.6" stroke="#fff" stroke-width="2.5" fill="none"/><rect x="58" y="540" width="8" height="20" fill="#5a4636"/></svg>
     <svg class="backdrop scene-as th-kar" viewBox="0 0 400 560" preserveAspectRatio="xMidYMax slice">
       <circle cx="300" cy="330" r="30" fill="#f6c7a8" opacity=".5"/>
@@ -1470,7 +1473,7 @@ function monkeySVG(L){
       ${[[28,170],[36,165],[45,163],[54,166],[60,172]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="6" fill="${od}"/>`).join('')}
       <circle cx="44" cy="183" r="18" fill="${o}"/><ellipse cx="44" cy="188" rx="12" ry="10.5" fill="#efb985"/>
       <circle cx="39.5" cy="185" r="2.2" fill="#2a1a10"/><circle cx="48.5" cy="185" r="2.2" fill="#2a1a10"/><circle cx="40.2" cy="184.3" r=".7" fill="#fff"/><circle cx="49.2" cy="184.3" r=".7" fill="#fff"/>
-      <ellipse cx="44" cy="190" rx="2" ry="1.3" fill="#7a3a18"/><path d="M40 193.5 q4 3 8 0" stroke="#7a3a18" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>`; }
+      <ellipse cx="44" cy="190" rx="2" ry="1.3" fill="#7a3a18"/><path d="M40 193.5 q4 3 8 0" stroke="#7a3a18" stroke-width="1.6" fill="none" stroke-linecap="round"/><g class="ptwig"><path d="M30 195.5 Q44 197.5 61 191" stroke="#7a5636" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M58 192 l3 -4 M60 191.5 l4 1" stroke="#7a5636" stroke-width="1.2" stroke-linecap="round"/><ellipse cx="63" cy="186.5" rx="2.8" ry="1.2" fill="#8fae6c" transform="rotate(-50 63 186.5)"/><ellipse cx="66" cy="191.5" rx="2.8" ry="1.2" fill="#9cb87a" transform="rotate(10 66 191.5)"/><ellipse cx="63" cy="194" rx="2.8" ry="1.2" fill="#8fae6c" transform="rotate(40 63 194)"/></g></g>`; }
   // left arm (resting)
   const aw=L.lanky?10:15;
   s+=`<g class="restArm"><path d="M66 165 Q 48 195 62 214" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="63" cy="215" r="9" fill="${hand}"/></g>`;
@@ -1879,10 +1882,11 @@ function stopAll(){
   stage.classList.remove('active');
 }
 document.getElementById('stopBtn').onclick=stopAll;
+document.getElementById('randBtn').onclick=()=>randomMonkey();
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ stopAll(); return; }
   if((e.code==='Space'||e.key===' ') && !e.repeat && !(e.target.closest&&e.target.closest('input,textarea,select,[contenteditable]'))){ e.preventDefault(); stopAll(); } });   // spacebar = Stop
 document.getElementById('mute').onclick=e=>{
-  muted=!muted; e.currentTarget.textContent=muted?'🔇 Music':'🔊 Music';
+  muted=!muted; e.currentTarget.innerHTML=(muted?'🔇':'🔊')+'<span class="long"> Music</span>';
   document.body.classList.toggle('muted',muted);
   if(muted) stopMusic(); else if(currentId) playMusic(currentId);
 };
@@ -2788,7 +2792,7 @@ function onsenEnding(ok){ return new Promise(async res=>{
   // big hop into the water
   const sink=mr.height*.4, hop=monkey.animate([{transform:'translate(0,0)'},{transform:'translate(0,-90px)',offset:.45},{transform:`translate(0,${sink.toFixed(0)}px)`,offset:.85},{transform:`translate(0,${(sink-6).toFixed(0)}px)`}],{duration:900,easing:'ease-in-out',fill:'forwards'});
   setTimeout(()=>{ if(!ok()) return; sfxSplash(0,1); splashAt(cx,base+H*.18); },720);
-  await hop.finished.catch(()=>{}); if(!ok()) return res(); monkey.classList.add('relax');
+  await hop.finished.catch(()=>{}); if(!ok()) return res(); monkey.classList.add('relax'); const op=stage.querySelector('.onsenplush'); if(op) op.classList.add('chew');   // the plush gets a twig too
   await wait(900); if(!ok()) return res(); sfxAhh();
   const row=document.createElement('div'); row.className='stat new'; row.innerHTML=`<span class="k">End of the day</span><span class="v">♨️ Everyone hops into the hot spring to warm up, while the plush waits on the rocks!</span>`;
   const mus=bubble.querySelector('.music'); if(mus){ mus.before(row); layoutStage(); }
@@ -3941,6 +3945,16 @@ function focusView(id){ const bb=groups[id].getBBox(), base=baseView(), ar=base[
 function animateViewBox(to,ms=600){ const from=svg.getAttribute('viewBox').split(/\s+/).map(Number); cancelAnimationFrame(vbAnim); const t0=performance.now();
   const step=now=>{ const p=Math.min(1,(now-t0)/ms), e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2; svg.setAttribute('viewBox',from.map((v,i)=>(v+(to[i]-v)*e).toFixed(1)).join(' ')); if(p<1) vbAnim=requestAnimationFrame(step); };
   vbAnim=requestAnimationFrame(step); }
+// 🎲 Random: a random country in this region, then a random monkey that lives there
+function randomMonkey(){
+  if(mode==='quiz'){ const ex=document.getElementById('mExplore'); if(ex) ex.click(); }
+  const ids=Object.keys(C).filter(k=>C[k].sp>0&&(C[k].reg||'am')===REGION&&groups[k]); if(!ids.length) return;
+  let id; for(let t=0;t<6;t++){ id=ids[Math.floor(Math.random()*ids.length)]; if(id!==currentId) break; }
+  const list=speciesIn(id); let sp=list[Math.floor(Math.random()*list.length)];
+  if(CUR&&id===currentId&&list.length>1) while(sp===CUR.sci) sp=list[Math.floor(Math.random()*list.length)];
+  if(focusId) exitFocus(true);
+  stopAll(); qb.innerHTML=introText(); showCountry(id, sp===C[id].sci?undefined:sp);
+}
 function enterCountry(id){
   const list=speciesIn(id);
   if(C[id].sp===0 || list.length<=1){ if(focusId&&focusId!==id) exitFocus(true); showCountry(id, list.length===1&&list[0]!==C[id].sci?list[0]:undefined); return; }   // one monkey (or none): straight in

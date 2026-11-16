@@ -107,11 +107,11 @@
   @media (max-width:820px){
     .stage{height:calc(100vh - 12px);height:calc(100svh - 12px);min-height:0 !important}
     .bubble{left:10px;right:10px;top:10px;padding:10px 12px 8px;border-radius:18px}
-    .bscroll{max-height:calc(100vh - 12px - 430px);max-height:calc(100svh - 12px - 430px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+    .bscroll{max-height:calc(100vh - 12px - 385px);max-height:calc(100svh - 12px - 385px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
     .bubble h2{font-size:18px}
     .btitle .sub{font-size:13px}
-    .bflag{width:42px;height:28px}
-    .bface{width:44px;height:44px}
+    .bflag{width:36px;height:24px}
+    .bface{width:38px;height:38px}
     .bubble .sub{font-size:12px;margin-bottom:4px}
     .stat{font-size:13.5px;padding:3px 0}
     .stat .k{font-size:12px}
@@ -135,7 +135,7 @@
     .stage .foliage{height:110px}
   }
   @media (max-width:820px) and (max-height:720px){
-    .bscroll{max-height:calc(100vh - 12px - 400px);max-height:calc(100svh - 12px - 400px)}
+    .bscroll{max-height:calc(100vh - 12px - 360px);max-height:calc(100svh - 12px - 360px)}
     .stage .monkey{width:136px;margin-left:-68px}
   }
   .quiz .palette{display:none}
@@ -331,7 +331,7 @@
   .bubble:after{bottom:-20px;margin-left:-10px;border-width:20px 10px 0 10px;border-color:var(--panel) transparent transparent}
   .bhead{display:flex;align-items:center;gap:10px;padding-bottom:6px;margin-bottom:4px;border-bottom:2px solid #e6dcc0}
   .btitle{min-width:0;flex:1}
-  .bflag{flex:none;width:54px;height:36px;border-radius:4px;overflow:hidden;box-shadow:0 0 0 1.5px #2b2b2b,0 2px 4px rgba(0,0,0,.2)}
+  .bflag{flex:none;width:46px;height:31px;border-radius:4px;overflow:hidden;box-shadow:0 0 0 1.5px #2b2b2b,0 2px 4px rgba(0,0,0,.2)}
   .bflag svg{width:100%;height:100%;display:block}
   .btitle h2{line-height:1.1}
   .bscroll>*{zoom:var(--bz,1)}
@@ -340,7 +340,7 @@
   .pinlink:hover{text-decoration-color:#2f6f30}
   .pinarrow{font-size:.55em;margin-left:4px;vertical-align:super;color:#2f6f30}
   .btitle .sub{font-size:14px;color:#3d4a3d;margin:2px 0 0}
-  .bface{width:54px;height:54px;flex:none;background:#eef7e6;border-radius:50%;overflow:hidden;border:2px solid #2b2b2b}
+  .bface{width:46px;height:46px;flex:none;background:#eef7e6;border-radius:50%;overflow:hidden;border:2px solid #2b2b2b}
   .bface svg{width:100%;height:100%;display:block}
   .bface *{animation:none !important}
   .bface .wave,.bface .holdArm{display:none}
@@ -432,7 +432,8 @@
   .predator.speak .pclosed{opacity:0}
   .alert,.phew{position:absolute;z-index:5;left:50%;font-weight:700;pointer-events:none;animation:pop .4s cubic-bezier(.3,1.6,.5,1) both}
   .alert{font-size:46px;margin-left:-14px}
-  .phew{background:#fff;border:3px solid #2b2b2b;border-radius:16px;padding:4px 12px;font-size:20px;margin-left:40px}
+  .phew{background:#fff;border:3px solid #2b2b2b;border-radius:16px;padding:4px 12px;font-size:20px;margin-left:40px;white-space:nowrap;text-align:center}
+  .phew .phewg{display:block;font-size:11px;font-weight:600;color:#6a6a5a;margin-top:1px}
   .baby{position:absolute;z-index:2;width:127px;left:50%;pointer-events:none}
   .baby.pop{animation:pop .6s cubic-bezier(.25,1.6,.45,1) both}
   .branch{position:absolute;left:-10px;width:calc(100% + 20px);z-index:2;pointer-events:none;transition:top .7s ease-in-out;animation:brin .6s ease-out both}
@@ -444,6 +445,11 @@
   @keyframes swing{0%,100%{transform:rotate(0)}25%{transform:rotate(6deg)}75%{transform:rotate(-6deg)}}
   .baby .bfood{position:absolute;font-size:var(--bf,41px);left:4%;top:32%;isolation:isolate}
   .flipx>.fe{transform:scaleX(-1)}
+  .btitle h2{white-space:nowrap;overflow:hidden}
+  .subrow{display:flex;align-items:center;flex-wrap:wrap;gap:3px 10px;margin-top:2px}
+  .subrow .sub{margin:0 !important}
+  .subrow .newbtn{margin-top:0;font-size:11.5px;padding:2px 9px;border-width:1.5px}
+  .bhead{padding-bottom:4px;margin-bottom:2px}
   .swell{animation:swell 14s linear infinite}
   .swell.s2{animation-duration:19s}
   @keyframes swell{to{transform:translateX(-64px)}}
@@ -467,7 +473,7 @@
   .scared .scaredFace{display:inline}
   .scared .calm{display:none}
   .famrow{display:block}
-  .famstrip{display:flex;align-items:flex-end;justify-content:center;gap:6px;flex-wrap:wrap;margin:4px 0 2px}
+  .famstrip{display:flex;align-items:flex-end;justify-content:center;gap:6px;flex-wrap:wrap;margin:2px 0 0;zoom:.8}
   .fm{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#5d6b5d;opacity:0;animation:fmpop .5s cubic-bezier(.25,1.6,.45,1) forwards}
   @keyframes fmpop{0%{opacity:0;transform:translateY(20px) scale(.6)}100%{opacity:1;transform:none}}
   .fm svg{display:block;width:100%;height:auto;overflow:visible}
@@ -499,6 +505,7 @@
   .food:after{right:auto;left:-18px}
   footer{color:rgba(255,255,255,.7);font-size:12px;padding:0 20px 16px;line-height:1.5}
   footer a{color:#ffe08a}
+  footer .copy{margin-top:8px;text-align:left;font-weight:600;color:rgba(255,255,255,.8)}
   .confetti{position:absolute;width:9px;height:9px;z-index:5;border-radius:2px;pointer-events:none;animation:fall 1.2s ease-out forwards}
   @keyframes fall{from{transform:translate(0,0) rotate(0)}to{transform:translate(var(--dx),var(--dy)) rotate(540deg);opacity:0}}
 </style>
@@ -558,7 +565,7 @@
     <svg class="foliage scene-af th-horn" viewBox="0 0 420 150" preserveAspectRatio="none"><g transform="translate(0 14)"><g fill="#6f7680"><ellipse cx="30" cy="124" rx="70" ry="38"/><ellipse cx="170" cy="136" rx="80" ry="30"/><ellipse cx="300" cy="130" rx="80" ry="36"/><ellipse cx="405" cy="120" rx="60" ry="42"/></g><g fill="#8c939c"><ellipse cx="96" cy="142" rx="60" ry="24"/><ellipse cx="236" cy="146" rx="70" ry="22"/><ellipse cx="356" cy="146" rx="60" ry="24"/></g><g fill="#5f8a4a"><ellipse cx="60" cy="100" rx="18" ry="9"/><ellipse cx="330" cy="104" rx="20" ry="10"/></g></g></svg>
     <svg class="backdrop scene-af th-namib" viewBox="0 0 400 560" preserveAspectRatio="xMidYMax slice"><path d="M-20 470 Q20 420 80 372 Q100 360 112 380 Q140 430 170 470Z" fill="#e2884e"/><path d="M80 372 Q100 360 112 380 Q140 430 170 470 L120 470 Q110 420 80 372Z" fill="#b8603a"/><path d="M140 470 Q200 420 270 350 Q292 332 306 356 Q350 420 420 470Z" fill="#ea9458"/><path d="M270 350 Q292 332 306 356 Q350 420 420 470 L330 470 Q314 400 270 350Z" fill="#c06a40"/><path d="M-20 474 Q100 466 200 472 T420 468 L420 492 L-20 492Z" fill="#f2ece0"/><g stroke="#2e2622" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".8"><path d="M120 482 v-16 l-6 -8 M120 472 l7 -9 M127 463 l4 -4"/><path d="M260 480 v-12 l5 -7 M260 472 l-6 -6"/></g><path d="M-20 496 Q100 486 200 494 T420 490 L420 560 L-20 560Z" fill="#d4986a"/></svg>
     <svg class="foliage scene-af th-namib" viewBox="0 0 420 150" preserveAspectRatio="none"><g transform="translate(0 14)"><g fill="#6f7680"><ellipse cx="30" cy="124" rx="70" ry="38"/><ellipse cx="170" cy="136" rx="80" ry="30"/><ellipse cx="300" cy="130" rx="80" ry="36"/><ellipse cx="405" cy="120" rx="60" ry="42"/></g><g fill="#8c939c"><ellipse cx="96" cy="142" rx="60" ry="24"/><ellipse cx="236" cy="146" rx="70" ry="22"/><ellipse cx="356" cy="146" rx="60" ry="24"/></g></g></svg>
-    <svg class="backdrop scene-af th-sahel" viewBox="0 0 400 560" preserveAspectRatio="xMidYMax slice"><path d="M-20 474 Q100 464 200 470 T420 466 L420 560 L-20 560Z" fill="#cfd59c"/><path d="M54.6 478 Q53.06 443.0 60.76 422.0 L79.24 422.0 Q86.94 443.0 85.4 478Z" fill="#9a948a"/><path d="M62.6 422.0 l-16.6 -14.0" stroke="#9a948a" stroke-width="3.9" stroke-linecap="round"/><ellipse cx="46.0" cy="408.0" rx="9.2" ry="4.6" fill="#7f9a5a"/><path d="M67.5 422.0 l-5.5 -14.0" stroke="#9a948a" stroke-width="3.9" stroke-linecap="round"/><ellipse cx="62.0" cy="408.0" rx="9.2" ry="4.6" fill="#7f9a5a"/><path d="M72.5 422.0 l5.5 -14.0" stroke="#9a948a" stroke-width="3.9" stroke-linecap="round"/><ellipse cx="78.0" cy="408.0" rx="9.2" ry="4.6" fill="#7f9a5a"/><path d="M77.4 422.0 l16.6 -14.0" stroke="#9a948a" stroke-width="3.9" stroke-linecap="round"/><ellipse cx="94.0" cy="408.0" rx="9.2" ry="4.6" fill="#7f9a5a"/><path d="M183.4 472 Q182.74 457.0 186.04 448.0 L193.96 448.0 Q197.26 457.0 196.6 472Z" fill="#aca69c"/><path d="M186.8 448.0 l-7.1 -6.0" stroke="#aca69c" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="179.7" cy="442.0" rx="4.0" ry="2.0" fill="#94aa72"/><path d="M188.9 448.0 l-2.4 -6.0" stroke="#aca69c" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="186.6" cy="442.0" rx="4.0" ry="2.0" fill="#94aa72"/><path d="M191.1 448.0 l2.4 -6.0" stroke="#aca69c" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="193.4" cy="442.0" rx="4.0" ry="2.0" fill="#94aa72"/><path d="M193.2 448.0 l7.1 -6.0" stroke="#aca69c" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="200.3" cy="442.0" rx="4.0" ry="2.0" fill="#94aa72"/><g fill="#b4a07a" opacity=".8"><path d="M250 478 l6 -18 l6 18z"/><path d="M120 480 l4 -12 l4 12z"/></g><path d="M-20 494 Q100 484 200 492 T420 488 L420 560 L-20 560Z" fill="#b8c88a"/></svg>
+    <svg class="backdrop scene-af th-sahel" viewBox="0 0 400 560" preserveAspectRatio="xMidYMax slice"><path d="M-20 474 Q100 464 200 470 T420 466 L420 560 L-20 560Z" fill="#cfd59c"/><path d="M54.6 478 Q53.06 443.0 60.76 422.0 L79.24 422.0 Q86.94 443.0 85.4 478Z" fill="#9a948a"/><path d="M62.6 422.0 l-16.6 -14.0" stroke="#9a948a" stroke-width="3.9" stroke-linecap="round"/><ellipse cx="46.0" cy="408.0" rx="9.2" ry="4.6" fill="#7f9a5a"/><path d="M67.5 422.0 l-5.5 -14.0" stroke="#9a948a" stroke-width="3.9" stroke-linecap="round"/><ellipse cx="62.0" cy="408.0" rx="9.2" ry="4.6" fill="#7f9a5a"/><path d="M72.5 422.0 l5.5 -14.0" stroke="#9a948a" stroke-width="3.9" stroke-linecap="round"/><ellipse cx="78.0" cy="408.0" rx="9.2" ry="4.6" fill="#7f9a5a"/><path d="M77.4 422.0 l16.6 -14.0" stroke="#9a948a" stroke-width="3.9" stroke-linecap="round"/><ellipse cx="94.0" cy="408.0" rx="9.2" ry="4.6" fill="#7f9a5a"/><g fill="#b4a07a" opacity=".8"><path d="M250 478 l6 -18 l6 18z"/><path d="M120 480 l4 -12 l4 12z"/></g><path d="M-20 494 Q100 484 200 492 T420 488 L420 560 L-20 560Z" fill="#b8c88a"/></svg>
     <svg class="foliage scene-af th-sahel" viewBox="0 0 420 150" preserveAspectRatio="none"><g transform="translate(0 14)"><g fill="#4a7a44"><ellipse cx="30" cy="118" rx="75" ry="45"/><ellipse cx="160" cy="128" rx="85" ry="40"/><ellipse cx="290" cy="124" rx="85" ry="45"/><ellipse cx="400" cy="114" rx="70" ry="50"/></g><g fill="#5f8c50"><ellipse cx="90" cy="136" rx="65" ry="32"/><ellipse cx="225" cy="144" rx="75" ry="30"/><ellipse cx="350" cy="140" rx="65" ry="32"/></g></g></svg>
     <svg class="backdrop scene-af th-vic" viewBox="0 0 400 560" preserveAspectRatio="xMidYMax slice"><g fill="#fff" opacity=".85"><ellipse cx="80" cy="380" rx="40" ry="26"/><ellipse cx="120" cy="352" rx="34" ry="24"/><ellipse cx="280" cy="372" rx="44" ry="26"/><ellipse cx="320" cy="346" rx="34" ry="22"/></g><path d="M-20 400 L420 396 L420 470 L-20 470Z" fill="#c4b6a6"/><g fill="#5a9a5c"><ellipse cx="0" cy="394" rx="22" ry="15"/><ellipse cx="50" cy="390" rx="20" ry="14"/><ellipse cx="96" cy="398" rx="12" ry="5"/><ellipse cx="160" cy="398" rx="10" ry="5"/><ellipse cx="214" cy="398" rx="12" ry="5"/><ellipse cx="276" cy="398" rx="10" ry="5"/><ellipse cx="318" cy="398" rx="12" ry="5"/><ellipse cx="350" cy="390" rx="20" ry="14"/><ellipse cx="400" cy="394" rx="22" ry="15"/></g><rect x="-20" y="404" width="60" height="60" fill="#f4f8f8"/><g stroke="#c8e0e8" stroke-width="1.6" fill="none"><path class="fallstreak" d="M-8 408 v52"/><path class="fallstreak slow" d="M7 408 v52"/><path class="fallstreak" d="M22 408 v52"/><path class="fallstreak slow" d="M34 408 v52"/></g><rect x="52" y="404" width="40" height="60" fill="#f4f8f8"/><g stroke="#c8e0e8" stroke-width="1.6" fill="none"><path class="fallstreak" d="M60 408 v52"/><path class="fallstreak slow" d="M70 408 v52"/><path class="fallstreak" d="M80 408 v52"/><path class="fallstreak slow" d="M88 408 v52"/></g><rect x="104" y="404" width="230" height="60" fill="#f4f8f8"/><g stroke="#c8e0e8" stroke-width="1.6" fill="none"><path class="fallstreak" d="M118 408 v52"/><path class="fallstreak slow" d="M136 408 v52"/><path class="fallstreak" d="M153 408 v52"/><path class="fallstreak slow" d="M167 408 v52"/><path class="fallstreak" d="M181 408 v52"/><path class="fallstreak slow" d="M248 408 v52"/></g><g stroke="#c8e0e8" stroke-width="1.6" fill="none"><path class="fallstreak" d="M197 408 v52"/><path class="fallstreak slow" d="M211 408 v52"/><path class="fallstreak" d="M225 408 v52"/><path class="fallstreak slow" d="M236 408 v52"/></g><g stroke="#c8e0e8" stroke-width="1.6" fill="none"><path class="fallstreak" d="M270 408 v52"/><path class="fallstreak slow" d="M290 408 v52"/><path class="fallstreak" d="M310 408 v52"/><path class="fallstreak slow" d="M326 408 v52"/></g><rect x="346" y="404" width="74" height="60" fill="#f4f8f8"/><g stroke="#c8e0e8" stroke-width="1.6" fill="none"><path class="fallstreak" d="M361 408 v52"/><path class="fallstreak slow" d="M379 408 v52"/><path class="fallstreak" d="M398 408 v52"/><path class="fallstreak slow" d="M413 408 v52"/></g><rect x="-20" y="450" width="440" height="30" fill="#eef4f4" opacity=".95"/><path d="M70 476 A130 70 0 0 1 330 476" stroke="#f0b4c8" stroke-width="4" fill="none" opacity=".35"/><path d="M76 476 A124 64 0 0 1 324 476" stroke="#f4e08a" stroke-width="4" fill="none" opacity=".35"/><path d="M82 476 A118 58 0 0 1 318 476" stroke="#a8d8f0" stroke-width="4" fill="none" opacity=".35"/><g fill="#4f8f58"><ellipse cx="10" cy="504" rx="34" ry="24"/><ellipse cx="80" cy="510" rx="30" ry="21"/><ellipse cx="150" cy="504" rx="34" ry="24"/><ellipse cx="230" cy="510" rx="30" ry="21"/><ellipse cx="300" cy="504" rx="34" ry="24"/><ellipse cx="380" cy="508" rx="30" ry="21"/></g></svg>
     <svg class="backdrop scene-af th-delta" viewBox="0 0 400 560" preserveAspectRatio="xMidYMax slice"><path d="M-20 470 Q100 460 200 466 T420 462 L420 560 L-20 560Z" fill="#c4cc8a"/><path d="M-20 484 C60 470 120 498 200 482 C280 466 340 494 420 480 L420 494 C340 508 280 480 200 496 C120 512 60 484 -20 498Z" fill="#5fa8bc"/><g class="rflow2"><path d="M6 485 H394"/><path d="M28 494 H394"/></g><path d="M40 470 C80 476 110 466 150 472 L150 476 C110 470 80 480 40 474Z" fill="#6fb2c4"/><g fill="#5a8a46"><ellipse cx="100" cy="474" rx="18" ry="6"/></g><path d="M94 474 l0 -20" stroke="#8a8270" stroke-width="2"/><path d="M94 454 l-8 -4 M94 454 l8 -4 M94 454 l-5 -8 M94 454 l5 -8" stroke="#5f8a4a" stroke-width="2.4" stroke-linecap="round"/><path d="M106 474 l0 -26" stroke="#8a8270" stroke-width="2"/><path d="M106 448 l-8 -4 M106 448 l8 -4 M106 448 l-5 -8 M106 448 l5 -8" stroke="#5f8a4a" stroke-width="2.4" stroke-linecap="round"/><g fill="#5a8a46"><ellipse cx="300" cy="470" rx="18" ry="6"/></g><path d="M294 470 l0 -20" stroke="#8a8270" stroke-width="2"/><path d="M294 450 l-8 -4 M294 450 l8 -4 M294 450 l-5 -8 M294 450 l5 -8" stroke="#5f8a4a" stroke-width="2.4" stroke-linecap="round"/><path d="M306 470 l0 -26" stroke="#8a8270" stroke-width="2"/><path d="M306 444 l-8 -4 M306 444 l8 -4 M306 444 l-5 -8 M306 444 l5 -8" stroke="#5f8a4a" stroke-width="2.4" stroke-linecap="round"/><g stroke="#7a9a44" stroke-width="2" stroke-linecap="round"><path d="M200 480 l-4 -14 M204 480 l0 -16 M208 480 l4 -14"/><path d="M30 490 l-4 -14 M34 490 l0 -16"/></g><g fill="#a8c46a"><circle cx="196" cy="466" r="2.6"/><circle cx="204" cy="464" r="2.6"/><circle cx="212" cy="466" r="2.6"/></g><path d="M-20 504 Q100 494 200 502 T420 498 L420 560 L-20 560Z" fill="#8fb064"/></svg>
@@ -744,6 +751,7 @@
 <footer>
   Music is synthesized live in your browser: short original loops built around each country's traditional and Indigenous instruments. They aren't recordings of real performances.<br>
   Species counts are approximate and shift with taxonomy (they count species; Brazil's figure includes subspecies). Sources: IUCN Primate fact sheet; IUCN/SSC Primate Specialist Group via Primate Conservation (Peru); ((o))eco 2026 (Brazil); lists of primates by country. Africa and Asia species counts and ranges: Mammal Diversity Database (mammaldiversity.org); statuses from the IUCN Red List. Africa and Asia borders from world.geo.json (public domain); country close-ups from Natural Earth 1:50m (public domain). Map borders are simplified for play.
+  <div class="copy">© Honeyprof 2026</div>
 </footer>
 
 <script>
@@ -1988,7 +1996,7 @@ function showFamily(c){
     return `<div class="fm" style="animation-delay:${i*0.35}s"><div style="width:${w}px">${monkeySVG(L)}</div><span>${sym}${x.r}</span></div>`;
   }).join('');
   const FT=FTYPES[F.type];
-  row.innerHTML=`<div style="width:100%"><span class="k">Family life</span> <span class="ftype" title="${FT[1]}">${FT[0]}</span><div class="famstrip">${members}</div><div class="famtxt"><b>${FT[0].replace(/^\S+\s/,'')}:</b> ${FT[1]} ${F.t}${F.dimTxt?`<br><b>♂ vs ♀:</b> ${F.dimTxt}`:''}</div></div>`;
+  row.innerHTML=`<div style="width:100%"><span class="k">Family life</span> <span class="ftype" title="${FT[1]}">${FT[0]}</span><div class="famstrip">${members}</div><div class="famtxt"><b>${FT[0].replace(/^\S+\s/,'')}:</b> ${F.t||FT[1]}${F.dimTxt?`<br><b>♂ vs ♀:</b> ${F.dimTxt}`:''}</div></div>`;
   bubble.querySelector('.music').before(row); layoutStage();
 }
 
@@ -2079,7 +2087,7 @@ const VOICE={
 const PVOICE={'Ocelot':['cat',0],'Jaguar':['cat',1],'Puma':['puma'],'Tayra':['chatter'],'Pampas fox':['yip'],'Culpeo fox':['yip'],
   'Boa constrictor':['hiss'],'Ornate hawk-eagle':['screech',0],'Forest falcon':['screech',0],'Harpy eagle':['wail'],'Crested caracara':['cackle'],'Great horned owl':['hoot'],'Margay':['cat',0],'Jaguarundi':['jchirp'],'Green anaconda':['hissDeep'],'Crested eagle':['wail'],'Black hawk-eagle':['bhe'],'Spectacled owl':['knock'],'Crowned eagle':['screech',1]};
 const VGAIN={'Leopard':0.9,'Ocelot':1.83,'Jaguar':1.94,'Puma':1.59,'Tayra':28.12,'Pampas fox':28.13,'Culpeo fox':28.13,'Boa constrictor':2.5,'Ornate hawk-eagle':9.42,'Forest falcon':9.29,'Harpy eagle':0.68,'Crested caracara':54.85,'Great horned owl':4.05,'Margay':1.82,'Jaguarundi':6.89,'Green anaconda':3.52,'Crested eagle':0.68,'Black hawk-eagle':2.61,'Spectacled owl':2.67,'Crowned eagle':10.9,"Leopard":2.1,"Lion":1.01,"African golden cat":1.8,"Spotted hyena":3.05,"Golden jackal":28.18,"Fennec fox":28.18,"Chimpanzee":14.29,"Nile crocodile":4.42,"African rock python":3.51,"African crowned eagle":4.07,"Martial eagle":3.43,"Verreaux's eagle":3.43,"Eurasian eagle-owl":4.07,"Tiger":1.05,"Clouded leopard":1.8,"Sunda clouded leopard":1.8,"Snow leopard":1.88,"Asiatic golden cat":1.8,"Dhole":3.43,"Yellow-throated marten":29.17,"Japanese marten":27.86,"Raccoon dog":28.18,"Reticulated python":3.51,"Burmese python":3.47,"Indian rock python":2.48,"Saltwater crocodile":4.52,"Golden eagle":3.43,"Crested hawk-eagle":3.51,"Changeable hawk-eagle":3.51,"Mountain hawk-eagle":9.44,"Crested serpent eagle":4.27,"Sulawesi hawk-eagle":3.51,"Philippine eagle":2.6};
-[['Spotted hyena',1.3],['Spectacled owl',8],['Great horned owl',3],['African golden cat',2.5],['Boa constrictor',3.5],['Indian rock python',3.5],['Reticulated python',1.6],['Burmese python',1.6],['Green anaconda',1.6],['African rock python',1.6],['Nile crocodile',1.6],['Saltwater crocodile',1.4]].forEach(([k,x])=>VGAIN[k]=(VGAIN[k]||1)*x);   // lift the quiet predators   // evened out to one loudness
+[['Spotted hyena',1.3],['Spectacled owl',8],['Great horned owl',3],['African golden cat',1.4],['Lion',1.3],['Leopard',0.8],['Boa constrictor',3.5],['Indian rock python',3.5],['Reticulated python',1.6],['Burmese python',1.6],['Green anaconda',1.6],['African rock python',1.6],['Nile crocodile',1.6],['Saltwater crocodile',1.4]].forEach(([k,x])=>VGAIN[k]=(VGAIN[k]||1)*x);   // lift the quiet predators   // evened out to one loudness
 function predatorVoice(pname,pan){ const v=PVOICE[pname]; let seg=(v&&(VSEG[v[0]]||MOUTHCACHE['p:'+v[0]+':'+v[1]]))||[[0,.7]]; if(!sfxReady()||!v) return seg; VOICE[v[0]](sfxOut(.55*(VGAIN[pname]||1),pan),AC.currentTime+.02,v[1]); const lag=outLag(); return lag?seg.map(([a,b])=>[a+lag,b]):seg; }
 const FALL=[   // the snack falling (0 – 0.5 s), picked at random
   (d,t)=>{ const o=sweepTone(d,'sine',1900,620,t+.03,.47,.09); const l=AC.createOscillator(); l.frequency.value=9; const lg=AC.createGain(); lg.gain.value=30; l.connect(lg); lg.connect(o.frequency); l.start(t); l.stop(t+.55); },   // cartoon "wheee" slide down
@@ -2367,6 +2375,34 @@ const REACT={
   raspberry:(snd,dir)=>{ floatEmoji('😝',dir>0?-.32:.32,.8,'rise'); monkey.classList.add('mopen'); setTimeout(()=>monkey.classList.remove('mopen'),420);
     if(snd&&sfxReady()){ const d=sfxOut(1.6,0),t=AC.currentTime+.05; const o=sweepTone(d,'sawtooth',95,80,t,.38,.14,['bandpass',650,1.5]);
       const l=AC.createOscillator(); l.frequency.value=34; const lg=AC.createGain(); lg.gain.value=30; l.connect(lg); lg.connect(o.frequency); l.start(t); l.stop(t+.4); } },
+  sigh:(snd)=>{ // a long relieved breath out: shoulders drop, a big puff of air
+    const sv=monkey.querySelector('svg'); sv&&sv.animate([{transform:'none'},{transform:'translateY(4px) scale(1.02,.96)',offset:.55},{transform:'none'}],{duration:1100,easing:'ease-in-out'});
+    floatEmoji('😮‍💨',.26,.74,'rise'); setTimeout(()=>floatEmoji('💨',.3,.6,'puff'),250); monkey.classList.add('mopen'); setTimeout(()=>monkey.classList.remove('mopen'),700);
+    if(snd&&sfxReady()){ const d=sfxOut(2.4,0),t=AC.currentTime; noiseSweep(d,t+.05,.12,.08,'bandpass',900,1400,1.2,.05); noiseSweep(d,t+.25,.75,.18,'bandpass',1500,500,1.1,.04); } },
+  pound:(snd)=>{ // heart thumping hard and fast
+    [0,260,520].forEach((ms,i)=>setTimeout(()=>floatEmoji(i===2?'💗':'❤️',.02+(i-1)*.06,.3+i*.05,'beat'),ms));
+    const sv=monkey.querySelector('svg'); sv&&sv.animate([{transform:'none'},{transform:'scale(1.025)'},{transform:'none'},{transform:'scale(1.025)'},{transform:'none'},{transform:'scale(1.02)'},{transform:'none'}],{duration:900});
+    if(snd&&sfxReady()){ const d=sfxOut(2.6,0),t=AC.currentTime; [0,.13,.32,.45,.64,.77].forEach((dt,i)=>sweepTone(d,'sine',i%2?140:170,95,t+dt,.11,i%2?.2:.3,['lowpass',500])); } },
+  dizzy:(snd)=>{ // the world spins a little
+    floatEmoji('💫',-.05,.95,'twinkle'); setTimeout(()=>floatEmoji('⭐',.2,.98,'twinkle'),220);
+    const sv=monkey.querySelector('svg'); sv&&sv.animate([{transform:'rotate(0)'},{transform:'rotate(-5deg)'},{transform:'rotate(5deg)'},{transform:'rotate(-3deg)'},{transform:'rotate(2deg)'},{transform:'rotate(0)'}],{duration:1100,easing:'ease-in-out'});
+    if(snd&&sfxReady()){ const d=sfxOut(1.2,0),t=AC.currentTime; [0,.12,.24,.36].forEach((dt,i)=>sweepTone(d,'sine',1600-i*180,1300-i*180,t+dt,.1,.05)); } },
+  lookback:(snd,dir)=>{ // checks over its shoulder: is it gone?
+    floatEmoji('👀',dir>0?-.34:.34,.9,'rise');
+    const sv=monkey.querySelector('svg'); sv&&sv.animate([{transform:'none'},{transform:`translateX(${dir>0?-6:6}px) rotate(${dir>0?-6:6}deg)`,offset:.25},{transform:`translateX(${dir>0?-6:6}px) rotate(${dir>0?-6:6}deg)`,offset:.55},{transform:'none'}],{duration:1200,easing:'ease-in-out'});
+    if(snd&&sfxReady()){ const d=sfxOut(1.6,0),t=AC.currentTime; sweepTone(d,'triangle',700,1100,t+.15,.12,.08); sweepTone(d,'triangle',700,1100,t+.75,.12,.08); } },
+  shiver:(snd)=>{ // knees knocking, teeth chattering
+    monkey.classList.add('tremble'); setTimeout(()=>monkey.classList.remove('tremble'),650); setTimeout(()=>{ monkey.classList.add('tremble'); setTimeout(()=>monkey.classList.remove('tremble'),650); },700);
+    floatEmoji('😬',.3,.85,'rise');
+    if(snd&&sfxReady()){ const d=sfxOut(1.8,0),t=AC.currentTime; for(let i=0;i<9;i++) noiseSweep(d,t+i*.07,.025,.12,'bandpass',3200,3000,4,.002); } },
+  victory:(snd)=>{ // a little hop for joy
+    const sv=monkey.querySelector('svg'); sv&&sv.animate([{transform:'none'},{transform:'translateY(-18px) scale(1.02,.98)',offset:.3},{transform:'none',offset:.55},{transform:'translateY(-10px)',offset:.75},{transform:'none'}],{duration:900,easing:'ease-out'});
+    floatEmoji('🎉',-.34,.86,'twinkle'); setTimeout(()=>floatEmoji('🙌',.32,.86,'rise'),200);
+    if(snd&&sfxReady()){ const d=sfxOut(1.3,0),t=AC.currentTime; [523,659,784].forEach((f,i)=>sweepTone(d,'triangle',f,f,t+.05+i*.09,.16,.07)); } },
+  wipe:(snd)=>{ // wipes the sweat from its brow
+    floatEmoji('💧',.08,.94,'drip'); setTimeout(()=>floatEmoji('💧',.18,.92,'drip'),180);
+    const sv=monkey.querySelector('svg'); sv&&sv.animate([{transform:'none'},{transform:'rotate(-3deg) translateY(2px)',offset:.4},{transform:'none'}],{duration:800});
+    if(snd&&sfxReady()){ const d=sfxOut(1.6,0),t=AC.currentTime; noiseSweep(d,t+.1,.35,.12,'highpass',2200,1800,.8,.05); } },
   hug:(snd)=>{ monkey.classList.add('hug'); setTimeout(()=>monkey.classList.remove('hug'),700); floatEmoji('✨',-.36,.62,'twinkle');
     if(snd&&sfxReady()){ const d=sfxOut(1.2,0),t=AC.currentTime+.1; [2093,2637].forEach((f,i)=>sweepTone(d,'sine',f,f,t+i*.08,.3,.06)); } }
 };
@@ -2404,7 +2440,7 @@ function showCountry(id,sp){
   const [stName,stCol]=STATUS[c.st];
   const pct=Math.max(Math.min(1,c.sp/REG[C[id].reg].max)*100, c.sp?3:0);
   bubble.innerHTML=`<div class="bhead"><div class="bface">${monkeySVG(Object.assign({},c.look,{headOnly:true}))}</div><div class="btitle"><h2>${pinName(c)}</h2>
-    <div class="sub">📍 <b>${c.name}</b>${c.note?` · ${c.note}`:''}</div><button class="newbtn" title="Stop and pick another monkey">🐒 Select new monkey</button></div><div class="bflag" title="Flag of ${c.name}">${flagSVG(id)}</div></div><div class="bscroll">
+    <div class="subrow"><div class="sub">📍 <b>${c.name}</b>${c.note?` · ${c.note}`:''}</div><button class="newbtn" title="Stop and pick another monkey">🐒 Select new monkey</button></div></div><div class="bflag" title="Flag of ${c.name}">${flagSVG(id)}</div></div><div class="bscroll">
     <div class="stat"><span class="k">Primate species</span><span class="v">${c.spTxt}</span></div>
     <div class="bar"><div style="--w:${pct}%"></div></div>
     <div class="stat"><span class="k">${c.isPick?'Monkey':'Star monkey'}</span><span class="v">${c.m}${c.sci?`<br><i>${c.sci}</i>`:''}</span></div>
@@ -2427,7 +2463,8 @@ function showCountry(id,sp){
 }
 const isPhone=()=>window.innerWidth<=820;
 // shrink the info text (down to 78%) so the facts fit the panel without scrolling; only scroll past that
-function fitBubble(sc){ if(!sc) return; let z=parseFloat(sc.style.getPropertyValue('--bz'))||1;
+function fitTitle(){ const h=bubble.querySelector('.btitle h2'); if(!h) return; h.style.fontSize=''; let f=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&f>12){ f-=1; h.style.fontSize=f+'px'; } }
+function fitBubble(sc){ if(!sc) return; let z=parseFloat(sc.style.getPropertyValue('--bz'))||1; fitTitle(); sc.style.setProperty('--bz',1); return;
   while(z>0.86 && sc.scrollHeight>sc.clientHeight+1){ z=Math.round((z-0.04)*100)/100; sc.style.setProperty('--bz',z); } }
 function layoutStage(){
   setTimeout(posLandmark,0);
@@ -2456,7 +2493,7 @@ function layoutStage(){
       // short laptop screens: the stage fits the window and the info bubble scrolls, like on phones
       stage.style.minHeight='0px'; stage.style.height=cap+'px';
       const fixedPart=bubble.offsetHeight-sc.offsetHeight;
-      sc.style.maxHeight=Math.max(110,cap-mh-60-br-14-30-fixedPart)+'px'; sc.style.overflowY='auto';
+      sc.style.maxHeight=Math.max(110,cap-mh-40-br-14-26-fixedPart)+'px'; sc.style.overflowY='auto';
       monkey.style.bottom='40px'; fitBubble(sc);
       if(sc.scrollHeight>sc.clientHeight+2) requestAnimationFrame(()=>{
         const rows=sc.querySelectorAll('.stat.new'); const last=rows[rows.length-1];
@@ -2743,6 +2780,33 @@ function flyTo(el,from,toFn,ms,arc,minY=-1e9){ return new Promise(res=>{ const t
     el.style.transform=`translate(${x}px,${y}px)`; if(p<1&&el.isConnected) requestAnimationFrame(step); else res(); };
   requestAnimationFrame(step); }); }
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* after a chase: lots of different reactions, sometimes in a language spoken in that country */
+const PHEW_EN=['Phew! 😅','That was close! 😰','Made it! 😮‍💨','Too close! 😵','Safe! 🙌','Whew, safe again! 😌','Not today! 😤','Can’t catch me! 😜','My heart’s racing! 💓','Nice try! 😝','Back to snacking! 😋','Everybody okay? 😟','Yikes! 😬','Woohoo, we’re fine! 🥳','Run first, eat later! 🏃'];
+const PHEW_LANG={
+  es:{lang:'Spanish',w:['¡Uf, qué susto! 😅','¡Por poco! 😰'],g:['phew, what a scare!','that was close!']},
+  pt:{lang:'Portuguese',w:['Ufa! 😅','Foi por pouco! 😰'],g:['phew!','that was close!']},
+  fr:{lang:'French',w:['Ouf ! 😅','C’était moins une ! 😰'],g:['phew!','that was close!']},
+  nl:{lang:'Dutch',w:['Pfoe! 😅'],g:['phew!']},
+  sw:{lang:'Swahili',w:['Tuko salama! 😅'],g:['we’re safe!']},
+  ja:{lang:'Japanese',w:['Fū~ (ふう) 😅','Abunakatta! (危なかった) 😰'],g:['phew~','that was close!']},
+  zh:{lang:'Chinese',w:['Hǎoxiǎn! (好险) 😅'],g:['that was close!']},
+  ko:{lang:'Korean',w:['Hyu~ (휴) 😅'],g:['phew~']},
+  vi:{lang:'Vietnamese',w:['Hú hồn! 😅'],g:['what a fright!']},
+  th:{lang:'Thai',w:['Rot laew! (รอดแล้ว) 😅'],g:['we made it!']},
+  hi:{lang:'Hindi',w:['Bach gaye! (बच गए) 😅'],g:['we escaped!']},
+  ms:{lang:'Malay',w:['Nyaris! 😅'],g:['so close!']},
+  id:{lang:'Indonesian',w:['Nyaris! 😅','Hampir saja! 😰'],g:['so close!','almost!']},
+  tl:{lang:'Filipino',w:['Hay, salamat! 😅'],g:['phew, thank goodness!']}};
+const PHEW_BY={brazil:'pt',angola:'pt',mozambique:'pt',guineabissau:'pt',suriname:'nl',frenchguiana:'fr',
+  peru:'es',colombia:'es',bolivia:'es',ecuador:'es',venezuela:'es',paraguay:'es',argentina:'es',chile:'es',uruguay:'es',guatemala:'es',honduras:'es',elsalvador:'es',nicaragua:'es',costarica:'es',panama:'es',eqguinea:'es',
+  senegal:'fr',mali:'fr',burkinafaso:'fr',niger:'fr',chad:'fr',guinea:'fr',ivorycoast:'fr',togo:'fr',benin:'fr',cameroon:'fr',gabon:'fr',congo:'fr',drc:'fr',car:'fr',djibouti:'fr',morocco:'fr',algeria:'fr',tunisia:'fr',
+  kenya:'sw',tanzania:'sw',uganda:'sw',japan:'ja',china:'zh',taiwan:'zh',southkorea:'ko',northkorea:'ko',vietnam:'vi',thailand:'th',india:'hi',
+  malaysia:'ms',brunei:'ms',singapore:'ms',indonesia:'id',philippines:'tl'};
+let lastPhew='';
+function pickPhew(id){ const L=PHEW_LANG[PHEW_BY[id]];
+  if(L&&Math.random()<.45){ const i=Math.floor(Math.random()*L.w.length); lastPhew=L.w[i]; return `${L.w[i]}<small class="phewg">${L.lang}: “${L.g[i]}”</small>`; }
+  let t; do{ t=PHEW_EN[Math.floor(Math.random()*PHEW_EN.length)]; }while(t===lastPhew&&PHEW_EN.length>1); lastPhew=t; return t; }
 async function chase(id){
   if(currentId!==id) return;
   const tok=++chaseToken, ok=()=>tok===chaseToken&&currentId===id;
@@ -2849,8 +2913,9 @@ async function chase(id){
   }
   await wait(1100); if(!ok()) return;   // let the escape reaction finish before the phew
   stage.querySelectorAll('.react').forEach(e=>e.remove());
-  sfxPhew(); const ph=document.createElement('div'); ph.className='phew'; ph.textContent='Phew! 😅'; ph.style.bottom=(mb+monkey.offsetHeight-30)+'px'; stage.appendChild(ph);
-  await wait(1300); ph.style.transition='opacity .25s'; ph.style.opacity='0';
+  sfxPhew(); const ph=document.createElement('div'); ph.className='phew'; ph.innerHTML=pickPhew(currentId); ph.style.bottom=(mb+monkey.offsetHeight-30)+'px'; stage.appendChild(ph);
+  { const over=ph.offsetLeft+ph.offsetWidth-(stage.clientWidth-8); if(over>0) ph.style.marginLeft=(40-over)+'px'; }   // keep long words on screen
+  await wait(ph.querySelector('.phewg')?2200:1500); ph.style.transition='opacity .25s'; ph.style.opacity='0';
   await wait(250); ph.remove(); if(!ok()) return;
   await wait(150); if(!ok()) return;
   // two babies pop up with the other snacks
@@ -4060,7 +4125,7 @@ Object.assign(CALLS,{
     return syl; },
   langur:(d,t)=>{ // langur male's deep "whoop" loud call, then harsh barks
     const syl=[]; [0,.6].forEach(dt=>{ voice(d,t+dt,.45,[160,260,170],.3,{type:'sawtooth',h:[[1,1],[2,.4]],f:['bandpass',520,1],a:.05}); syl.push([dt,.42]); });
-    [1.25,1.45].forEach(dt=>{ voice(d,t+dt,.1,[420,300],.22,{type:'sawtooth',f:['bandpass',1000,1.2],n:.6,nf:1100,hold:false}); syl.push([dt,.09]); });
+    [1.2,1.42,1.64].forEach(dt=>{ voice(d,t+dt,.14,[440,300],.62,{type:'sawtooth',h:[[1,1],[2,.5],[3,.25]],f:['bandpass',900,.9],n:.35,nf:1100,hold:false}); syl.push([dt,.13]); });   // barks as loud as the whoops
     return syl; },
   kekeke:(d,t)=>{ // Presbytis langurs: rattling "ke-ke-ke-ke" chatter
     const syl=[]; for(let k=0;k<9;k++){ const dt=k*.11; voice(d,t+dt,.07,[900,760],.14,{type:'sawtooth',f:['bandpass',1500,1.5],n:.5,nf:1700,hold:false}); syl.push([dt,.06]); }

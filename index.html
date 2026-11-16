@@ -17,8 +17,10 @@
   body{
     font-family:'Fredoka',system-ui,sans-serif; color:var(--ink);
     background:radial-gradient(ellipse at 30% 20%, #145f86 0%, var(--ocean1) 45%, var(--ocean2) 100%);
-    min-height:100vh; overflow-x:hidden;
+    min-height:100vh; overflow-x:hidden; background-attachment:fixed;
   }
+  html{background:radial-gradient(ellipse at 30% 20%, #145f86 0%, var(--ocean1) 45%, var(--ocean2) 100%) fixed, var(--ocean2)}
+  body{background:transparent !important}
   header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 20px 4px;color:#fff}
   @media (min-width:821px){   /* same spot in every region: title and region tabs on top, the menu always on its own row */
     header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:16px;row-gap:10px}
@@ -49,7 +51,7 @@
     body:not(.quiz).reg-af .mapwrap,body:not(.quiz).reg-as .mapwrap{display:grid;grid-template-columns:clamp(228px,22%,270px) minmax(0,1fr);gap:10px;align-items:start}
     body:not(.quiz).reg-af .mapwrap>#map,body:not(.quiz).reg-as .mapwrap>#map{grid-column:2;grid-row:1}
     body:not(.quiz).reg-af .focusname,body:not(.quiz).reg-as .focusname{grid-column:2;grid-row:1}
-    .reg-af .palette,.reg-as .palette,.reg-af #map.focus ~ .palette,.reg-as #map.focus ~ .palette{position:sticky;top:10px;grid-column:1;grid-row:1;width:auto;margin-top:14%;max-height:calc(100vh - 40px);overflow-y:auto;overscroll-behavior:contain}
+    .reg-af .palette,.reg-as .palette,.reg-af #map.focus ~ .palette,.reg-as #map.focus ~ .palette{position:static;grid-column:1;grid-row:1;width:auto;margin-top:14%;max-height:none;overflow:visible}
     .reg-af .pgrid,.reg-as .pgrid,.reg-af #map.focus ~ .palette .pgrid,.reg-as #map.focus ~ .palette .pgrid{grid-template-columns:repeat(3,1fr)}
     .reg-af .pbtn,.reg-as .pbtn{font-size:9.5px;min-width:0;overflow-wrap:anywhere}
   }
@@ -1518,6 +1520,7 @@ function monkeySVG(L){
   s+=`<ellipse cx="100" cy="185" rx="${L.thick?44:40}" ry="44" fill="${fur}"/>`;
   if(L.back) s+=`<ellipse cx="100" cy="166" rx="${L.thick?40:36}" ry="20" fill="${L.back}"/>`;
   s+=`<ellipse cx="100" cy="193" rx="25" ry="30" fill="${belly}"/>`;
+  if(L.sac) s+=`<ellipse cx="100" cy="146" rx="22" ry="15" fill="${L.sac}"/><ellipse cx="94" cy="142" rx="7" ry="4" fill="#fff" opacity=".2"/>`;
   if(L.chest) s+=`<path d="M86 160 Q100 172 114 160 Q108 178 114 196 Q100 186 86 196 Q92 178 86 160Z" fill="${L.chest}"/>`;
   if(L.cape){ const d=L.smallCape?208:236;
     s+=`<path d="M66 150 C42 170 38 206 52 ${d} C58 212 64 188 72 166Z" fill="${L.cape}"/><path d="M134 150 C158 170 162 206 148 ${d} C142 212 136 188 128 166Z" fill="${L.cape}"/>`; }
@@ -2166,7 +2169,8 @@ const PRED2={
  honduras:['Harpy eagle','Ocelot','Jaguar','Margay','Black hawk-eagle','Crested eagle'], nicaragua:['Jaguar','Puma','Boa constrictor','Crested eagle','Black hawk-eagle'], costarica:['Boa constrictor','Tayra','Ocelot','Margay','Jaguarundi','Black hawk-eagle','Spectacled owl'],
  panama:['Ornate hawk-eagle','Boa constrictor','Ocelot','Margay','Black hawk-eagle','Spectacled owl']
 };
-function pickPred2(c,id){ const pool=(PRED2[id]||[c.pred2]).filter(p=>p&&p!==c.pred); if(!pool.length) return; c.pred2=pool[Math.floor(Math.random()*pool.length)]; c.pred2E=PEMO[c.pred2]||'🐾'; }
+function pickPred2(c,id){ if(c.pred2==='Victorian animal collector') return;   // apes always meet the collector
+  const pool=(PRED2[id]||[c.pred2]).filter(p=>p&&p!==c.pred); if(!pool.length) return; c.pred2=pool[Math.floor(Math.random()*pool.length)]; c.pred2E=PEMO[c.pred2]||'🐾'; }
 
 
 /* ---------------- named wild fruits by country (used when the favorite is fruit) ---------------- */
@@ -2455,7 +2459,7 @@ function showCountry(id,sp){
     <div class="subrow"><div class="sub">📍 <b>${c.name}</b>${c.note?` · ${c.note}`:''}</div><button class="newbtn" title="Stop and pick another monkey">🐒 Select new monkey</button></div></div><div class="bflag" title="Flag of ${c.name}">${flagSVG(id)}</div></div><div class="bscroll">
     <div class="stat"><span class="k">Primate species</span><span class="v">${c.spTxt}</span></div>
     <div class="bar"><div style="--w:${pct}%"></div></div>
-    <div class="stat"><span class="k">${c.isPick?'Monkey':'Star monkey'}</span><span class="v">${c.m}${c.sci?`<br><i>${c.sci}</i>`:''}</span></div>
+    <div class="stat"><span class="k">${c.isPick?(APE_SP.has(c.sci)?(/Hylobates|Hoolock|Nomascus|Symphalangus/.test(c.sci)?'Ape (gibbon)':'Ape'):'Monkey'):'Star monkey'}</span><span class="v">${c.m}${c.sci?`<br><i>${c.sci}</i>`:''}</span></div>
     ${c.st!=='NONE'?`<div class="stat"><span class="k">Status</span><span class="v"><span class="badge" style="background:${stCol}">${stName}</span></span></div>
     <div class="stat"><span class="k">Weight</span><span class="v">${c.size}</span></div>`:''}
     <div class="fact"><b>Fun fact:</b> ${c.fact}</div>
@@ -2838,7 +2842,7 @@ async function chase(id){
     const L=PLOOK[pname];
     const p=document.createElement('div'); p.className='predator '+L.kind+(L.small?' small':'')+(L.big?' big':'')+(L.long&&(L.kind==='snake'||L.croc)?' long':'')+(L.xlong?' xlong':'')+(L.croc?' croc':'');
     p.innerHTML=`<div style="transform:scaleX(${dir})">${predatorSVG(L)}</div>`;
-    if(L.human){ const say=['Tally-ho!','I say!','What ho!','Jolly good!','Pip pip!','Splendid!'][Math.floor(Math.random()*6)]; p.insertAdjacentHTML('beforeend',`<div class="hsay">${say}</div>`); p.classList.add('human'); }
+    if(L.human){ const say=Math.random()<.5?'Tally-ho!':'I say!'; p.insertAdjacentHTML('beforeend',`<div class="hsay">${say}</div>`); p.classList.add('human'); }
     p.style.bottom=(L.kind==='bird'? mb+150 : mb-10)+'px';
     stage.appendChild(p);
     const startY=L.kind==='bird'?-200:0, midY=L.kind==='bird'?-40:0;
@@ -2908,7 +2912,7 @@ async function chase(id){
       run.play(); await run.finished.catch(()=>{}); if(!ok()) return false; p.remove();
       }
     } else { await wait(2200); if(!ok()) return false;
-      if(L.human && CUR.sci==='Pan troglodytes' && (window.FORCE_SCI || Math.random()<.34)){ if(!await scientistRescue(p,dir,W,mb,ok)) return false; }
+      if(L.human){ if(!await scientistRescue(p,dir,W,mb,ok)) return false; }
       else p.remove(); }
     // monkey comes back to center from the opposite side, snack still in hand
     sfxSwish(dir); leavesAlign();
@@ -4304,7 +4308,8 @@ function introText(){ const w=REG[REGION].where; return `<span style="opacity:.8
 const APE_SP=new Set(['Pan troglodytes','Pan paniscus','Gorilla gorilla','Gorilla beringei']);
 function buildPalette(only){
   pgrid.innerHTML=''; let apeDiv=false;
-  document.querySelector('.ptitle').textContent=only?`Monkeys of ${C[focusId].name} 🐒`:'Pick a monkey 🐒';
+  const hasApe=(only||Object.keys(SPECIES).filter(sp=>C[SPECIES[sp].home].reg===REGION)).some(sp=>APE_SP.has(sp));
+  document.querySelector('.ptitle').textContent=only?`${hasApe?'Monkeys & apes':'Monkeys'} of ${C[focusId].name} 🐒`:(hasApe?'Pick a monkey or ape 🐒':'Pick a monkey 🐒');
   Object.entries(SPECIES).filter(([sp,o])=>only?only.includes(sp):C[o.home].reg===REGION).sort((a,b)=>(APE_SP.has(a[0])-APE_SP.has(b[0]))||(only?only.indexOf(a[0])-only.indexOf(b[0]):0)).forEach(([sp,o])=>{
     if(APE_SP.has(sp)&&!apeDiv){ apeDiv=true; const d=document.createElement('div'); d.className='pdiv'; d.textContent='Apes'; pgrid.appendChild(d); }
     const b=document.createElement('button'); b.className='pbtn'; b.dataset.sp=sp; b.title=o.m;
@@ -4406,12 +4411,12 @@ function scientistSVG(){
 }
 async function scientistRescue(p,dir,W,mb,ok){ // a field scientist runs in and chases the collector back the way he came
   const say=(el,txt)=>{ let s=el.querySelector('.hsay'); if(!s){ el.insertAdjacentHTML('beforeend','<div class="hsay"></div>'); s=el.querySelector('.hsay'); } s.textContent=txt; s.style.opacity='1'; };
-  p.getAnimations().forEach(a=>a.cancel()); p.firstElementChild.style.transform=`scaleX(${-dir})`; say(p,['Oh dear!','Eek!','Good heavens!','Retreat!'][Math.floor(Math.random()*4)]);
+  p.getAnimations().forEach(a=>a.cancel()); p.firstElementChild.style.transform=`scaleX(${-dir})`; say(p,Math.random()<.5?'Eek!':'Oh dear!');
   const s=document.createElement('div'); s.className='predator quad human sci'; s.innerHTML=`<div style="transform:scaleX(${-dir})">${scientistSVG()}</div>`; s.style.bottom=(mb-10)+'px'; stage.appendChild(s);
   say(s,['Shoo! Leave them be!','Off you go!','Not these chimps!','Shoo, shoo!'][Math.floor(Math.random()*4)]);
-  const far=W*1.1+250, a1=p.animate([{transform:`translate(${dir*far}px,0)`},{transform:`translate(${-dir*far}px,0)`}],{duration:2300,easing:'linear',fill:'both'});
-  const a2=s.animate([{transform:`translate(${dir*(far+80)}px,0)`},{transform:`translate(${-dir*(far-80)}px,0)`}],{duration:2300,delay:450,easing:'linear',fill:'both'});
-  if(sfxReady()){ const d=sfxOut(1.4,0),t=AC.currentTime; [0,.12].forEach(dt=>sweepTone(d,'triangle',620,900,t+dt,.1,.08)); sweepTone(d,'triangle',300,700,t+.9,.3,.1); }
+  const far=W*1.1+250, a1=p.animate([{transform:`translate(${dir*far}px,0)`},{transform:`translate(${-dir*far}px,0)`}],{duration:4600,easing:'linear',fill:'both'});
+  const a2=s.animate([{transform:`translate(${dir*(far+80)}px,0)`},{transform:`translate(${-dir*(far-80)}px,0)`}],{duration:4600,delay:900,easing:'linear',fill:'both'});
+  if(sfxReady()){ const d=sfxOut(1.4,0),t=AC.currentTime; [0,.12].forEach(dt=>sweepTone(d,'triangle',620,900,t+dt,.1,.08)); sweepTone(d,'triangle',300,700,t+1.8,.3,.1); }
   await Promise.all([a1.finished,a2.finished]).catch(()=>{}); s.remove(); p.remove(); return ok();
 }
 function humanSVG(L){
@@ -4434,6 +4439,67 @@ function humanSVG(L){
     <path d="M66 40 Q66 8 100 6 Q134 8 134 40Z" fill="#efe6cc"/><path d="M58 40 Q100 30 144 42 Q140 48 100 44 Q62 46 58 40Z" fill="#e2d6b4"/><rect x="68" y="32" width="64" height="6" fill="#4a5a3a"/><circle cx="100" cy="6" r="3" fill="#e2d6b4"/>
   </svg>`;
 }
+
+/* ---------------- gibbons, the "lesser apes" of Asia ---------------- */
+(()=>{
+const base={ape:true,lanky:true,humanEyes:true,tailType:'stub'};
+const PRED={pred:'Clouded leopard',predE:'🐆',pred2:'Victorian animal collector',pred2E:'🎩'};
+const G={
+ 'Hylobates lar':{m:'White-handed gibbon',st:'EN',size:'about 9–17 lb',
+   fact:"Gibbons swing hand over hand through the treetops, a way of moving called brachiation. A white-handed gibbon can fly about 30 feet between branches in a single swing.",
+   food:'🟤',foodTxt:'Wild figs',alt:['🍃','🌸'],altTxt:'Young leaves & flowers',babyNote:"Babies cling tightly to mom's belly while she swings through the trees.",
+   baby:{},look:Object.assign({fur:'#c8b08a',head:'#c8b08a',face:'#2a2420',ring:'#f4efe6',belly:'#d4bc96',hand:'#f4efe6',feet:'#f4efe6'},base)},
+ 'Symphalangus syndactylus':{m:'Siamang',st:'EN',size:'about 20–28 lb',
+   fact:"The siamang is the biggest gibbon. It blows up a throat sac as big as its head to make booming calls that can be heard more than a mile away.",
+   food:'🍃',foodTxt:'Young leaves',alt:['🟤','🌸'],altTxt:'Wild figs & flowers',babyNote:"In their second year, babies are often carried by dad, not mom.",
+   baby:{sac:null},look:Object.assign({fur:'#1a1818',head:'#1a1818',face:'#2c2828',belly:'#232020',hand:'#1a1818',feet:'#1a1818',sac:'#8f7f7a'},base)},
+ 'Hylobates muelleri':{m:"Müller's gibbon",st:'EN',size:'about 9–15 lb',
+   fact:"Gibbons have no tail and very long arms: when one stands up, its fingertips almost touch the ground. Müller's gibbons sing duets every morning from the tallest trees.",
+   food:'🟤',foodTxt:'Wild figs',alt:['🍇','🍃'],altTxt:'Ripe fruit & young leaves',babyNote:"Babies cling tightly to mom's belly while she swings through the trees.",
+   baby:{},look:Object.assign({fur:'#8e8478',head:'#5a4e44',face:'#2a2420',ring:'#bfb4a4',belly:'#a29888',hand:'#6a5e52',feet:'#6a5e52'},base)},
+ 'Hoolock hoolock':{m:'Western hoolock gibbon',st:'EN',size:'about 13–19 lb',
+   fact:"Hoolock gibbons are the only apes in India and Bangladesh. Males are black with bright white eyebrows, while females are golden.",
+   food:'🟤',foodTxt:'Wild figs',alt:['🍃','🌸'],altTxt:'Young leaves & flowers',babyNote:"Babies are born pale, turn black, and girls turn golden again when they grow up.",
+   baby:{fur:'#d8c8a8',head:'#d8c8a8',belly:'#e2d4b8',brow:null},look:Object.assign({fur:'#1e1c1c',head:'#1e1c1c',face:'#2c2828',belly:'#262222',hand:'#1e1c1c',feet:'#1e1c1c',brow:'#f4f0e6'},base)},
+ 'Nomascus leucogenys':{m:'Northern white-cheeked gibbon',st:'CR',size:'about 13–17 lb',
+   fact:"Babies are born golden, turn black, and then the girls turn golden again as they grow up, so moms and dads end up looking completely different.",
+   food:'🍇',foodTxt:'Ripe fruit',alt:['🍃','🌸'],altTxt:'Young leaves & flowers',babyNote:"Babies are born golden and turn black in their first year.",
+   baby:{fur:'#d8b878',head:'#d8b878',belly:'#e2c890',cheeks:null},look:Object.assign({fur:'#1c1a1a',head:'#1c1a1a',face:'#2c2828',belly:'#242020',hand:'#1c1a1a',feet:'#1c1a1a',cheeks:'#f4f0e6',topknot:'#1c1a1a'},base)},
+ 'Hylobates pileatus':{m:'Pileated gibbon',st:'EN',size:'about 9–18 lb',
+   fact:"Named for the black cap on its head (pileus is Latin for cap). Males are all black, while females are silvery gray with a black cap and chest.",
+   food:'🟤',foodTxt:'Wild figs',alt:['🍇','🦗'],altTxt:'Ripe fruit & insects',babyNote:"Babies cling tightly to mom's belly while she swings through the trees.",
+   baby:{},look:Object.assign({fur:'#1e1c1c',head:'#1e1c1c',face:'#2c2828',ring:'#f4f0e6',belly:'#262222',hand:'#f4f0e6',feet:'#f4f0e6'},base)},
+ 'Nomascus hainanus':{m:'Hainan gibbon',st:'CR',size:'about 15–20 lb',
+   fact:"The Hainan gibbon may be the rarest ape in the world: only about 40 are left, all living in one forest on a single island.",
+   food:'🍇',foodTxt:'Ripe fruit',alt:['🍃','🌸'],altTxt:'Young leaves & flowers',babyNote:"Babies are born golden, turn black, and girls turn golden again when they grow up.",
+   baby:{fur:'#d8b878',head:'#d8b878',belly:'#e2c890',topknot:null},look:Object.assign({fur:'#1e1c1c',head:'#1e1c1c',face:'#2c2828',belly:'#262222',hand:'#1e1c1c',feet:'#1e1c1c',topknot:'#1e1c1c'},base)}};
+Object.entries(G).forEach(([sp,o])=>{ SPECIES[sp]=Object.assign({home:'thailand',sci:sp},PRED,o); APE_SP.add(sp); });
+Object.assign(RANGES,{'Hylobates lar':['thailand','malaysia','myanmar','laos','indonesia'],'Symphalangus syndactylus':['indonesia','malaysia','thailand'],
+ 'Hylobates muelleri':['indonesia','malaysia','brunei'],'Hoolock hoolock':['india','bangladesh','myanmar'],'Nomascus leucogenys':['laos','vietnam'],
+ 'Hylobates pileatus':['cambodia','thailand','laos'],'Nomascus hainanus':['china']});
+const fav=[['🟤','Wild figs'],['🍇','Ripe fruit'],['🍃','Young leaves'],['🌸','Flowers'],['🦗','Insects']], bs=[['🟤','wild figs'],['🍃','young leaves'],['🌸','flowers'],['🦗','insects']];
+Object.keys(G).forEach(sp=>{ FAVS[sp]=sp==='Symphalangus syndactylus'?[['🍃','Young leaves'],['🟤','Wild figs'],['🌸','Flowers']]:fav; BABYSNACKS[sp]=bs; PIN[sp]='https://neprimateconservancy.org/gibbons/'; CALLOF[sp]=sp==='Symphalangus syndactylus'?'siamang':'gibbon'; });
+const duet='A mom and dad pair up for years and sing loud duets every morning to tell the neighbors this patch of forest is theirs. Families have 2–6 members.';
+const two=(dimTxt,t)=>({dim:'same',dimTxt,type:'mono',m:[A('Dad'),A('Mom'),Y('Young'),Bb('Baby')],t:t||duet});
+Object.assign(FAMILY,{
+ 'Hylobates lar':two('Males and females are the same size, and either can be dark or pale.'),
+ 'Symphalangus syndactylus':two('Males are only a little bigger than females.','A mom and dad pair up for years and sing booming duets together. Siamang dads help a lot: they often carry the baby once it is about a year old.'),
+ 'Hylobates muelleri':two('Males and females look alike.'),
+ 'Hoolock hoolock':two('Males are black with white eyebrows; females are golden.'),
+ 'Nomascus leucogenys':two('Males are black with white cheeks; females are golden.'),
+ 'Hylobates pileatus':two('Males are black; females are silvery gray with a black cap.'),
+ 'Nomascus hainanus':two('Males are black; females are golden with a black cap.','Small family groups, often one male with one or two females and their young. The whole species fits into just a few groups.')});
+Object.assign(CALLS,{
+ gibbon:(d,t)=>{ // the "great call": whoops that climb higher and faster to a peak
+   const syl=[]; for(let k=0;k<8;k++){ const dt=k*(.24-k*.016), f=520+k*120; voice(d,t+dt,.16,[f*.8,f*1.25,f],.13,{type:'triangle',h:[[1,1],[2,.25]],vib:[7,.02],hold:false}); syl.push([dt,.15]); }
+   voice(d,t+1.55,.45,[1500,1900,1200],.15,{type:'triangle',h:[[1,1],[2,.2]],vib:[6,.03]}); syl.push([1.55,.43]);
+   return syl; },
+ siamang:(d,t)=>{ // deep booms from the throat sac, then loud barks
+   const syl=[]; [0,.38,.76].forEach(dt=>{ voice(d,t+dt,.26,[220,300,240],.24,{type:'sawtooth',h:[[1,1],[2,.6],[3,.3]],f:['bandpass',520,1.6],n:.1,nf:500}); sweepTone(d,'sine',95,80,t+dt,.3,.3,['lowpass',300]); syl.push([dt,.25]); });
+   [1.2,1.42,1.64].forEach(dt=>{ voice(d,t+dt,.12,[700,520],.2,{type:'sawtooth',f:['bandpass',1300,1.3],n:.3,nf:1400,hold:false}); syl.push([dt,.11]); });
+   return syl; }});
+Object.assign(CALLGAIN,{gibbon:1.1,siamang:1.2});
+})();
 
 buildPalette();
 /* tapping a country zooms the map in and lists just the monkeys that live there */

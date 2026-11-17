@@ -3070,7 +3070,7 @@ async function chase(id){
         stage.appendChild(b); positionHang();
       } else {
         b.className='baby pop holding'; b.style.bottom=(mb+8)+'px';
-        b.innerHTML=monkeySVG(L)+`<div class="bfood${/🌾|🎋/.test(c.alt[k])?' flipx':''}"><span class="fe">${emo(c.alt[k])}</span></div>`;
+        b.innerHTML=monkeySVG(L)+`<div class="bfood${/🌾|🎋|🍃|🌿/.test(c.alt[k])?' flipx':''}"><span class="fe">${emo(c.alt[k])}</span></div>`;
         if(isAF()){ b.className='baby holding'; stage.appendChild(b); babyRunIn(b,!n,isPhone()?160:260); } else if(isAS()){ b.className='baby holding'; stage.appendChild(b); babyDropIn(b,!n); } else stage.appendChild(b);
       }
     }, n*450);
@@ -3326,7 +3326,8 @@ function locoEnding(c,ok){ return new Promise(async res=>{
       // everyone swings at the same pace, and each one waits until it is an even gap behind the one ahead
       const sOf=m=>dir*(m.r.left+m.r.width/2), s0=sOf(crew[0]); delay=Math.max(0,(sOf(crew[i])-s0+i*D)/v);
       const f=brachFrames(0,dist,g,dir,true,false,v); dur=f.dur; fr.push(...f.fr);
-    } else { const edge=dir>0?sr.right-(r.left+r.width/2):(r.left+r.width/2)-sr.left, LP=LEAPLEN?Math.max(120,Math.abs(dist)-Math.max(0,edge-.6*r.width)):0, TLp=LP?Math.min(900,520+LP*.8):0, n=Math.ceil(Math.max(0,Math.abs(dist)-LP)/G.step), Tl=mode==='wade'?0:(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch')?880+SC:300; dur=Tl+n*G.ms+TLp;
+    } else { const edge=dir>0?sr.right-(r.left+r.width/2):(r.left+r.width/2)-sr.left, nRun=LEAPLEN?Math.max(0,Math.floor((edge-.75*r.width-36)/G.step)):0, LP=LEAPLEN?Math.max(120,Math.abs(dist)-36-nRun*G.step):0, TLp=LP?Math.min(900,520+LP*.8):0, n=LEAPLEN?nRun:Math.ceil(Math.abs(dist)/G.step),   // leap takes off with the face still well inside the frame
+       Tl=mode==='wade'?0:(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch')?880+SC:300; dur=Tl+n*G.ms+TLp;
       { const v=G.step/G.ms, D=crew.reduce((t,m)=>t+m.r.width,0)/crew.length*((mode==='walk'||mode==='gallop'||mode==='branch')?2.1:1.7)+40, sOf=m=>dir*(m.r.left+m.r.width/2);   // same pace, even gaps between them
         delay=Math.max(0,(sOf(crew[i])-sOf(crew[0])+i*D)/v); }
       const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:'50% 100%',easing:mode==='sidehop'?'ease-out':'ease-in-out'});
@@ -3559,7 +3560,7 @@ function serveFood(id){
   const leafy=isLeafy(c);
   row.innerHTML=`<span class="k">Favorite food</span><span class="v">${emo(c.food)} ${leafy?'Leaves':c.foodTxt}</span>`;
   if(sn) sn.replaceWith(row); else bubble.querySelector('.fact').before(row);
-  const f=document.createElement('div'); f.className='food'+(/🌾|🎋/.test(c.food)?' flipx':''); f.innerHTML=`<span class="fe">${emo(c.food)}</span>`;
+  const f=document.createElement('div'); f.className='food'+(/🌾|🎋|🍃|🌿/.test(c.food)?' flipx':''); f.innerHTML=`<span class="fe">${emo(c.food)}</span>`;
   if(isAF()){ monkey.appendChild(f); tossSnack(f); } else if(isAS()){ monkey.appendChild(f); floatSnack(f); } else { snackTrail(); monkey.appendChild(f); } monkey.classList.add('holding'); sfxSnack();
   if(leafy) addLeafStack(f,c,row);
   monkey.classList.remove('pop','hop'); void monkey.offsetWidth; monkey.classList.add('hop');

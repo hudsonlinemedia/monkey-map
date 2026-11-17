@@ -3191,6 +3191,17 @@ async function toStand(el){ const w=el.querySelector(':scope > svg.walker'), sv=
   if(sv){ sv.getAnimations().forEach(a=>a.cancel()); syncBob(w,sv); }
   if(w) w.remove();
   el.style.removeProperty('--ws'); delete el._stand; }
+// one flowing swing: the hand rides the vine at an even pace while the body sways like a pendulum (no stops between handholds)
+function brachFrames(x0,x1,g,dir,lead,land){
+  const fr=[], A=g.A, Ts=760, n=Math.max(2,Math.round(Math.abs(x1-x0)/g.step)), Tr=lead?620:0, Td=land?640:0, Tsw=n*Ts, dur=Tr+Tsw+Td, S=12;
+  const k=(t,x,y,rot)=>fr.push({offset:Math.min(1,t/dur),transform:`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${rot.toFixed(2)}deg)`,transformOrigin:g.o,easing:'linear'});
+  const sw=u=>dir*A*Math.cos(Math.PI*u);   // sway angle along the swing (u counts handholds)
+  if(lead){ for(let j=0;j<=S;j++){ const p=j/S, up=1-Math.pow(1-p,3)+Math.sin(p*Math.PI)*.06;   // a springy leap up to the vine, winding back into the first swing
+      k(Tr*p, 0, g.jy*up, sw(0)*Math.pow(p,1.6)); } }
+  const N=n*S; for(let j=lead?1:0;j<=N;j++){ const u=j/S, p=j/N; k(Tr+Tsw*p, x0+(x1-x0)*p, g.jy, sw(u)); }
+  if(land){ const r0=sw(n); for(let j=1;j<=S;j++){ const p=j/S, e=p*p*(3-2*p), drop=p<.75?Math.pow(p/.75,2):1-Math.sin((p-.75)/.25*Math.PI)*.05;   // lets go, drops and lands with a little bounce
+      k(Tr+Tsw+Td*p, x1, g.jy*(1-drop), r0*(1-e)); } }
+  return {fr,dur,speed:Math.abs(x1-x0)/Tsw}; }
 function locoEnding(c,ok){ return new Promise(async res=>{
   const [mode,tk]=locoOf(c), T=LOCO_TXT[tk], dir=Math.random()<.5?1:-1;
   const row=document.createElement('div'); row.className='stat new';
@@ -3213,6 +3224,7 @@ function locoEnding(c,ok){ return new Promise(async res=>{
     stage.appendChild(vine); vine.animate([{opacity:0},{opacity:1}],{duration:500,fill:'forwards'});
     await wait(550); if(!ok()) return res();
   }
+  if(mode==='brachiate') crew.forEach(({el})=>{ el._z=el.style.zIndex; el.style.zIndex='6'; });   // swinging high: keep them in front of the info bubble
   const G={knuckle:{step:34,ms:c.sci.startsWith('Gorilla')?470:390,hop:4},quad:{step:36,ms:300,hop:5},sidehop:{step:80,ms:540,hop:56}}[mode];
   // per-member swing geometry for brachiation (pivot on the raised hand)
   const geo=crew.map(({el,r})=>{ if(mode!=='brachiate') return null; const sv=el.querySelector('svg').getBoundingClientRect(), A=34;
@@ -3220,10 +3232,7 @@ function locoEnding(c,ok){ return new Promise(async res=>{
   let longest=0;
   crew.forEach(({el,r},i)=>{
     const tail=mode==='knuckle'||mode==='quad'?r.width*.4:0, dist=dir>0?sr.right-r.left+30+tail:-(r.right-sr.left+30+tail), fr=[]; let dur, delay;
-    if(mode==='brachiate'){ const g=geo[i], n=Math.ceil(Math.abs(dist)/g.step)+1, Tj=420, Tw=320, Ts=720; delay=i*420; dur=Tj+Tw+n*Ts;
-      const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:g.o,easing:'ease-in-out'});
-      k(0,0,0,0); k(Tj,0,g.jy,0); k(Tj+Tw,0,g.jy,dir*g.A*.8);
-      for(let j=0;j<n;j++){ const t0=Tj+Tw+j*Ts, x=dir*g.step*j; if(j) k(t0,x,g.jy,dir*g.A); k(t0+Ts,x,g.jy,-dir*g.A); }
+    if(mode==='brachiate'){ const g=geo[i], f=brachFrames(0,dist,g,dir,true,false); delay=i*420; dur=f.dur; fr.push(...f.fr);
     } else { const n=Math.ceil(Math.abs(dist)/G.step), Tl=mode==='knuckle'?880:300; delay=i*260; dur=Tl+n*G.ms;
       const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:'50% 100%',easing:mode==='sidehop'?'ease-out':'ease-in-out'});
       k(0,0,0,0); k(Tl,0,0,0);
@@ -3243,11 +3252,8 @@ function locoEnding(c,ok){ return new Promise(async res=>{
     const tail=mode==='knuckle'||mode==='quad'?r.width*.4:0, x0=dir>0?sr.right-r.left+30+tail:-(r.right-sr.left+30+tail), fr=[]; let dur;
     if(mode==='knuckle'){ el._dir=bd; faceWay(el,bd); }   // turned around, off-screen
     else if(mode==='quad') swapWalker(el,walkerSVG(Lof(el),mode,bd));
-    if(mode==='brachiate'){ const g=geo[i], n=Math.max(2,Math.round(Math.abs(x0)/g.step)), st=-x0/n, Ts=640, Tw=300, Tj=380; dur=n*Ts+Tw+Tj;
-      const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:g.o,easing:'ease-in-out'});
-      for(let j=0;j<n;j++){ const t0=j*Ts, x=x0+st*j; k(t0,x,g.jy,bd*g.A); k(t0+Ts,x,g.jy,-bd*g.A); }
-      k(n*Ts+Tw,x0+st*(n-1),g.jy,0); fr[fr.length-1].transform=`translate(0px,${g.jy}px) rotate(0deg)`; k(dur,0,0,0);
-      var delay=acc; acc+=(r.width*1.5+30)/(g.step/Ts);
+    if(mode==='brachiate'){ const g=geo[i], f=brachFrames(x0,0,g,bd,false,true); dur=f.dur; fr.push(...f.fr);
+      var delay=acc; acc+=(r.width*1.5+30)/f.speed;
     } else { const ms=G.ms*.75, n=Math.max(2,Math.round(Math.abs(x0)/G.step)), st=-x0/n; dur=n*ms;
       const k=(t,x,y)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px)`,easing:mode==='sidehop'?'ease-out':'ease-in-out'});
       k(0,x0,0); for(let j=0;j<n;j++){ k((j+.5)*ms,x0+st*(j+.5),-G.hop); k((j+1)*ms,x0+st*(j+1),0); }
@@ -3259,6 +3265,7 @@ function locoEnding(c,ok){ return new Promise(async res=>{
   });
   await wait(last+(mode==='knuckle'?900:250)); if(!ok()) return res();
   if(vine){ vine.animate([{opacity:1},{opacity:0}],{duration:500,fill:'forwards'}); setTimeout(()=>vine.remove(),520); }
+  crew.forEach(({el})=>{ if('_z' in el){ el.style.zIndex=el._z; delete el._z; } });
   rehangBabies();
   res();
 }); }
@@ -4762,7 +4769,7 @@ const G={
    fact:"Named for the black cap on its head (pileus is Latin for cap). Males are all black, while females are silvery gray with a black cap and chest.",
    food:'🟤',foodTxt:'Wild figs',alt:['🍇','🦗'],altTxt:'Ripe fruit & insects',babyNote:"Babies cling tightly to mom's belly while she swings through the trees.",
    baby:{},look:Object.assign({fur:'#1e1c1c',head:'#1e1c1c',face:'#2c2828',ring:'#f4f0e6',belly:'#262222',hand:'#f4f0e6',feet:'#f4f0e6'},base)},
- 'Nomascus hainanus':{m:'Hainan gibbon',st:'CR',size:'about 15–20 lb',
+ 'Nomascus hainanus':{m:'Hainan gibbon',st:'CR',size:'about 15–20 lb',pred:'Crested serpent eagle',predE:'🦅',   // Hainan's own eagle (S. c. rutherfordi); no clouded leopards are left on the island
    fact:"The Hainan gibbon may be the rarest ape in the world: only about 40 are left, all living in one forest on a single island.",
    food:'🍇',foodTxt:'Ripe fruit',alt:['🍃','🌸'],altTxt:'Young leaves & flowers',babyNote:"Babies are born golden, turn black, and girls turn golden again when they grow up.",
    baby:{fur:'#d8b878',head:'#d8b878',belly:'#e2c890',topknot:null},look:Object.assign({fur:'#1e1c1c',head:'#1e1c1c',face:'#2c2828',belly:'#262222',hand:'#1e1c1c',feet:'#1e1c1c',topknot:'#1e1c1c'},base)}};

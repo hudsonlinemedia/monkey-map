@@ -1288,7 +1288,7 @@ C.madagascar={name:'Madagascar',reg:'af',lbl:[46.6,-19.6],lblRot:-72,sp:110,spTx
    fact:"Ring-tailed lemurs spend lots of time on the ground. On cold mornings they sit facing the sun with their arms spread wide, like they're doing yoga, to warm their bellies. Their troops are led by females.",
    food:'⟦fs_acaciapod⟧',foodTxt:"Tamarind pods",alt:['🍃','🌸'],altTxt:"Young leaves & flowers",pred:'Fossa',predE:'🐾',pred2:'Madagascar harrier-hawk',pred2E:'🦅',
    baby:{},babyNote:"Babies ride on mom's belly at first, then on her back like a jockey.",
-   look:{fur:'#9e9894',head:'#9e9894',face:'#f2eee8',belly:'#f2eee6',hand:'#3a3634',feet:'#3a3634',snout:1.15,snoutC:'#2c2826',goggles:'#2c2826',tail:'#f2eee6',rings:'#2c2826',tailW:13,tailType:'hang',longtail:true,lemur:true}};
+   look:{fur:'#9e9894',head:'#9e9894',face:'#f2eee8',belly:'#f2eee6',hand:'#3a3634',feet:'#3a3634',snout:1.15,snoutC:'#2c2826',goggles:'#2c2826',tail:'#f2eee6',rings:'#2c2826',tailW:15,fluffyTail:true,tailType:'ringup',longtail:true,lemur:true}};
 const RANGES_AF={"Macaca sylvanus": ["algeria", "morocco"], "Erythrocebus patas": ["benin", "burkinafaso", "cameroon", "car", "chad", "ivorycoast", "drc", "ethiopia", "gambia", "ghana", "guinea", "guineabissau", "kenya", "mali", "mauritania", "niger", "nigeria", "senegal", "sierraleone", "southsudan", "sudan", "togo", "uganda"], "Papio papio": ["gambia", "guinea", "guineabissau", "mali", "mauritania", "senegal", "sierraleone"], "Chlorocebus sabaeus": ["burkinafaso", "ivorycoast", "gambia", "ghana", "guinea", "guineabissau", "liberia", "mali", "mauritania", "senegal", "sierraleone"], "Piliocolobus badius": ["ivorycoast", "gambia", "guinea", "guineabissau", "liberia", "senegal", "sierraleone"], "Cercopithecus campbelli": ["gambia", "guinea", "guineabissau", "liberia", "senegal", "sierraleone"], "Colobus polykomos": ["ivorycoast", "guinea", "guineabissau", "liberia", "sierraleone"], "Cercopithecus diana": ["ivorycoast", "guinea", "liberia", "sierraleone"], "Cercocebus atys": ["ivorycoast", "guinea", "guineabissau", "liberia", "senegal", "sierraleone"], "Procolobus verus": ["benin", "ivorycoast", "ghana", "guinea", "liberia", "nigeria", "sierraleone", "togo"], "Cercopithecus roloway": ["ivorycoast", "ghana"], "Cercopithecus mona": ["benin", "cameroon", "ghana", "nigeria", "togo"], "Cercopithecus erythrogaster": ["benin", "nigeria", "togo"], "Mandrillus leucophaeus": ["cameroon", "eqguinea", "nigeria"], "Chlorocebus tantalus": ["benin", "burkinafaso", "cameroon", "car", "chad", "drc", "ghana", "niger", "nigeria", "southsudan", "sudan", "togo", "uganda"], "Papio anubis": ["benin", "burkinafaso", "burundi", "cameroon", "car", "chad", "ivorycoast", "drc", "eritrea", "ethiopia", "ghana", "guinea", "kenya", "mali", "mauritania", "niger", "nigeria", "congo", "rwanda", "sierraleone", "somalia", "southsudan", "sudan", "tanzania", "togo", "uganda"], "Chlorocebus aethiops": ["djibouti", "eritrea", "ethiopia", "southsudan", "sudan"], "Colobus guereza": ["cameroon", "car", "chad", "drc", "ethiopia", "gabon", "kenya", "nigeria", "congo", "rwanda", "southsudan", "tanzania", "uganda"], "Theropithecus gelada": ["ethiopia"], "Papio hamadryas": ["djibouti", "eritrea", "ethiopia", "kenya", "somalia", "sudan"], "Papio cynocephalus": ["ethiopia", "kenya", "malawi", "mozambique", "somalia", "tanzania", "zambia"], "Cercocebus galeritus": ["kenya"], "Piliocolobus tephrosceles": ["tanzania", "uganda"], "Allochrocebus lhoesti": ["burundi", "drc", "rwanda", "uganda"], "Rungwecebus kipunji": ["tanzania"], "Allochrocebus preussi": ["cameroon", "eqguinea", "nigeria"], "Colobus satanas": ["cameroon", "eqguinea", "gabon", "congo"], "Mandrillus sphinx": ["cameroon", "eqguinea", "gabon", "congo"], "Cercopithecus neglectus": ["angola", "cameroon", "car", "drc", "eqguinea", "ethiopia", "gabon", "kenya", "congo", "southsudan", "uganda"], "Cercocebus agilis": ["cameroon", "car", "drc", "gabon", "congo"], "Cercopithecus lomamiensis": ["drc"], "Colobus angolensis": ["angola", "burundi", "drc", "kenya", "malawi", "rwanda", "tanzania", "uganda", "zambia"], "Papio kindae": ["angola", "drc", "tanzania", "zambia"], "Cercopithecus mitis": ["angola", "burundi", "drc", "ethiopia", "kenya", "malawi", "mozambique", "rwanda", "southsudan", "tanzania", "uganda", "zambia"], "Chlorocebus pygerythrus": ["botswana", "burundi", "eswatini", "ethiopia", "kenya", "lesotho", "malawi", "mozambique", "namibia", "rwanda", "somalia", "southafrica", "southsudan", "tanzania", "uganda", "zambia", "zimbabwe"], "Papio ursinus": ["angola", "botswana", "eswatini", "lesotho", "mozambique", "namibia", "southafrica", "zambia", "zimbabwe"], "Cercopithecus kandti": ["rwanda", "uganda", "drc"], "Cercopithecus albogularis": ["zimbabwe", "mozambique", "southafrica", "eswatini", "malawi", "zambia", "tanzania", "kenya", "somalia"]};
 
 /* ---------------- species (monkey-first mode) ---------------- */
@@ -1540,11 +1540,14 @@ function monkeySVG(L){
   else if(tt==='hook'){ tcls='tailh'; tpath='M126 202 C172 200 198 182 194 150 C191 132 176 130 172 142'; }
   else if(tt==='tuft'){ tcls='tailh'; tpath='M126 202 C170 200 188 222 184 246'; tend=[184,250]; }
   else if(tt==='curl'){ tcls='tail'; tpath=L.longtail?'M125 205 C195 222 212 180 196 150 C184 128 160 140 170 160':'M125 205 C178 218 194 188 182 168 C172 152 154 162 164 178'; }
+  else if(tt==='ringup'){ tcls='tail'; tpath='M124 204 C168 200 192 168 184 128 C178 98 186 72 198 74'; }   // ring-tailed lemur: tail held high like a question mark
   else if(tt==='semi'){ tcls='tail'; tpath='M125 205 C176 214 196 196 192 170 C190 158 180 154 175 160'; }
   else { tcls='tailh'; tpath=L.longtail?'M126 200 C180 196 200 222 194 249':'M126 202 C172 200 190 222 186 249'; }
   if(tpath){
   if(tt==='hang'||tt==='tailh') tend=L.longtail?[194,252]:[186,252];
   s+=`<g class="${tcls}"><path d="${tpath}" stroke="${tailC}" stroke-width="${tw}" fill="none" stroke-linecap="round"/>`;
+  if(tt==='bushy'||L.fluffyTail) s+=`<path d="${tpath}" stroke="${tailC}" stroke-width="${tw+12}" stroke-dasharray=".1 8" stroke-linecap="round" fill="none"/>`;   // soft, fluffy edge
+  if(L.fatTail) s+=`<path d="${tpath}" pathLength="100" stroke-dasharray="0 16 50 34" stroke="${tailC}" stroke-width="${Math.round(tw*2.5)}" fill="none" stroke-linecap="round"/>`;   // fat stored at the base
   if(L.tailTip) s+=`<path d="${tpath}" pathLength="100" stroke-dasharray="0 72 28" stroke="${L.tailTip}" stroke-width="${tw}" fill="none" stroke-linecap="round"/>`;
   if(L.rings) s+=`<path d="${tpath}" pathLength="100" stroke-dasharray="5 7" stroke="${L.rings}" stroke-width="${tw}" fill="none"/>`;
   if(L.tuft&&tend) s+=`<ellipse cx="${tend[0]}" cy="${tend[1]-4}" rx="${tt==='tuft'?9:11}" ry="${tt==='tuft'?13:19}" fill="${L.tuft}"/>`;
@@ -4564,7 +4567,7 @@ const L={
  'Propithecus verreauxi':{m:"Verreaux's sifaka",st:'CR',size:'about 6–8 lb',
    fact:"On the ground, Verreaux's sifakas can't walk on all fours, so they cross open spaces by hopping sideways on their back legs, like a dance. In the trees they can leap about 30 feet.",
    food:'🍃',foodTxt:'Leaves',alt:['🌸','⟦fs_acaciapod⟧'],altTxt:'Flowers & seed pods',babyNote:"Babies cling to mom's belly, then ride on her back as she leaps.",
-   look:lm({fur:'#f4f0e8',head:'#f4f0e8',face:'#1e1a18',belly:'#f6f2ea',hand:'#2a2624',feet:'#2a2624',cap:'#8a5a3a',snout:.9,snoutC:'#1e1a18',tail:'#f4f0e8'})},
+   look:lm({fur:'#f4f0e8',head:'#f4f0e8',face:'#1e1a18',belly:'#f6f2ea',hand:'#2a2624',feet:'#2a2624',cap:'#8a5a3a',snout:.9,snoutC:'#1e1a18',tail:'#f4f0e8',tailW:13,fluffyTail:true})},
  'Indri indri':{m:'Indri',st:'CR',size:'about 13–20 lb',
    fact:"The indri is the biggest living lemur and has almost no tail. Families sing loud, eerie songs together that carry for more than a mile through the rainforest.",
    food:'🍃',foodTxt:'Young leaves',alt:['🌸','🟤'],altTxt:'Flowers & wild figs',babyNote:"A baby rides on mom's belly for about 4 months, then on her back.",
@@ -4572,39 +4575,39 @@ const L={
  'Daubentonia madagascariensis':{m:'Aye-aye',st:'EN',size:'about 5–6 lb',
    fact:"The aye-aye taps on tree bark with its long, thin middle finger and listens for hollow tunnels. Then it gnaws a hole with its sharp front teeth and hooks out grubs with that same finger.",
    food:'🐛',foodTxt:'Beetle grubs',alt:['🌰','🟤'],altTxt:'Seeds & wild figs',babyNote:"Babies stay in a leafy nest while mom goes out searching for food at night.",
-   look:lm({fur:'#3a3430',head:'#5a4e44',face:'#6a5e52',belly:'#4a4038',hand:'#2a2420',feet:'#2a2420',bigEars:true,bigeyes:true,snout:.7,snoutC:'#8a7a6a',tail:'#2a2420',tailW:15})},
+   look:lm({fur:'#3a3430',head:'#5a4e44',face:'#6a5e52',belly:'#4a4038',hand:'#2a2420',feet:'#2a2420',bigEars:true,bigeyes:true,snout:.7,snoutC:'#8a7a6a',tail:'#4e4640',tailType:'bushy',tailW:24})},
  'Varecia variegata':{m:'Black-and-white ruffed lemur',st:'CR',size:'about 7–10 lb',
    fact:"Ruffed lemurs are the rainforest's biggest fruit-eaters and spread the seeds of many trees. Their roaring calls are some of the loudest of any primate.",
    food:'🟤',foodTxt:'Wild figs',alt:['🌸','🍃'],altTxt:'Flower nectar & young leaves',babyNote:"Unlike most primates, ruffed lemur moms leave their babies in a nest or park them on a branch while they feed.",
-   look:lm({fur:'#1c1a1a',head:'#1c1a1a',face:'#1c1a1a',belly:'#f2eee6',hand:'#1c1a1a',feet:'#1c1a1a',fluff:'#f2eee6',back:'#f2eee6',snoutC:'#141212',tail:'#1c1a1a'})},
+   look:lm({fur:'#1c1a1a',head:'#1c1a1a',face:'#1c1a1a',belly:'#f2eee6',hand:'#1c1a1a',feet:'#1c1a1a',fluff:'#f2eee6',back:'#f2eee6',snoutC:'#141212',tail:'#1c1a1a',tailType:'bushy',tailW:20})},
  'Varecia rubra':{m:'Red ruffed lemur',st:'CR',size:'about 7–9 lb',
    fact:"Red ruffed lemurs live only on the Masoala Peninsula in northeast Madagascar, where rainforest runs right down to the sea.",
    food:'🟤',foodTxt:'Wild figs',alt:['🌸','🍃'],altTxt:'Flower nectar & young leaves',babyNote:"Moms leave their babies in a nest of leaves while they go off to find fruit.",
-   look:lm({fur:'#b8401e',head:'#1c1a1a',face:'#1c1a1a',belly:'#1c1a1a',hand:'#1c1a1a',feet:'#1c1a1a',cheeks:'#f2eee6',snoutC:'#141212',tail:'#1c1a1a'})},
+   look:lm({fur:'#b8401e',head:'#b8401e',face:'#1c1a1a',belly:'#1c1a1a',hand:'#1c1a1a',feet:'#1c1a1a',fluff:'#a8361a',snoutC:'#141212',tail:'#1c1a1a',tailType:'bushy',tailW:22})},
  'Microcebus murinus':{m:'Gray mouse lemur',st:'LC',size:'about 2 oz',
    fact:"Mouse lemurs are among the smallest primates on Earth. A gray mouse lemur weighs about 2 ounces, about as much as a few grapes, and comes out only at night.",
    food:'🦗',foodTxt:'Insects',alt:['🍯','🟤'],altTxt:'Tree gum & wild figs',babyNote:"Babies are born in a tree-hole nest and are ready to leave it after about a month.",
-   look:lm({fur:'#9a8a7a',head:'#a8987e',face:'#e8dcc8',belly:'#e6dccc',hand:'#e2c8b0',feet:'#e2c8b0',bigeyes:true,bigEars:true,snout:.6,snoutC:'#d8c8b0',noseStripe:'#f4ece0',tiny:true})},
+   look:lm({fur:'#9a8a7a',head:'#a8987e',face:'#e8dcc8',belly:'#e6dccc',hand:'#e2c8b0',feet:'#e2c8b0',bigeyes:true,bigEars:true,snout:.6,snoutC:'#d8c8b0',noseStripe:'#f4ece0',tiny:true,tail:'#8a7a6a',tailW:7})},
  'Eulemur fulvus':{m:'Common brown lemur',st:'VU',size:'about 4–6 lb',
    fact:"Unlike most lemurs, brown lemurs can be awake both day and night, napping whenever it suits them. Troops have up to about a dozen lemurs.",
    food:'🟤',foodTxt:'Wild figs',alt:['🍃','🌸'],altTxt:'Young leaves & flowers',babyNote:"Babies cling to mom's belly, then move to her back after a few weeks.",
-   look:lm({fur:'#7a5e44',head:'#3a2e26',face:'#2e2620',belly:'#9a7e60',hand:'#3a2e26',feet:'#3a2e26',cheeks:'#c8b090',snoutC:'#2a2220',tail:'#5a4634'})},
+   look:lm({fur:'#7a5e44',head:'#3a2e26',face:'#2e2620',belly:'#9a7e60',hand:'#3a2e26',feet:'#3a2e26',cheeks:'#c8b090',snoutC:'#2a2220',tail:'#5a4634',tailType:'bushy',tailW:18})},
  'Eulemur coronatus':{m:'Crowned lemur',st:'EN',size:'about 3–4 lb',
    fact:"Crowned lemurs clamber over razor-sharp limestone pinnacles called tsingy in northern Madagascar. Females are gray with a bright orange crown.",
    food:'🟤',foodTxt:'Wild figs',alt:['🍃','🌸'],altTxt:'Young leaves & flowers',babyNote:"Babies hold on to mom's belly and later ride on her back.",
-   look:lm({fur:'#9a948e',head:'#9a948e',face:'#e8e2da',belly:'#e8e2da',hand:'#5a5450',feet:'#5a5450',cap:'#e07a2a',snoutC:'#3a3432',tail:'#7a7470'})},
+   look:lm({fur:'#9a948e',head:'#9a948e',face:'#e8e2da',belly:'#e8e2da',hand:'#5a5450',feet:'#5a5450',cap:'#e07a2a',snoutC:'#3a3432',tail:'#8a847e',tailTip:'#4a4440',tailW:15,fluffyTail:true})},
  'Hapalemur aureus':{m:'Golden bamboo lemur',st:'CR',size:'about 2–3.5 lb',
    fact:"Golden bamboo lemurs eat young bamboo shoots that contain cyanide, a strong poison. Each day they eat enough to harm an animal their size, and scientists still aren't sure how they survive it.",
    food:'🎋',foodTxt:'Bamboo shoots',alt:['🍃','🌿'],altTxt:'Bamboo leaves & stems',babyNote:"Moms often park their babies in the bamboo while they feed nearby.",
-   look:lm({fur:'#b8843e',head:'#9a6a32',face:'#e8c08a',belly:'#e0b678',hand:'#6a4a26',feet:'#6a4a26',snout:.75,snoutC:'#6a4a26',bigEars:false,tail:'#a8783a'})},
+   look:lm({fur:'#b8843e',head:'#9a6a32',face:'#e8c08a',belly:'#e0b678',hand:'#6a4a26',feet:'#6a4a26',snout:.75,snoutC:'#6a4a26',bigEars:false,tail:'#a8783a',tailW:12})},
  'Cheirogaleus medius':{m:'Fat-tailed dwarf lemur',st:'LC',size:'about 4–10 oz',
    fact:"Fat-tailed dwarf lemurs store fat in their tails, then hibernate in tree holes for up to seven months of the dry season, longer than any other primate.",
    food:'🟤',foodTxt:'Wild figs',alt:['🌸','🦗'],altTxt:'Flower nectar & insects',babyNote:"Both parents help care for the babies, which is rare for lemurs.",
-   look:lm({fur:'#a8a098',head:'#b8b0a6',face:'#ece6de',belly:'#ece6de',hand:'#e2d4c4',feet:'#e2d4c4',bigeyes:true,goggles:'#5a4e44',snout:.6,snoutC:'#d8ccbc',tail:'#a8a098',tailW:18,tiny:true})},
+   look:lm({fur:'#a8a098',head:'#b8b0a6',face:'#ece6de',belly:'#ece6de',hand:'#e2d4c4',feet:'#e2d4c4',bigeyes:true,goggles:'#5a4e44',snout:.6,snoutC:'#d8ccbc',tail:'#b0a89e',tailW:14,fatTail:true,tiny:true})},
  'Lepilemur ruficaudatus':{m:'Red-tailed sportive lemur',st:'CR',size:'about 1.5–2 lb',
    fact:"Sportive lemurs sleep in tree holes by day and come out at night to eat leaves. They cling upright to tree trunks and spring from trunk to trunk with their strong back legs.",
    food:'🍃',foodTxt:'Leaves',alt:['🌸','🟤'],altTxt:'Flowers & wild figs',babyNote:"Babies stay in the tree-hole nest or cling to mom for the first weeks.",
-   look:lm({fur:'#8a7462',head:'#8a7e72',face:'#c8b8a8',belly:'#d8ccbe',hand:'#5a4a3e',feet:'#5a4a3e',bigeyes:true,bigEars:true,snout:.7,snoutC:'#6a5a4e',tail:'#a8603a'})}};
+   look:lm({fur:'#8a7462',head:'#8a7e72',face:'#c8b8a8',belly:'#d8ccbe',hand:'#5a4a3e',feet:'#5a4a3e',bigeyes:true,bigEars:true,snout:.7,snoutC:'#6a5a4e',tail:'#a8603a',tailW:11,fluffyTail:true})}};
 Object.entries(L).forEach(([sp,o])=>{ SPECIES[sp]=Object.assign({home:'madagascar',sci:sp,baby:{}},P,o); LEMUR_SP.add(sp); });
 LEMUR_SP.add('Lemur catta');
 const ALL=[...LEMUR_SP]; ALL.forEach(sp=>RANGES[sp]=['madagascar']);

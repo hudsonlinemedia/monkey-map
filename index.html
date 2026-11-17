@@ -4421,7 +4421,7 @@ async function scientistRescue(p,dir,W,mb,ok){ // a field scientist runs in and 
   p.getAnimations().forEach(a=>a.cancel()); p.firstElementChild.style.transform=`scaleX(${-dir})`;
   const b1=say(p,['Eek!','Oh dear!','Good heavens!','Retreat!','Bother!','My hat!'][Math.floor(Math.random()*6)]);
   const s=document.createElement('div'); s.className='predator quad human sci'; s.innerHTML=`<div style="transform:scaleX(${-dir})">${scientistSVG()}</div>`; s.style.bottom=(mb-10)+'px'; stage.appendChild(s);
-  const b2=say(s,['Shoo! Leave them be!','Off you go!','Not these chimps!','Shoo, shoo!','They belong in the wild!','Go home, collector!','Wild apes stay wild!'][Math.floor(Math.random()*7)].replace('chimps',CUR.sci==='Pan troglodytes'?'chimps':'apes'));
+  const b2=say(s,['Shoo! Leave them be!','Off you go!','Not these chimps!','Shoo, shoo!','They belong in the wild!','Go home, collector!','Wild apes stay wild!','Put that net away!','No nets in this forest!','Back off, mister!','Not on my watch!','Watch, don\u2019t catch!','Leave them in peace!'][Math.floor(Math.random()*13)].replace('chimps',CUR.sci==='Pan troglodytes'?'chimps':'apes'));
   const far=W*1.1+250, IN=2112, HOLD=1408, OUT=2880, DL=2100, mid1=-dir*W*.08, mid2=dir*W*.22;
   // each character runs in, stands still to talk, then runs on; the scientist holds center half a second longer
   const go=(el,x0,xm,x1,hold,delay,b)=>{ const D=IN+hold+OUT;

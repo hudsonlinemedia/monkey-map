@@ -3253,7 +3253,7 @@ function locoEnding(c,ok){ return new Promise(async res=>{
     if(mode==='knuckle'){ el._dir=bd; faceWay(el,bd); }   // turned around, off-screen
     else if(mode==='quad') swapWalker(el,walkerSVG(Lof(el),mode,bd));
     if(mode==='brachiate'){ const g=geo[i], v=Math.max(...geo.map(q=>q.step))/760, f=brachFrames(x0,0,g,bd,false,true,v); dur=f.dur; fr.push(...f.fr);   // everyone swings home at the same pace...
-      var delay=acc; acc+=(r.width*2.1+50)/v;   // ...with room for the swaying body between them
+      var delay=acc; acc+=(crew.reduce((t,m)=>t+m.r.width,0)/crew.length*1.9+50)/v;   // ...evenly spaced, with room for the swaying bodies between them
     } else { const ms=G.ms*.75, n=Math.max(2,Math.round(Math.abs(x0)/G.step)), st=-x0/n; dur=n*ms;
       const k=(t,x,y)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px)`,easing:mode==='sidehop'?'ease-out':'ease-in-out'});
       k(0,x0,0); for(let j=0;j<n;j++){ k((j+.5)*ms,x0+st*(j+.5),-G.hop); k((j+1)*ms,x0+st*(j+1),0); }

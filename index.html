@@ -1431,6 +1431,8 @@ const C_AS={
 const RANGES_AS={"Macaca cyclopis": ["taiwan"], "Macaca fascicularis": ["bangladesh", "brunei", "cambodia", "easttimor", "indonesia", "laos", "malaysia", "myanmar", "philippines", "singapore", "thailand", "vietnam"], "Macaca fuscata": ["japan"], "Macaca mulatta": ["afghanistan", "bangladesh", "bhutan", "china", "india", "laos", "myanmar", "nepal", "pakistan", "thailand", "vietnam"], "Macaca nigra": ["indonesia"], "Macaca silenus": ["india"], "Macaca sinica": ["srilanka"], "Nasalis larvatus": ["brunei", "indonesia", "malaysia"], "Presbytis femoralis": ["malaysia", "singapore"], "Presbytis rubicunda": ["brunei", "indonesia", "malaysia"], "Pygathrix nemaeus": ["cambodia", "laos", "vietnam"], "Pygathrix nigripes": ["cambodia", "vietnam"], "Rhinopithecus roxellana": ["china"], "Rhinopithecus strykeri": ["china", "myanmar"], "Semnopithecus schistaceus": ["bhutan", "china", "india", "nepal", "pakistan"], "Trachypithecus geei": ["bhutan", "india"], "Trachypithecus laotum": ["laos"], "Trachypithecus obscurus": ["malaysia", "myanmar", "thailand"], "Trachypithecus phayrei": ["bangladesh", "india", "myanmar"]};
 Object.entries(C_AS).forEach(([id,c])=>{ c.reg='as'; if(!c.lbl) c.lbl=AS_CEN[id]; C[id]=c; });
 Object.assign(RANGES,RANGES_AS);
+const CHIMP_GOODALL="In 1960, scientist Jane Goodall watched a chimpanzee at Gombe in Tanzania use a grass stem to fish termites out of a mound. It showed the world that humans aren't the only animals that make and use tools.";
+const CHIMP_FACT="Chimpanzees use tools: they poke grass stems into termite mounds to “fish” for termites and crack nuts open with stone hammers. They share about 98% of their DNA with us.";
 const FACT_ANY={"Ateles geoffroyi": "Spider monkeys swing through the treetops using their long tails like a fifth hand. They have almost no thumbs, which turns their hands into perfect swinging hooks.", "Alouatta palliata": "Named for the golden \"mantle\" of long fur on its sides. Its deep roars carry for more than a mile through the forest, especially at dawn.", "Alouatta caraya": "Adult males are black and females are golden, so a couple looks like two different species. They rest for much of the day while they digest the leaves they eat.", "Saguinus geoffroyi": "It's the only tamarin that lives in Central America, and its range reaches just into northwestern Colombia.", "Papio anubis": "Olive baboons get their name from their greenish-gray fur, which looks olive-colored from a distance. They have the widest range of any baboon, stretching across Africa from Mali to Ethiopia and Tanzania.", "Piliocolobus badius": "Red colobus monkeys have a stomach with several chambers, like a cow's, full of helpful bacteria that break down tough leaves. Western red colobus need large, old forests, and hunting has made them rare.", "Procolobus verus": "The olive colobus is the smallest colobus monkey. Moms carry newborns in their mouths for the first few weeks, which is very unusual for a monkey. It often travels with other monkeys that help it spot danger.", "Cercopithecus erythrogaster": "Red-bellied monkeys live only in a small corner of West Africa. Some villages protect them in sacred forests, which has helped this rare monkey survive.", "Papio cynocephalus": "Yellow baboons are slim, long-legged baboons with yellowish fur. One group has been studied by scientists since 1971, one of the longest studies of any wild animal.", "Cercopithecus albogularis": "Samango monkeys have a white throat collar and are one of the few monkeys in eastern and southern Africa that live mostly in forest.", "Colobus angolensis": "The Angolan colobus has long white shoulder fur and a tail that turns white toward the tip. Despite its name, it is more common in countries east of Angola.", "Piliocolobus tephrosceles": "Where chimpanzees hunt red colobus monkeys, the colobus males band together and bravely chase the chimps away to protect their group.", "Cercocebus agilis": "Agile mangabeys live in swampy forests and give a loud \"whoop-gobble\" call to tell other groups where they are. Their strong teeth crack hard seeds and nuts.", "Papio ursinus": "Chacma baboons are the largest baboons. In dry places they can go for days without drinking, getting water from juicy plants and digging in dry riverbeds.", "Macaca mulatta": "Few primates besides humans live in so many places: rhesus macaques range from Afghanistan all the way to China's east coast, from mountain forests to busy cities.", "Semnopithecus schistaceus": "These langurs live high in Himalayan forests, where they can be found sitting in the snow. Langurs have huge, many-chambered stomachs that help them digest tough leaves.", "Trachypithecus phayrei": "In Bengali it's called the chashma bandor, the spectacled monkey, because of the white rings around its eyes. It lives in forests from Bangladesh and northeast India into Myanmar.", "Pygathrix nemaeus": "Nicknamed the queen of primates for its costume-like colors: a golden face, white whiskers, maroon legs, black hands and white forearms like long gloves. It lives in the forests of Vietnam, Laos and northeastern Cambodia.", "Pygathrix nigripes": "Black-shanked doucs are among the world's most colorful monkeys, with a bluish face, yellow eye-rings and black legs. They live only in southern Vietnam and eastern Cambodia.", "Presbytis femoralis": "Raffles' banded langurs live only in southern Peninsular Malaysia and Singapore, and just a few hundred are left. They're named after Stamford Raffles, who founded modern Singapore."};   // place-neutral facts for species seen outside their home country
 const SPECIES={};
 const SPKEYS=['m','sci','st','size','fact','food','foodTxt','alt','altTxt','pred','predE','pred2','pred2E','look','baby','babyNote'];
@@ -2170,7 +2172,8 @@ const PRED2={
  honduras:['Harpy eagle','Ocelot','Jaguar','Margay','Black hawk-eagle','Crested eagle'], nicaragua:['Jaguar','Puma','Boa constrictor','Crested eagle','Black hawk-eagle'], costarica:['Boa constrictor','Tayra','Ocelot','Margay','Jaguarundi','Black hawk-eagle','Spectacled owl'],
  panama:['Ornate hawk-eagle','Boa constrictor','Ocelot','Margay','Black hawk-eagle','Spectacled owl']
 };
-function pickPred2(c,id){ if(c.pred2==='Victorian animal collector') return;   // apes always meet the collector
+function pickPred2(c,id){ if(c.pred2==='Victorian animal collector'){   // apes meet the collector about half the time, otherwise a natural predator
+    if(Math.random()<.5) return; const alt=/^(Pan|Gorilla)/.test(c.sci)?'African crowned eagle':(id==='india'||id==='bangladesh'||id==='myanmar'||id==='china'?'Burmese python':'Changeable hawk-eagle'); c.pred2=alt; c.pred2E=PEMO[alt]||'🐾'; return; }
   const pool=(PRED2[id]||[c.pred2]).filter(p=>p&&p!==c.pred); if(!pool.length) return; c.pred2=pool[Math.floor(Math.random()*pool.length)]; c.pred2E=PEMO[c.pred2]||'🐾'; }
 
 
@@ -2448,6 +2451,7 @@ function showCountry(id,sp){
   if(C[id].sp>0) bugify(c,id);
   c.leaf=pickLeaf(c,id);
   pickPred2(c,id);
+  if(c.sci==='Pan troglodytes') c.fact=c.pred2==='Victorian animal collector'?CHIMP_GOODALL:CHIMP_FACT;   // the Jane Goodall fact only comes with the scientist scene
   CUR=c; hint.style.display='none'; currentId=id; setAfTheme(id); document.body.toggleAttribute('data-river', id==='mozambique');   // the Zambezi flows; Lake Malawi stays calm primeMouths(c);
   stage.classList.add('active');
   stage.style.minHeight='';
@@ -2843,7 +2847,7 @@ async function chase(id){
     const L=PLOOK[pname];
     const p=document.createElement('div'); p.className='predator '+L.kind+(L.small?' small':'')+(L.big?' big':'')+(L.long&&(L.kind==='snake'||L.croc)?' long':'')+(L.xlong?' xlong':'')+(L.croc?' croc':'');
     p.innerHTML=`<div style="transform:scaleX(${dir})">${predatorSVG(L)}</div>`;
-    if(L.human){ const say=Math.random()<.5?'Tally-ho!':'I say!'; p.insertAdjacentHTML('beforeend',`<div class="hsay">${say}</div>`); p.classList.add('human'); }
+    if(L.human){ const say=['Tally-ho!','I say!','What ho!','Jolly good!','Pip pip!','Splendid!','Steady on!','A specimen!'][Math.floor(Math.random()*8)]; p.insertAdjacentHTML('beforeend',`<div class="hsay">${say}</div>`); p.classList.add('human'); }
     p.style.bottom=(L.kind==='bird'? mb+150 : mb-10)+'px';
     stage.appendChild(p);
     const startY=L.kind==='bird'?-200:0, midY=L.kind==='bird'?-40:0;
@@ -2855,7 +2859,7 @@ async function chase(id){
     let gap3=gap2; if(L.kind!=='bird'){ p.style.transform=`translate(${-dir*gap2}px,0)`; let L0=1e9,R0=-1e9; p.querySelectorAll('path,ellipse,circle,rect,polygon').forEach(el=>{ const r=el.getBoundingClientRect(); if(r.width*r.height>4){ L0=Math.min(L0,r.left); R0=Math.max(R0,r.right); } });
       const mr=monkey.querySelector('svg').getBoundingClientRect(); let ml=1e9,mrr=-1e9; monkey.querySelectorAll(':scope > svg circle,:scope > svg ellipse,:scope > svg path').forEach(el=>{ if(getComputedStyle(el).display==='none'||el.closest('.restArm,.twig,.callFace,.scaredFace')) return; const r=el.getBoundingClientRect(); if(r.width*r.height>9){ ml=Math.min(ml,r.left); mrr=Math.max(mrr,r.right); } }); if(ml>mrr){ ml=mr.left+mr.width*.12; mrr=mr.right-mr.width*.1; }
       const room=dir>0?ml-R0:L0-mrr, clr=L.human?(isPhone()?30:50):(isPhone()?20:34);
-      gap3=gap2-Math.max(L.human?-400:0,Math.min(isPhone()?90:115,room-clr)); p.style.transform=''; if(L.human) gap3=Math.min(gap3,W/2+pw/2-(isPhone()?.8:.72)*pw); }   // the collector backs off if his net would reach the ape
+      gap3=gap2-Math.max(L.human?-400:0,Math.min(isPhone()?90:115,room-clr)); p.style.transform=''; if(L.human) gap3=Math.min(gap3,W/2+pw/2-(isPhone()?.92:.86)*pw); }   // the collector backs off if his net would reach the ape
     const pin=p.animate([{transform:`translate(${-dir*W}px,${startY}px)`},{transform:`translate(${-dir*gap3}px,${midY}px)`}],{duration:1300,easing:'ease-out',fill:'forwards'});
     await wait(L.kind==='bird'?1300:450); if(!ok()) return false;   // birds land fully in view before calling
     const headIn=()=>{ const r=p.querySelector('svg').getBoundingClientRect(), sr=stage.getBoundingClientRect(), a0=dir>0?r.right-r.width*hf:r.left, a1=dir>0?r.right:r.left+r.width*hf; return a0>=sr.left-2&&a1<=sr.right+2; };
@@ -2870,7 +2874,7 @@ async function chase(id){
     const r=8*dir;
     monkey.animate([{transform:'translate(0,0) rotate(0)'},{transform:`translate(${dir*W*.18}px,-30px) rotate(${r}deg)`},{transform:`translate(${dir*W*.36}px,0) rotate(${r}deg)`},{transform:`translate(${dir*W*.54}px,-30px) rotate(${r}deg)`},{transform:`translate(${dir*W*.8}px,0) rotate(${r}deg)`}],{duration:1000,easing:'ease-out',fill:'forwards'});
     pin.cancel();
-    const run=p.animate([{transform:`translate(${-dir*gap3}px,${midY}px)`},{transform:`translate(${dir*(W*1.1+250)}px,${L.kind==='bird'?-60:0}px)`}],{duration:2200,delay:200,easing:'linear',fill:'both'});
+    const run=p.animate([{transform:`translate(${-dir*gap3}px,${midY}px)`},{transform:`translate(${dir*(W*1.1+250)}px,${L.kind==='bird'?-60:0}px)`}],{duration:L.human?1000:2200,delay:L.human?100:200,easing:L.human?'ease-in':'linear',fill:'both'});
     let bug=null, hand=null, f=null, regrow=false;
     if(trick && (f=monkey.querySelector('.food'))){
       const SR=()=>stage.getBoundingClientRect(), fr0=f.getBoundingClientRect(); hand={x:fr0.left-SR().left, y:fr0.top-SR().top};
@@ -2913,7 +2917,7 @@ async function chase(id){
       await wait(650); if(!ok()) return false; al.remove();
       run.play(); await run.finished.catch(()=>{}); if(!ok()) return false; p.remove();
       }
-    } else { await wait(L.human?1550:2200); if(!ok()) return false;
+    } else { await wait(L.human?650:2200); if(!ok()) return false;
       if(L.human){ if(!await scientistRescue(p,dir,W,mb,ok)) return false; }
       else p.remove(); }
     // monkey comes back to center from the opposite side, snack still in hand
@@ -4415,9 +4419,9 @@ async function scientistRescue(p,dir,W,mb,ok){ // a field scientist runs in and 
   // each of them stops in the middle for a moment to talk, so the words are easy to read
   const say=(el,txt)=>{ let s=el.querySelector('.hsay'); if(!s){ el.insertAdjacentHTML('beforeend','<div class="hsay"></div>'); s=el.querySelector('.hsay'); } s.textContent=txt; s.style.opacity='0'; return s; };
   p.getAnimations().forEach(a=>a.cancel()); p.firstElementChild.style.transform=`scaleX(${-dir})`;
-  const b1=say(p,Math.random()<.5?'Eek!':'Oh dear!');
+  const b1=say(p,['Eek!','Oh dear!','Good heavens!','Retreat!','Bother!','My hat!'][Math.floor(Math.random()*6)]);
   const s=document.createElement('div'); s.className='predator quad human sci'; s.innerHTML=`<div style="transform:scaleX(${-dir})">${scientistSVG()}</div>`; s.style.bottom=(mb-10)+'px'; stage.appendChild(s);
-  const b2=say(s,['Shoo! Leave them be!','Off you go!','Not these chimps!','Shoo, shoo!'][Math.floor(Math.random()*4)].replace('chimps',CUR.sci==='Pan troglodytes'?'chimps':'apes'));
+  const b2=say(s,['Shoo! Leave them be!','Off you go!','Not these chimps!','Shoo, shoo!','They belong in the wild!','Go home, collector!','Wild apes stay wild!'][Math.floor(Math.random()*7)].replace('chimps',CUR.sci==='Pan troglodytes'?'chimps':'apes'));
   const far=W*1.1+250, IN=2112, HOLD=1408, OUT=2880, DL=2100, mid1=-dir*W*.08, mid2=dir*W*.22;
   // each character runs in, stands still to talk, then runs on; the scientist holds center half a second longer
   const go=(el,x0,xm,x1,hold,delay,b)=>{ const D=IN+hold+OUT;
@@ -4426,15 +4430,15 @@ async function scientistRescue(p,dir,W,mb,ok){ // a field scientist runs in and 
     setTimeout(()=>{ b.style.opacity='0'; el.classList.remove('paused'); },delay+IN+hold+150);
     return a; };
   const a1=go(p,dir*far,mid1,-dir*far,HOLD,0,b1);
-  const a2=go(s,dir*(far+80),mid2,-dir*(far-80),HOLD+500,DL,b2);
+  const a2=go(s,dir*(far+80),mid2,-dir*(far-80),HOLD+1500,DL,b2);
   if(sfxReady()){ const d=sfxOut(1.4,0),t=AC.currentTime; [0,.12].forEach(dt=>sweepTone(d,'triangle',620,900,t+IN/1000+dt,.1,.08)); sweepTone(d,'triangle',300,700,t+(DL+IN)/1000,.3,.1); }
   await Promise.all([a1.finished,a2.finished]).catch(()=>{}); s.remove(); p.remove(); return ok();
 }
 function humanSVG(L){
   return `<svg viewBox="0 0 240 200"><defs><linearGradient id="hleg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9b48a"/><stop offset=".48" stop-color="#c9b48a"/><stop offset=".48" stop-color="#f4f0e6"/><stop offset=".82" stop-color="#f4f0e6"/><stop offset=".82" stop-color="#5a3a22"/><stop offset="1" stop-color="#5a3a22"/></linearGradient></defs>
     <g class="legs"><rect x="78" y="138" width="13" height="56" rx="6" fill="url(#hleg)"/><rect x="100" y="138" width="13" height="56" rx="6" fill="url(#hleg)"/></g>
-    <path d="M152 92 L164 26" stroke="#8a6a44" stroke-width="4" stroke-linecap="round"/>
-    <g transform="translate(-56 -4)"><ellipse cx="222" cy="20" rx="15" ry="11" fill="none" stroke="#6a5030" stroke-width="3"/>
+    <path d="M142 96 L66 22" stroke="#8a6a44" stroke-width="4" stroke-linecap="round"/>
+    <g transform="translate(-164 -6)"><ellipse cx="222" cy="20" rx="15" ry="11" fill="none" stroke="#6a5030" stroke-width="3"/>
     <path d="M208 22 Q206 56 224 60 Q238 52 236 22" fill="#f2f6f6" opacity=".7" stroke="#cfd8d8" stroke-width="1"/><path d="M212 30 L232 30 M210 40 L234 40 M214 50 L230 50 M218 24 L216 56 M226 24 L228 58" stroke="#c4cfcf" stroke-width="1"/></g>
     <path d="M70 92 Q64 132 74 146 L120 146 Q132 130 124 92 Q112 80 96 80 Q80 80 70 92Z" fill="#d6c294"/>
     <ellipse cx="98" cy="122" rx="30" ry="24" fill="#cdb889"/><rect x="68" y="130" width="60" height="7" fill="#6a4a2a"/><rect x="94" y="129" width="9" height="9" fill="#e2c46a"/>

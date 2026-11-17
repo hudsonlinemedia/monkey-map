@@ -2855,7 +2855,7 @@ async function chase(id){
     let gap3=gap2; if(L.kind!=='bird'){ p.style.transform=`translate(${-dir*gap2}px,0)`; let L0=1e9,R0=-1e9; p.querySelectorAll('path,ellipse,circle,rect,polygon').forEach(el=>{ const r=el.getBoundingClientRect(); if(r.width*r.height>4){ L0=Math.min(L0,r.left); R0=Math.max(R0,r.right); } });
       const mr=monkey.querySelector('svg').getBoundingClientRect(); let ml=1e9,mrr=-1e9; monkey.querySelectorAll(':scope > svg circle,:scope > svg ellipse,:scope > svg path').forEach(el=>{ if(getComputedStyle(el).display==='none'||el.closest('.restArm,.twig,.callFace,.scaredFace')) return; const r=el.getBoundingClientRect(); if(r.width*r.height>9){ ml=Math.min(ml,r.left); mrr=Math.max(mrr,r.right); } }); if(ml>mrr){ ml=mr.left+mr.width*.12; mrr=mr.right-mr.width*.1; }
       const room=dir>0?ml-R0:L0-mrr, clr=L.human?(isPhone()?30:50):(isPhone()?20:34);
-      gap3=gap2-Math.max(L.human?-400:0,Math.min(isPhone()?90:115,room-clr)); p.style.transform=''; }   // the collector backs off if his net would reach the ape
+      gap3=gap2-Math.max(L.human?-400:0,Math.min(isPhone()?90:115,room-clr)); p.style.transform=''; if(L.human) gap3=Math.min(gap3,W/2+pw/2-(isPhone()?.8:.72)*pw); }   // the collector backs off if his net would reach the ape
     const pin=p.animate([{transform:`translate(${-dir*W}px,${startY}px)`},{transform:`translate(${-dir*gap3}px,${midY}px)`}],{duration:1300,easing:'ease-out',fill:'forwards'});
     await wait(L.kind==='bird'?1300:450); if(!ok()) return false;   // birds land fully in view before calling
     const headIn=()=>{ const r=p.querySelector('svg').getBoundingClientRect(), sr=stage.getBoundingClientRect(), a0=dir>0?r.right-r.width*hf:r.left, a1=dir>0?r.right:r.left+r.width*hf; return a0>=sr.left-2&&a1<=sr.right+2; };
@@ -4418,23 +4418,23 @@ async function scientistRescue(p,dir,W,mb,ok){ // a field scientist runs in and 
   const b1=say(p,Math.random()<.5?'Eek!':'Oh dear!');
   const s=document.createElement('div'); s.className='predator quad human sci'; s.innerHTML=`<div style="transform:scaleX(${-dir})">${scientistSVG()}</div>`; s.style.bottom=(mb-10)+'px'; stage.appendChild(s);
   const b2=say(s,['Shoo! Leave them be!','Off you go!','Not these chimps!','Shoo, shoo!'][Math.floor(Math.random()*4)].replace('chimps',CUR.sci==='Pan troglodytes'?'chimps':'apes'));
-  const far=W*1.1+250, D=6400, mid1=-dir*W*.08, mid2=dir*W*.22;
-  const path=(x0,xm,x1)=>[{transform:`translate(${x0}px,0)`},{transform:`translate(${xm}px,0)`,offset:.33},{transform:`translate(${xm}px,0)`,offset:.55},{transform:`translate(${x1}px,0)`}];
-  const a1=p.animate(path(dir*far,mid1,-dir*far),{duration:D,easing:'ease-in-out',fill:'both'});
-  const a2=s.animate(path(dir*(far+80),mid2,-dir*(far-80)),{duration:D,delay:2100,easing:'ease-in-out',fill:'both'});
-  const show=(b,t0)=>{ setTimeout(()=>{ b.style.opacity='1'; },t0+D*.3); setTimeout(()=>{ b.style.opacity='0'; },t0+D*.58); };
-  show(b1,0); show(b2,2100);
-  // while standing still, nobody's legs should keep running
-  const still=(el,t0)=>{ setTimeout(()=>el.classList.add('paused'),t0+D*.33); setTimeout(()=>el.classList.remove('paused'),t0+D*.55); };
-  still(p,0); still(s,2100);
-  if(sfxReady()){ const d=sfxOut(1.4,0),t=AC.currentTime; [0,.12].forEach(dt=>sweepTone(d,'triangle',620,900,t+D*.33/1000+dt,.1,.08)); sweepTone(d,'triangle',300,700,t+(2100+D*.33)/1000,.3,.1); }
+  const far=W*1.1+250, IN=2112, HOLD=1408, OUT=2880, DL=2100, mid1=-dir*W*.08, mid2=dir*W*.22;
+  // each character runs in, stands still to talk, then runs on; the scientist holds center half a second longer
+  const go=(el,x0,xm,x1,hold,delay,b)=>{ const D=IN+hold+OUT;
+    const a=el.animate([{transform:`translate(${x0}px,0)`},{transform:`translate(${xm}px,0)`,offset:IN/D},{transform:`translate(${xm}px,0)`,offset:(IN+hold)/D},{transform:`translate(${x1}px,0)`}],{duration:D,delay,easing:'ease-in-out',fill:'both'});
+    setTimeout(()=>{ b.style.opacity='1'; el.classList.add('paused'); },delay+IN-100);
+    setTimeout(()=>{ b.style.opacity='0'; el.classList.remove('paused'); },delay+IN+hold+150);
+    return a; };
+  const a1=go(p,dir*far,mid1,-dir*far,HOLD,0,b1);
+  const a2=go(s,dir*(far+80),mid2,-dir*(far-80),HOLD+500,DL,b2);
+  if(sfxReady()){ const d=sfxOut(1.4,0),t=AC.currentTime; [0,.12].forEach(dt=>sweepTone(d,'triangle',620,900,t+IN/1000+dt,.1,.08)); sweepTone(d,'triangle',300,700,t+(DL+IN)/1000,.3,.1); }
   await Promise.all([a1.finished,a2.finished]).catch(()=>{}); s.remove(); p.remove(); return ok();
 }
 function humanSVG(L){
   return `<svg viewBox="0 0 240 200"><defs><linearGradient id="hleg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9b48a"/><stop offset=".48" stop-color="#c9b48a"/><stop offset=".48" stop-color="#f4f0e6"/><stop offset=".82" stop-color="#f4f0e6"/><stop offset=".82" stop-color="#5a3a22"/><stop offset="1" stop-color="#5a3a22"/></linearGradient></defs>
     <g class="legs"><rect x="78" y="138" width="13" height="56" rx="6" fill="url(#hleg)"/><rect x="100" y="138" width="13" height="56" rx="6" fill="url(#hleg)"/></g>
-    <path d="M152 92 L190 50" stroke="#8a6a44" stroke-width="4" stroke-linecap="round"/>
-    <g transform="translate(-32 32)"><ellipse cx="222" cy="20" rx="15" ry="11" fill="none" stroke="#6a5030" stroke-width="3"/>
+    <path d="M152 92 L164 26" stroke="#8a6a44" stroke-width="4" stroke-linecap="round"/>
+    <g transform="translate(-56 -4)"><ellipse cx="222" cy="20" rx="15" ry="11" fill="none" stroke="#6a5030" stroke-width="3"/>
     <path d="M208 22 Q206 56 224 60 Q238 52 236 22" fill="#f2f6f6" opacity=".7" stroke="#cfd8d8" stroke-width="1"/><path d="M212 30 L232 30 M210 40 L234 40 M214 50 L230 50 M218 24 L216 56 M226 24 L228 58" stroke="#c4cfcf" stroke-width="1"/></g>
     <path d="M70 92 Q64 132 74 146 L120 146 Q132 130 124 92 Q112 80 96 80 Q80 80 70 92Z" fill="#d6c294"/>
     <ellipse cx="98" cy="122" rx="30" ry="24" fill="#cdb889"/><rect x="68" y="130" width="60" height="7" fill="#6a4a2a"/><rect x="94" y="129" width="9" height="9" fill="#e2c46a"/>

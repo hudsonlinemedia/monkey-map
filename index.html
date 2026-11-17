@@ -528,6 +528,13 @@
   .holdArm{display:none}
   .holding .holdArm{display:inline}
   .holding .restArm{display:none}
+  .restArm2{display:none}
+  .walker .wa,.walker .wb{transform-box:fill-box;transform-origin:50% 4%;animation:wstride var(--ws,.4s) ease-in-out infinite alternate}
+  .walker .wb{animation-direction:alternate-reverse}
+  .walker.still .wa,.walker.still .wb{animation:none}
+  @keyframes wstride{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
+  .allfours .restArm,.allfours .restArm2{display:inline!important} .allfours .wave,.allfours .holdArm{display:none!important}
+  .allfours .food,.allfours .bfood{opacity:0;transition:opacity .25s}
   .food:after{right:auto;left:-18px}
   footer{color:rgba(255,255,255,.7);font-size:12px;padding:0 20px 16px;line-height:1.5}
   footer a{color:#ffe08a}
@@ -1582,6 +1589,7 @@ function monkeySVG(L){
       f+=`<path d="M${x0.toFixed(1)} ${y0.toFixed(1)} L${x1.toFixed(1)} ${y1.toFixed(1)}" stroke="${L.fingerC||hand}" stroke-width="${w}" stroke-linecap="round"/>`; });
     return f; };
   let arms=`<g class="restArm"><path d="M66 165 Q 48 195 62 214" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="63" cy="215" r="9" fill="${hand}"/>${fing(63,215,100)}</g>`;
+  arms+=`<g class="restArm2"><path d="M134 165 Q 152 195 138 214" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="137" cy="215" r="9" fill="${hand}"/>${fing(137,215,80)}</g>`;
   arms+=`<g class="holdArm"><path d="M68 168 Q 36 160 40 128" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="40" cy="124" r="10" fill="${hand}"/>${fing(40,124,-140)}</g>`;
   // right arm (waving)
   arms+=`<g class="wave"><path d="M134 165 Q 160 140 162 108" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="162" cy="104" r="10" fill="${hand}"/>${fing(162,104,-45)}</g>`;
@@ -1982,7 +1990,7 @@ function stopAll(){ mouthTok++;
   stopMusic();
   clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++;
   stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch,.react,.airleaf,.flybug,.onsen').forEach(e=>e.remove()); clearTimeout(leafTimer);
-  monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running');
+  monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours'); monkey.style.removeProperty('--ws');
   monkey.className='monkey'; monkey.innerHTML='';
   bubble.classList.remove('show','scared'); bubble.innerHTML='';
   hint.style.display='';
@@ -2516,7 +2524,7 @@ function showCountry(id,sp){
     <div class="snack" id="snack">🍽 Snack time coming…<span></span></div>
     <div class="music"><span class="notes"><i></i><i></i><i></i></span> ♪ ${MUSIC[id].label}</div></div>`;
   playMusic(id);
-  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch,.airleaf,.flybug,.onsen,.confetti,.react').forEach(f=>f.remove()); clearTimeout(leafTimer); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running');
+  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch,.airleaf,.flybug,.onsen,.confetti,.react').forEach(f=>f.remove()); clearTimeout(leafTimer); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours'); monkey.style.removeProperty('--ws');
   foodTimer=setTimeout(()=>serveFood(id),6000);
   clearTimeout(callTimer); callTimer=setTimeout(()=>{ if(currentId===id) monkeyCall(CUR); },2500);
   monkey.className='monkey'+(c.look.tiny?' tiny':'');
@@ -3033,7 +3041,168 @@ async function chase(id){
   showFamily(c);
   if(c.sci==='Macaca fuscata' && currentId==='japan'){ await wait(3200); if(!ok()) return; await onsenEnding(ok); }   // snow monkeys end the day in the hot spring
   else if(ERUPTS.includes(currentId) && (window.FORCE_ERUPT || Math.random()<.34)){ await wait(3000); if(!ok()) return; await volcanoEnding(ok); }   // once in a while the volcano blows
+  else if(LOCO_ON.includes(c.sci)){ await wait(4500); if(!ok()) return; await locoEnding(c,ok); }   // the family heads off the way this primate really travels, then comes back
 }
+
+/* ---------------- locomotion finale: the family leaves the way it really moves in the wild, then walks back home ---------------- */
+const LOCO_TXT={
+ brachiate:['🌿 Brachiation','It swings hand over hand under the branches, crossing big gaps between trees in a single swing.'],
+ tailswing:['🌿 Arm-swinging','It swings arm over arm through the trees, using its strong tail as a fifth hand.'],
+ knuckle:['✊ Knuckle-walking','On the ground it walks on all fours, leaning on the knuckles of its hands.'],
+ sidehop:['💃 Sideways hopping','On the ground it bounds sideways on its strong back legs, with its arms up for balance.'],
+ ringtail:['🐾 Walking on all fours','It trots along on all fours with its striped tail held high, so the rest of the troop can follow.'],
+ quadgrab:['🐾 Walking on all fours','It walks and runs on all fours along branches and on the ground, and can grab with its strong tail too.'],
+ quadtail:['🐾 Walking on all fours','It walks and runs on all fours along branches and on the ground, using its long tail for balance.'],
+ quad:['🐾 Walking on all fours','It walks and runs on all fours along branches and on the ground.']};
+// [how it moves, which caption]
+const LOCO_ON=['Pan troglodytes'];   // experiment: chimps only for now
+function locoOf(c){ const sp=c.sci, g=sp.split(' ')[0], L=c.look, tt=L.tailType||'curl';
+  if(g==='Pan'||g==='Gorilla') return ['knuckle','knuckle'];
+  if(['Hylobates','Symphalangus','Hoolock','Nomascus'].includes(g)) return ['brachiate','brachiate'];
+  if(g==='Ateles'||g==='Brachyteles') return ['brachiate','tailswing'];
+  if(g==='Propithecus'||g==='Indri'||g==='Lepilemur') return ['sidehop','sidehop'];
+  if(sp==='Lemur catta') return ['quad','ringtail'];
+  return ['quad',['curl','semi','hook'].includes(tt)?'quadgrab':['stub','short'].includes(tt)?'quad':'quadtail']; }
+// side-on body for walking: drawn in the standing monkey's own units, so the head keeps the same size and spot; the body turns the way it walks
+function walkerSVG(L,mode,dir){
+  const f=L.fur, hd=L.hand||f, bl=L.belly||f, ft=L.feet||hd, lc=L.legC||f;
+  const leg=(x1,y1,x2,y2,w,cls,fc,op,col)=>`<g class="${cls}"${op?` opacity="${op}"`:''}><path d="M${x1} ${y1} L${x2} ${y2}" stroke="${col||f}" stroke-width="${w}" stroke-linecap="round"/>${fc}</g>`;
+  let b='';
+  if(mode==='knuckle'){ const lw=L.thick?22:19, aw=L.thick?21:18;
+    // each part sits in its own group so it can fold smoothly between the standing pose and the walk
+    b+=`<g class="mfa">${leg(70,150,82,232,aw,'wa',`<circle cx="84" cy="238" r="10" fill="${hd}"/>`,'.8')}</g>`;                                 // far arm, on its knuckles
+    b+=`<g class="mfh">${leg(-22,182,-30,236,lw,'wb',`<ellipse cx="-36" cy="241" rx="15" ry="7" fill="${ft}"/>`,'.8')}</g>`;                    // far hind leg
+    b+=`<g class="mtor"><ellipse cx="22" cy="176" rx="${L.thick?74:68}" ry="${L.thick?48:44}" fill="${f}" transform="rotate(-14 22 176)"/>`;
+    if(bl!==f) b+=`<ellipse cx="26" cy="198" rx="40" ry="15" fill="${bl}" transform="rotate(-12 26 198)"/>`;
+    if(L.back) b+=`<ellipse cx="10" cy="152" rx="46" ry="16" fill="${L.back}" transform="rotate(-14 10 152)"/>`;
+    b+=`</g><g class="mnh">${leg(-4,188,0,236,lw,'wa',`<ellipse cx="6" cy="241" rx="15" ry="7" fill="${ft}"/>`)}</g>`;                       // near hind leg
+    b+=`<g class="mna">${leg(84,156,100,232,aw,'wb',`<circle cx="102" cy="238" r="10" fill="${hd}"/><path d="M96 234 h12" stroke="rgba(0,0,0,.25)" stroke-width="2"/>`)}</g>`;   // near arm, knuckles down
+  } else {   // monkeys and lemurs on all fours: flat palms, tail out behind
+    const lw=L.thick?18:L.lanky?11:14, tt=L.tailType||'curl', tw=L.tailW||(tt==='bushy'?17:(L.longtail?8:10)), tc=L.tail||f;
+    const tp=['curl','semi','hook','ringup'].includes(tt)?'M-44 180 C-92 170 -106 126 -90 98 C-80 80 -58 86 -64 104'
+            :tt==='short'?'M-44 182 Q-62 176 -66 162':tt==='stub'?null:'M-44 184 C-90 178 -112 198 -116 230';
+    if(tp){ b+=`<path d="${tp}" stroke="${tc}" stroke-width="${tw}" fill="none" stroke-linecap="round"/>`;
+      if(tt==='bushy'||L.fluffyTail) b+=`<path d="${tp}" stroke="${tc}" stroke-width="${tw+12}" stroke-dasharray=".1 8" stroke-linecap="round" fill="none"/>`;
+      if(L.fatTail) b+=`<path d="${tp}" pathLength="100" stroke-dasharray="0 16 50 34" stroke="${tc}" stroke-width="${Math.round(tw*2.5)}" fill="none" stroke-linecap="round"/>`;
+      if(L.tailTip) b+=`<path d="${tp}" pathLength="100" stroke-dasharray="0 72 28" stroke="${L.tailTip}" stroke-width="${tw}" fill="none" stroke-linecap="round"/>`;
+      if(L.rings) b+=`<path d="${tp}" pathLength="100" stroke-dasharray="5 7" stroke="${L.rings}" stroke-width="${tw}" fill="none"/>`;
+      if(L.tuft&&tt!=='short'&&!['curl','semi','hook','ringup'].includes(tt)) b+=`<ellipse cx="-116" cy="232" rx="10" ry="15" fill="${L.tuft}"/>`; }
+    b+=leg(-28,196,-34,236,lw,'wb',`<ellipse cx="-38" cy="241" rx="11" ry="6" fill="${ft}"/>`,'.8',lc);
+    b+=leg(58,196,66,236,lw,'wa',`<ellipse cx="69" cy="241" rx="11" ry="6" fill="${hd}"/>`,'.8',L.armC||f);
+    b+=`<ellipse cx="66" cy="160" rx="28" ry="26" fill="${f}"/>`;   // neck and shoulders
+    b+=`<ellipse cx="12" cy="188" rx="${L.thick?72:64}" ry="${L.thick?40:33}" fill="${f}" transform="rotate(-4 12 188)"/>`;
+    if(L.back) b+=`<ellipse cx="4" cy="170" rx="50" ry="14" fill="${L.back}"/>`;
+    if(L.cape) b+=`<path d="M40 150 C10 156 -20 170 -30 196 C0 184 30 178 56 178Z" fill="${L.cape}"/>`;
+    if(bl!==f) b+=`<ellipse cx="16" cy="210" rx="42" ry="10" fill="${bl}"/>`;
+    b+=leg(-12,200,-14,238,lw,'wa',`<ellipse cx="-18" cy="243" rx="11" ry="6" fill="${ft}"/>`,'',lc);
+    b+=leg(72,198,82,238,lw,'wb',`<ellipse cx="86" cy="243" rx="11" ry="6" fill="${hd}"/>`,'',L.armC||f);
+  }
+  const face=monkeySVG(Object.assign({},L,{headOnly:true})).replace('<svg ','<svg x="22" y="10" width="156" height="156" ');
+  const vb=dir>0?'-60 0 260 250':'0 0 260 250', ml=dir>0?-30:0;
+  return `<svg class="walker" viewBox="${vb}" style="width:130%;margin-left:${ml}%"><g${dir>0?'':' transform="translate(200 0) scale(-1 1)"'}>${b}</g>${face}</svg>`;
+}
+// babies hanging from a branch by their tails hop down to the ground first (and hop back up at the end)
+function unhangBabies(){ const mb=parseFloat(monkey.style.bottom)||40, out=[];
+  stage.querySelectorAll('.branch').forEach(br=>br.animate([{opacity:1},{opacity:0}],{duration:350,fill:'forwards'}));
+  stage.querySelectorAll('.baby.hang').forEach(b=>{ const keep={cls:b.className,css:b.style.cssText,html:b.innerHTML};
+    const sv=b.querySelector('svg'), fd=b.querySelector('.bfood'), L=Object.assign({},CUR.look,CUR.baby||{}); L.hangTail=false;
+    b.className='baby holding'; b.style.top=''; b.style.transformOrigin=''; b.style.bottom=(mb+8)+'px';
+    b.innerHTML=monkeySVG(L)+`<div class="bfood"><span class="fe">${fd?fd.innerHTML:''}</span></div>`;
+    b.animate([{transform:'translateY(-60px)'},{transform:'translateY(0)'}],{duration:300,easing:'ease-in'}); b._hang=keep; out.push(b); });
+  return out; }
+function rehangBabies(){ stage.querySelectorAll('.baby').forEach(b=>{ if(!b._hang) return; b.className=b._hang.cls; b.style.cssText=b._hang.css; b.innerHTML=b._hang.html; delete b._hang; });
+  stage.querySelectorAll('.branch').forEach(br=>{ br.getAnimations().forEach(a=>a.cancel()); br.animate([{opacity:0},{opacity:1}],{duration:300}); }); if(typeof positionHang==='function') positionHang(); }
+// the walk pose folds out of (and back into) the standing pose: body tips forward, hands come down to the knuckles, legs step back
+const FOLD={mtor:['22px 176px','translate(78px,9px) rotate(14deg) scale(.6,1)'], mfh:['-36px 241px','translate(110px,-1px) scale(1,.42)'], mnh:['6px 241px','translate(120px,-1px) scale(1,.42)'],
+  mfa:['70px 150px','translate(-12px,15px) rotate(12deg) scale(1,.62)'], mna:['84px 156px','translate(50px,9px) rotate(10deg) scale(1,.62)']};
+function foldWalker(w,unfold,dur){ if(!w) return Promise.resolve(); w.classList.add('still'); const ps=[];
+  for(const k in FOLD){ const g=w.querySelector('.'+k); if(!g) continue; const [o,t]=FOLD[k];
+    const a=g.animate([{transform:unfold?t:'none',transformOrigin:o,transformBox:'view-box'},{transform:unfold?'none':t,transformOrigin:o,transformBox:'view-box'}],{duration:dur,easing:'cubic-bezier(.45,0,.3,1)',fill:'both'}); ps.push(a.finished.catch(()=>{})); }
+  return Promise.all(ps).then(()=>{ if(unfold){ w.classList.remove('still'); w.querySelectorAll('.mfa,.mfh,.mtor,.mnh,.mna').forEach(g=>g.getAnimations().forEach(a=>a.cancel())); } }); }
+// smooth hand-off between standing and walking: the head stays put, the bodies cross-fade
+function syncBob(from,to){ try{ const a=from&&from.querySelector('.bob')&&from.querySelector('.bob').getAnimations()[0], b=to&&to.querySelector('.bob')&&to.querySelector('.bob').getAnimations()[0]; if(a&&b) b.currentTime=a.currentTime; }catch(e){} }   // keep the two heads bobbing in step so they line up exactly
+function toWalker(el,html){ const sv=el.querySelector(':scope > svg:not(.walker)'); if(!sv) return; el.querySelectorAll(':scope > svg.walker').forEach(w=>w.remove());
+  sv.insertAdjacentHTML('afterend',html); const w=el.querySelector(':scope > svg.walker'); w.style.position='absolute'; w.style.left=w.style.marginLeft; w.style.marginLeft='0'; w.style.bottom='0';
+  el.classList.add('allfours'); syncBob(sv,w); foldWalker(w,false,1);
+  w.animate([{opacity:0},{opacity:1}],{duration:90,fill:'both'}); sv.animate([{opacity:1},{opacity:1,offset:.98},{opacity:0}],{duration:100,fill:'both'}); el._stand=sv;
+  setTimeout(()=>foldWalker(w,true,560),90); }   // body tips forward into the walk
+function swapWalker(el,html){ const w=el.querySelector(':scope > svg.walker'); if(!w) return; const n=document.createElement('div'); n.innerHTML=html; const nw=n.firstChild;
+  nw.style.position='absolute'; nw.style.left=nw.style.marginLeft; nw.style.marginLeft='0'; nw.style.bottom='0'; w.replaceWith(nw); syncBob(el._stand,nw); }
+async function toStand(el){ const w=el.querySelector(':scope > svg.walker'), sv=el._stand;
+  if(w) await foldWalker(w,false,520);   // rises back up onto its feet
+  el.classList.remove('allfours');
+  if(sv){ sv.getAnimations().forEach(a=>a.cancel()); syncBob(w,sv); }
+  if(w) w.remove();
+  el.style.removeProperty('--ws'); delete el._stand; }
+function locoEnding(c,ok){ return new Promise(async res=>{
+  const [mode,tk]=locoOf(c), T=LOCO_TXT[tk], dir=Math.random()<.5?1:-1;
+  const row=document.createElement('div'); row.className='stat new';
+  row.innerHTML=`<span class="k">Gets around by</span><span class="v"><b>${T[0]}</b><br>${T[1]}</span>`;
+  bubble.querySelector('.music').before(row); layoutStage();
+  await wait(1400); if(!ok()) return res();
+  stage.querySelectorAll('.react').forEach(e=>e.remove());
+  if(stage.querySelector('.baby.hang')){ unhangBabies(); await wait(450); if(!ok()) return res(); }
+  const sr=stage.getBoundingClientRect();
+  // the leader is whoever is already on the side they head for; the rest follow in line
+  const crew=[monkey,...stage.querySelectorAll('.baby')].map(el=>({el,r:el.getBoundingClientRect()})).sort((a,b)=>dir>0?b.r.left-a.r.left:a.r.left-b.r.left);
+  const Lof=el=>el===monkey?c.look:Object.assign({},c.look,c.baby||{});
+  let vine=null, vineY=0;
+  if(mode==='brachiate'){   // a long vine appears just above their heads to swing from
+    const top=Math.min(...crew.map(m=>m.r.top))-sr.top;
+    vineY=Math.max(bubble.getBoundingClientRect().bottom-sr.top+16, top-34);
+    vine=document.createElement('div'); vine.className='onsen'; vine.style.cssText=`left:0;right:0;top:${vineY-10}px;height:26px;z-index:1`;
+    let lv=''; for(let x=20;x<400;x+=46) lv+=`<ellipse cx="${x}" cy="${x%92<46?18:6}" rx="7" ry="3.2" fill="#5f8f4a" transform="rotate(${x%92<46?25:-25} ${x} ${x%92<46?18:6})"/>`;
+    vine.innerHTML=`<svg viewBox="0 0 400 26" preserveAspectRatio="none" style="overflow:visible"><path d="M-10 10 Q60 16 130 10 T270 10 T410 11" stroke="#6b4a2e" stroke-width="5" fill="none" stroke-linecap="round"/>${lv}</svg>`;
+    stage.appendChild(vine); vine.animate([{opacity:0},{opacity:1}],{duration:500,fill:'forwards'});
+    await wait(550); if(!ok()) return res();
+  }
+  const G={knuckle:{step:34,ms:c.sci.startsWith('Gorilla')?470:390,hop:4},quad:{step:36,ms:300,hop:5},sidehop:{step:80,ms:540,hop:56}}[mode];
+  // per-member swing geometry for brachiation (pivot on the raised hand)
+  const geo=crew.map(({el,r})=>{ if(mode!=='brachiate') return null; const sv=el.querySelector('svg').getBoundingClientRect(), A=34;
+    return {A, o:`${sv.left+sv.width*.81-r.left}px ${sv.top+sv.height*.416-r.top}px`, jy:vineY-(sv.top+sv.height*.416-sr.top), step:2*sv.height*.32*Math.sin(A*Math.PI/180)}; });
+  let longest=0;
+  crew.forEach(({el,r},i)=>{
+    const tail=mode==='knuckle'||mode==='quad'?r.width*.4:0, dist=dir>0?sr.right-r.left+30+tail:-(r.right-sr.left+30+tail), fr=[]; let dur, delay;
+    if(mode==='brachiate'){ const g=geo[i], n=Math.ceil(Math.abs(dist)/g.step)+1, Tj=420, Tw=320, Ts=720; delay=i*420; dur=Tj+Tw+n*Ts;
+      const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:g.o,easing:'ease-in-out'});
+      k(0,0,0,0); k(Tj,0,g.jy,0); k(Tj+Tw,0,g.jy,dir*g.A*.8);
+      for(let j=0;j<n;j++){ const t0=Tj+Tw+j*Ts, x=dir*g.step*j; if(j) k(t0,x,g.jy,dir*g.A); k(t0+Ts,x,g.jy,-dir*g.A); }
+    } else { const n=Math.ceil(Math.abs(dist)/G.step), Tl=300; delay=i*260; dur=Tl+n*G.ms;
+      const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:'50% 100%',easing:mode==='sidehop'?'ease-out':'ease-in-out'});
+      k(0,0,0,0); k(Tl,0,0,0);
+      for(let j=0;j<n;j++){ const t0=Tl+j*G.ms, x=dir*G.step*j, w=mode==='sidehop'?-dir*6:0;
+        k(t0+G.ms*.5,x+dir*G.step*.5,-G.hop,w); k(t0+G.ms,x+dir*G.step,0,0); }
+      if(mode!=='sidehop') setTimeout(()=>{ if(!ok()) return; el.style.setProperty('--ws',G.ms+'ms'); toWalker(el,walkerSVG(Lof(el),mode,dir)); },Math.max(0,delay+Tl-260));   // turn side-on, hands down to the ground
+    }
+    el.classList.remove('pop','hop');
+    el.animate(fr,{duration:dur,delay,fill:'forwards'});
+    longest=Math.max(longest,dur+delay);
+  });
+  await wait(longest+500); if(!ok()) return res();
+  // ...then they come back in from the other side, the same way, spaced out so nobody passes through anybody
+  let last=0, acc=0; const bd=-dir;
+  crew.map((m,i)=>Object.assign({i},m)).reverse().forEach(({el,r,i})=>{
+    const tail=mode==='knuckle'||mode==='quad'?r.width*.4:0, x0=dir>0?sr.right-r.left+30+tail:-(r.right-sr.left+30+tail), fr=[]; let dur;
+    if(mode==='knuckle'||mode==='quad') swapWalker(el,walkerSVG(Lof(el),mode,bd));   // turned around, off-screen
+    if(mode==='brachiate'){ const g=geo[i], n=Math.max(2,Math.round(Math.abs(x0)/g.step)), st=-x0/n, Ts=640, Tw=300, Tj=380; dur=n*Ts+Tw+Tj;
+      const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:g.o,easing:'ease-in-out'});
+      for(let j=0;j<n;j++){ const t0=j*Ts, x=x0+st*j; k(t0,x,g.jy,bd*g.A); k(t0+Ts,x,g.jy,-bd*g.A); }
+      k(n*Ts+Tw,x0+st*(n-1),g.jy,0); fr[fr.length-1].transform=`translate(0px,${g.jy}px) rotate(0deg)`; k(dur,0,0,0);
+      var delay=acc; acc+=(r.width+16)/(g.step/Ts);
+    } else { const ms=G.ms*.75, n=Math.max(2,Math.round(Math.abs(x0)/G.step)), st=-x0/n; dur=n*ms;
+      const k=(t,x,y)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px)`,easing:mode==='sidehop'?'ease-out':'ease-in-out'});
+      k(0,x0,0); for(let j=0;j<n;j++){ k((j+.5)*ms,x0+st*(j+.5),-G.hop); k((j+1)*ms,x0+st*(j+1),0); }
+      if(el.style.getPropertyValue('--ws')) el.style.setProperty('--ws',ms+'ms');
+      var delay=acc; acc+=(r.width+16)/(G.step/ms); }
+    const old=el.getAnimations(); el.animate(fr,{duration:dur,delay,fill:'both'}); old.forEach(a=>a.cancel());
+    setTimeout(()=>{ if(!ok()) return; el.getAnimations().forEach(a=>a.cancel()); toStand(el); },delay+dur+60);   // stand back up and wave
+    last=Math.max(last,delay+dur+120);
+  });
+  await wait(last+250); if(!ok()) return res();
+  if(vine){ vine.animate([{opacity:1},{opacity:0}],{duration:500,fill:'forwards'}); setTimeout(()=>vine.remove(),520); }
+  rehangBabies();
+  res();
+}); }
 
 /* ---------------- Japan finale: everyone hops into the hot spring ---------------- */
 function sfxSplash(pan=0,big=1){ if(!sfxReady()) return; const d=sfxOut(2.6*big,pan),t=AC.currentTime;

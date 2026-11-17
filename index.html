@@ -49,7 +49,7 @@
   .reg-af .pbtn,.reg-as .pbtn{font-size:8.5px}
   @media (min-width:821px){   /* Africa and Asia: the monkey list sits in a column left of the map, like the Americas */
     body:not(.quiz).reg-af .mapwrap,body:not(.quiz).reg-as .mapwrap{display:grid;grid-template-columns:clamp(228px,22%,270px) minmax(0,1fr);gap:10px;align-items:start}
-    body:not(.quiz).reg-af .mapwrap>#map,body:not(.quiz).reg-as .mapwrap>#map{grid-column:2;grid-row:1}
+    body:not(.quiz).reg-af .mapwrap>#map,body:not(.quiz).reg-as .mapwrap>#map{grid-column:2;grid-row:1;margin:0 auto;align-self:start}
     body:not(.quiz).reg-af .focusname,body:not(.quiz).reg-as .focusname{grid-column:2;grid-row:1}
     .reg-af .palette,.reg-as .palette,.reg-af #map.focus ~ .palette,.reg-as #map.focus ~ .palette{position:static;grid-column:1;grid-row:1;width:auto;margin-top:14%;max-height:none;overflow:visible}
     .reg-af .pgrid,.reg-as .pgrid,.reg-af #map.focus ~ .palette .pgrid,.reg-as #map.focus ~ .palette .pgrid{grid-template-columns:repeat(3,1fr)}
@@ -4649,6 +4649,7 @@ PLOOK['Madagascar tree boa']={kind:'snake',body:'#6e7a4e',spots:'#3a3a26',long:t
 Object.assign(PEMO,{'Fossa':'🐾','Madagascar harrier-hawk':'🦅','Madagascar tree boa':'🐍'});
 Object.assign(PVOICE,{'Fossa':['cat',0],'Madagascar harrier-hawk':['klee'],'Madagascar tree boa':['hissDeep']});
 PRED2.madagascar=['Madagascar harrier-hawk','Madagascar tree boa'];
+VGAIN['Madagascar harrier-hawk']=(VGAIN['Madagascar harrier-hawk']||1)*2.5;
 FLAGS.madagascar='<rect width="60" height="40" fill="#fff"/><rect x="20" width="40" height="20" fill="#fc3d32"/><rect x="20" y="20" width="40" height="20" fill="#007e3a"/>';
 MUSIC.madagascar={label:'Salegy: valiha tube zither, kabosy guitar & rattles',bpm:126,steps:12,root:57,mode:'maj',pent:'maj',prog:[0,0,3,4,0,0,4,0],lead:'harp',reg:74,mel:M12,
   tr:[['shaker','x.x.x.x.x.x.'],['handdrum','X..x.xX..x.x'],['bass','r..f..r..f..']]};

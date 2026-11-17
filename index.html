@@ -3192,8 +3192,8 @@ async function toStand(el){ const w=el.querySelector(':scope > svg.walker'), sv=
   if(w) w.remove();
   el.style.removeProperty('--ws'); delete el._stand; }
 // one flowing swing: the hand rides the vine at an even pace while the body sways like a pendulum (no stops between handholds)
-function brachFrames(x0,x1,g,dir,lead,land){
-  const fr=[], A=g.A, Ts=760, n=Math.max(2,Math.round(Math.abs(x1-x0)/g.step)), Tr=lead?620:0, Td=land?640:0, Tsw=n*Ts, dur=Tr+Tsw+Td, S=12;
+function brachFrames(x0,x1,g,dir,lead,land,v){
+  const fr=[], A=g.A, Ts=760, n=Math.max(2,Math.round(Math.abs(x1-x0)/(v?v*Ts:g.step))), Tr=lead?620:0, Td=land?640:0, Tsw=n*Ts, dur=Tr+Tsw+Td, S=12;
   const k=(t,x,y,rot)=>fr.push({offset:Math.min(1,t/dur),transform:`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${rot.toFixed(2)}deg)`,transformOrigin:g.o,easing:'linear'});
   const sw=u=>dir*A*Math.cos(Math.PI*u);   // sway angle along the swing (u counts handholds)
   if(lead){ for(let j=0;j<=S;j++){ const p=j/S, up=1-Math.pow(1-p,3)+Math.sin(p*Math.PI)*.06;   // a springy leap up to the vine, winding back into the first swing
@@ -3252,8 +3252,8 @@ function locoEnding(c,ok){ return new Promise(async res=>{
     const tail=mode==='knuckle'||mode==='quad'?r.width*.4:0, x0=dir>0?sr.right-r.left+30+tail:-(r.right-sr.left+30+tail), fr=[]; let dur;
     if(mode==='knuckle'){ el._dir=bd; faceWay(el,bd); }   // turned around, off-screen
     else if(mode==='quad') swapWalker(el,walkerSVG(Lof(el),mode,bd));
-    if(mode==='brachiate'){ const g=geo[i], f=brachFrames(x0,0,g,bd,false,true); dur=f.dur; fr.push(...f.fr);
-      var delay=acc; acc+=(r.width*1.5+30)/f.speed;
+    if(mode==='brachiate'){ const g=geo[i], v=Math.max(...geo.map(q=>q.step))/760, f=brachFrames(x0,0,g,bd,false,true,v); dur=f.dur; fr.push(...f.fr);   // everyone swings home at the same pace...
+      var delay=acc; acc+=(r.width*2.1+50)/v;   // ...with room for the swaying body between them
     } else { const ms=G.ms*.75, n=Math.max(2,Math.round(Math.abs(x0)/G.step)), st=-x0/n; dur=n*ms;
       const k=(t,x,y)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px)`,easing:mode==='sidehop'?'ease-out':'ease-in-out'});
       k(0,x0,0); for(let j=0;j<n;j++){ k((j+.5)*ms,x0+st*(j+.5),-G.hop); k((j+1)*ms,x0+st*(j+1),0); }

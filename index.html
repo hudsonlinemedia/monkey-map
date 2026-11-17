@@ -417,7 +417,7 @@
   @keyframes stride{from{transform:rotate(-30deg)}to{transform:rotate(30deg)}}
   .predator.quad svg{animation:gallop .16s ease-in-out infinite alternate}
   @keyframes gallop{from{transform:translateY(0)}to{transform:translateY(-4px)}}
-  .monkey .mleg{transform-box:fill-box;transform-origin:50% 15%}
+  .monkey .mleg,.baby .mleg{transform-box:fill-box;transform-origin:50% 15%}   /* legs swing from the hip, babies too */
   .monkey.running .mleg{animation:mstride .2s ease-in-out infinite alternate}
   .monkey.running .mleg2{animation-direction:alternate-reverse}
   .baby.running .mleg{animation:mstride .16s ease-in-out infinite alternate}
@@ -532,6 +532,11 @@
   .walker .wa,.walker .wb{transform-box:fill-box;transform-origin:50% 4%;animation:wstride var(--ws,.4s) ease-in-out infinite alternate}
   .walker .wb{animation-direction:alternate-reverse}
   .walker.still .wa,.walker.still .wb{animation:none}
+  .walking .restArm,.walking .restArm2{display:inline!important} .walking .wave,.walking .holdArm{display:none!important}
+  .monkey.striding .mleg,.baby.striding .mleg{animation:mstride var(--ws,.4s) ease-in-out infinite alternate}
+  .striding .mleg2{animation-direction:alternate-reverse}
+  .striding .restArm,.striding .restArm2{transform-box:fill-box;transform-origin:50% 6%;animation:wstride var(--ws,.4s) ease-in-out infinite alternate}
+  .striding .restArm{animation-direction:alternate-reverse}
   @keyframes wstride{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
   .allfours .restArm,.allfours .restArm2{display:inline!important} .allfours .wave,.allfours .holdArm{display:none!important}
   .allfours .food,.allfours .bfood{opacity:0;transition:opacity .25s}
@@ -1561,9 +1566,10 @@ function monkeySVG(L){
   s+=`</g>`; }
   }
   // legs/feet
-  s+=`<g class="mleg"><ellipse cx="80" cy="226" rx="17" ry="11" fill="${L.legC||fur}"/><ellipse cx="74" cy="236" rx="13" ry="7" fill="${feet}"/></g>`;
-  s+=`<g class="mleg mleg2"><ellipse cx="120" cy="226" rx="17" ry="11" fill="${L.legC||fur}"/><ellipse cx="126" cy="236" rx="13" ry="7" fill="${feet}"/></g>`;
+  s+=`<g class="fL"><g class="mleg"><ellipse cx="80" cy="226" rx="17" ry="11" fill="${L.legC||fur}"/><ellipse cx="74" cy="236" rx="13" ry="7" fill="${feet}"/></g></g>`;
+  s+=`<g class="fL2"><g class="mleg mleg2"><ellipse cx="120" cy="226" rx="17" ry="11" fill="${L.legC||fur}"/><ellipse cx="126" cy="236" rx="13" ry="7" fill="${feet}"/></g></g>`;
   // body
+  s+=`<g class="mbody">`;
   s+=`<ellipse cx="100" cy="185" rx="${L.thick?44:40}" ry="44" fill="${fur}"/>`;
   if(L.back) s+=`<ellipse cx="100" cy="166" rx="${L.thick?40:36}" ry="20" fill="${L.back}"/>`;
   s+=`<ellipse cx="100" cy="193" rx="25" ry="30" fill="${belly}"/>`;
@@ -1571,6 +1577,7 @@ function monkeySVG(L){
   if(L.chest) s+=`<path d="M86 160 Q100 172 114 160 Q108 178 114 196 Q100 186 86 196 Q92 178 86 160Z" fill="${L.chest}"/>`;
   if(L.cape){ const d=L.smallCape?208:236;
     s+=`<path d="M66 150 C42 170 38 206 52 ${d} C58 212 64 188 72 166Z" fill="${L.cape}"/><path d="M134 150 C158 170 162 206 148 ${d} C142 212 136 188 128 166Z" fill="${L.cape}"/>`; }
+  s+=`</g>`;
   if(L.plush){ // a floppy orange orangutan plush, hugged against the monkey's side
     const o='#c8641e', od='#a84e16';
     s+=`<g class="plush"><ellipse cx="30" cy="242" rx="9" ry="6" fill="${od}"/><ellipse cx="54" cy="242" rx="9" ry="6" fill="${od}"/>
@@ -1588,8 +1595,8 @@ function monkeySVG(L){
     [[-36,14,3.4],[-14,18,3.4],[4,34,2.2],[22,16,3.4]].forEach(([d,len,w])=>{ const t=(a+d)*r, x0=x+Math.cos(t)*7, y0=y+Math.sin(t)*7, x1=x+Math.cos(t)*(7+len), y1=y+Math.sin(t)*(7+len);
       f+=`<path d="M${x0.toFixed(1)} ${y0.toFixed(1)} L${x1.toFixed(1)} ${y1.toFixed(1)}" stroke="${L.fingerC||hand}" stroke-width="${w}" stroke-linecap="round"/>`; });
     return f; };
-  let arms=`<g class="restArm"><path d="M66 165 Q 48 195 62 214" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="63" cy="215" r="9" fill="${hand}"/>${fing(63,215,100)}</g>`;
-  arms+=`<g class="restArm2"><path d="M134 165 Q 152 195 138 214" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="137" cy="215" r="9" fill="${hand}"/>${fing(137,215,80)}</g>`;
+  let arms=`<g class="fA"><g class="restArm"><path d="M66 165 Q 48 195 62 214" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="63" cy="215" r="9" fill="${hand}"/>${fing(63,215,100)}</g></g>`;
+  arms+=`<g class="fA2"><g class="restArm2"><path d="M134 165 Q 152 195 138 214" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="137" cy="215" r="9" fill="${hand}"/>${fing(137,215,80)}</g></g>`;
   arms+=`<g class="holdArm"><path d="M68 168 Q 36 160 40 128" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="40" cy="124" r="10" fill="${hand}"/>${fing(40,124,-140)}</g>`;
   // right arm (waving)
   arms+=`<g class="wave"><path d="M134 165 Q 160 140 162 108" stroke="${L.armC||fur}" stroke-width="${aw}" fill="none" stroke-linecap="round"/><circle cx="162" cy="104" r="10" fill="${hand}"/>${fing(162,104,-45)}</g>`;
@@ -1938,12 +1945,16 @@ function compose(P,seed){
 }
 
 const MUSICVOL=.89;   // overall music level (-1 dB)
+let MUSKEY=null;   // the key of the song now playing, so little sound effects can sit in tune with it
+function keyF(f){ if(!MUSKEY||!f) return f; const sc=SC[MUSKEY.mode]||SC.maj, tri=[0,sc[2],sc[4]], m=12*Math.log2(f/440)+69; let best=m, bd=1e9;
+  for(let o=-3;o<=6;o++) for(const d of tri){ const c=MUSKEY.root+o*12+d, dd=Math.abs(c-m); if(dd<bd){ bd=dd; best=c; } }
+  return 440*Math.pow(2,(best-69)/12); }   // snap to the nearest note of the home chord
 function playMusic(id){
   stopMusic();
   if(muted || !initAudio()) return;
   unlockIOSAudio();
   if(AC.state!=='running' && AC.resume) AC.resume().catch(()=>{});
-  const P=MUSIC[id]; if(!P) return;
+  const P=MUSIC[id]; if(!P) return; MUSKEY=P;
   const tune=P.lead?compose(P,id.length*7+P.bpm):null;
   bus=AC.createGain(); bus.gain.setValueAtTime(0,AC.currentTime); bus.gain.linearRampToValueAtTime((LOUD[id]||1)*MUSICVOL,AC.currentTime+1.2); bus.connect(duckG);
   const myBus=bus, stepDur=60/P.bpm/4, S=P.steps, bars=P.prog.length;
@@ -1990,7 +2001,7 @@ function stopAll(){ mouthTok++;
   stopMusic();
   clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++;
   stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch,.react,.airleaf,.flybug,.onsen').forEach(e=>e.remove()); clearTimeout(leafTimer);
-  monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours'); monkey.style.removeProperty('--ws');
+  monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours','walking','striding'); monkey.style.removeProperty('--ws');
   monkey.className='monkey'; monkey.innerHTML='';
   bubble.classList.remove('show','scared'); bubble.innerHTML='';
   hint.style.display='';
@@ -2195,8 +2206,8 @@ const PHEW=[
 ];
 function sfxPhew(){ if(!sfxReady()) return; PHEW[Math.floor(Math.random()*PHEW.length)](sfxOut(2,0),AC.currentTime+.02); }
 function sfxFamily(kind,sex,delay,pan){ if(!sfxReady()) return; const t=AC.currentTime+delay, d=sfxOut(8.5,pan);
-  let f={adult:780,young:1040,baby:1350}[kind]||900; if(sex==='m') f*=.88; if(sex==='f') f*=1.08;
-  sweepTone(d,'triangle',f*.8,f*1.15,t,.1,.06); sweepTone(d,'sine',f*2,f*2.2,t,.06,.02); }
+  let f={adult:780,young:1040,baby:1350}[kind]||900; if(sex==='m') f*=.88; if(sex==='f') f*=1.08; f=keyF(f);   // in the song's key
+  sweepTone(d,'triangle',f*.94,f,t,.1,.06); sweepTone(d,'sine',f*2,f*2,t,.06,.02); }
 
 const SWISH=[
   (d,t,p)=>{ noiseSweep(d,t,.45,.16,'bandpass',900,3200,1.6,.12); },                                         // rising swish
@@ -2524,7 +2535,7 @@ function showCountry(id,sp){
     <div class="snack" id="snack">🍽 Snack time coming…<span></span></div>
     <div class="music"><span class="notes"><i></i><i></i><i></i></span> ♪ ${MUSIC[id].label}</div></div>`;
   playMusic(id);
-  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch,.airleaf,.flybug,.onsen,.confetti,.react').forEach(f=>f.remove()); clearTimeout(leafTimer); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours'); monkey.style.removeProperty('--ws');
+  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch,.airleaf,.flybug,.onsen,.confetti,.react').forEach(f=>f.remove()); clearTimeout(leafTimer); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours','walking','striding'); monkey.style.removeProperty('--ws');
   foodTimer=setTimeout(()=>serveFood(id),6000);
   clearTimeout(callTimer); callTimer=setTimeout(()=>{ if(currentId===id) monkeyCall(CUR); },2500);
   monkey.className='monkey'+(c.look.tiny?' tiny':'');
@@ -3119,6 +3130,41 @@ function foldWalker(w,unfold,dur){ if(!w) return Promise.resolve(); w.classList.
   for(const k in FOLD){ const g=w.querySelector('.'+k); if(!g) continue; const [o,t]=FOLD[k];
     const a=g.animate([{transform:unfold?t:'none',transformOrigin:o,transformBox:'view-box'},{transform:unfold?'none':t,transformOrigin:o,transformBox:'view-box'}],{duration:dur,easing:'cubic-bezier(.45,0,.3,1)',fill:'both'}); ps.push(a.finished.catch(()=>{})); }
   return Promise.all(ps).then(()=>{ if(unfold){ w.classList.remove('still'); w.querySelectorAll('.mfa,.mfh,.mtor,.mnh,.mna').forEach(g=>g.getAnimations().forEach(a=>a.cancel())); } }); }
+// the standing figure itself folds into the walk - no swapping drawings, no fades
+// [origin, translate x, translate y, rotate, scale x, scale y] for walking to the right; walking left mirrors it
+const SFOLD={mbody:[100,185,-78,-9,-14,1.7,1], fL:[80,226,-104,0,0,1,1], fL2:[120,226,-116,0,0,1,1],
+  fA:[66,165,-6,-15,-8,1.15,1.75], fA2:[134,165,-50,-9,-9,1.15,1.65]};
+function sfoldT(k,dir){
+  if(dir>0){ const [ox,oy,tx,ty,r,sx,sy]=SFOLD[k]; return [`${ox}px ${oy}px`,`translate(${tx}px,${ty}px) rotate(${r}deg) scale(${sx},${sy})`]; }
+  const tw={fL:'fL2',fL2:'fL',fA:'fA2',fA2:'fA'}[k]||k, [ox,oy,tx,ty,r,sx,sy]=SFOLD[tw];   // walking left: each side takes its mirror twin's pose
+  return [`${200-ox}px ${oy}px`,`translate(${-tx}px,${ty}px) rotate(${-r}deg) scale(${sx},${sy})`]; }
+function sfold(sv,dir,on,dur){ const ps=[];
+  for(const k in SFOLD){ const g=sv.querySelector('.'+k); if(!g) continue; const [o,t]=sfoldT(k,dir);
+    g.getAnimations().forEach(a=>a.cancel());
+    const a=g.animate([{transform:on?'none':t,transformOrigin:o,transformBox:'view-box'},{transform:on?t:'none',transformOrigin:o,transformBox:'view-box'}],{duration:dur,easing:'cubic-bezier(.45,0,.3,1)',fill:'forwards'});
+    ps.push(a.finished.catch(()=>{})); }
+  return Promise.all(ps); }
+const ARMDOWN={wave:['134px 165px','rotate(152deg)'], holdArm:['68px 168px','rotate(-144deg)']};
+function armsDown(sv,down,dur){ const ps=[]; for(const k in ARMDOWN){ const g=sv.querySelector('.'+k); if(!g) continue; const [o,t]=ARMDOWN[k];
+    g.getAnimations().filter(a=>a instanceof CSSAnimation===false).forEach(a=>a.cancel());
+    ps.push(g.animate([{transform:down?'rotate(0deg)':t,transformOrigin:o,transformBox:'view-box'},{transform:down?t:'rotate(0deg)',transformOrigin:o,transformBox:'view-box'}],{duration:dur,easing:'ease-in-out',fill:down?'forwards':'none'}).finished.catch(()=>{})); }
+  return Promise.all(ps); }
+async function standToWalk(el,dir,ms){ const sv=el.querySelector(':scope > svg'); if(!sv) return;
+  el.style.setProperty('--ws',ms+'ms');
+  el.querySelectorAll('.food,.bfood').forEach(f=>f.animate([{opacity:1},{opacity:0}],{duration:250,fill:'forwards'}));
+  await armsDown(sv,true,300);                // the waving arm and the snack arm come down to its sides...
+  el.classList.add('walking');                 // ...where the resting arms take over in exactly the same spot
+  await sfold(sv,dir,true,540);                // body tips forward and stretches back, hands reach the ground
+  el.classList.add('striding'); }
+function faceWay(el,dir){ const sv=el.querySelector(':scope > svg'); if(sv) sfold(sv,dir,true,1); }
+async function walkToStand(el){ const sv=el.querySelector(':scope > svg'); if(!sv) return;
+  el.classList.remove('striding');
+  await sfold(sv,el._dir||1,false,540);        // rises back up onto its feet
+  el.classList.remove('walking');
+  await armsDown(sv,false,320);                // arms come back up to wave and hold the snack
+  el.querySelectorAll('.food,.bfood').forEach(f=>{ f.getAnimations().forEach(a=>a.cancel()); f.animate([{opacity:0},{opacity:1}],{duration:250}); });
+  ['mbody','fL','fL2','fA','fA2'].forEach(k=>{ const g=sv.querySelector('.'+k); if(g) g.getAnimations().forEach(a=>a.cancel()); });
+  el.style.removeProperty('--ws'); }
 // smooth hand-off between standing and walking: the head stays put, the bodies cross-fade
 function syncBob(from,to){ try{ const a=from&&from.querySelector('.bob')&&from.querySelector('.bob').getAnimations()[0], b=to&&to.querySelector('.bob')&&to.querySelector('.bob').getAnimations()[0]; if(a&&b) b.currentTime=a.currentTime; }catch(e){} }   // keep the two heads bobbing in step so they line up exactly
 function toWalker(el,html){ const sv=el.querySelector(':scope > svg:not(.walker)'); if(!sv) return; el.querySelectorAll(':scope > svg.walker').forEach(w=>w.remove());
@@ -3167,12 +3213,13 @@ function locoEnding(c,ok){ return new Promise(async res=>{
       const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:g.o,easing:'ease-in-out'});
       k(0,0,0,0); k(Tj,0,g.jy,0); k(Tj+Tw,0,g.jy,dir*g.A*.8);
       for(let j=0;j<n;j++){ const t0=Tj+Tw+j*Ts, x=dir*g.step*j; if(j) k(t0,x,g.jy,dir*g.A); k(t0+Ts,x,g.jy,-dir*g.A); }
-    } else { const n=Math.ceil(Math.abs(dist)/G.step), Tl=300; delay=i*260; dur=Tl+n*G.ms;
+    } else { const n=Math.ceil(Math.abs(dist)/G.step), Tl=mode==='knuckle'?880:300; delay=i*260; dur=Tl+n*G.ms;
       const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:'50% 100%',easing:mode==='sidehop'?'ease-out':'ease-in-out'});
       k(0,0,0,0); k(Tl,0,0,0);
       for(let j=0;j<n;j++){ const t0=Tl+j*G.ms, x=dir*G.step*j, w=mode==='sidehop'?-dir*6:0;
         k(t0+G.ms*.5,x+dir*G.step*.5,-G.hop,w); k(t0+G.ms,x+dir*G.step,0,0); }
-      if(mode!=='sidehop') setTimeout(()=>{ if(!ok()) return; el.style.setProperty('--ws',G.ms+'ms'); toWalker(el,walkerSVG(Lof(el),mode,dir)); },Math.max(0,delay+Tl-260));   // turn side-on, hands down to the ground
+      if(mode==='knuckle') setTimeout(()=>{ if(!ok()) return; el._dir=dir; standToWalk(el,dir,G.ms); },delay);   // folds down onto its knuckles, then sets off
+      else if(mode!=='sidehop') setTimeout(()=>{ if(!ok()) return; el.style.setProperty('--ws',G.ms+'ms'); toWalker(el,walkerSVG(Lof(el),mode,dir)); },Math.max(0,delay+Tl-260));   // turn side-on, hands down to the ground
     }
     el.classList.remove('pop','hop');
     el.animate(fr,{duration:dur,delay,fill:'forwards'});
@@ -3183,7 +3230,8 @@ function locoEnding(c,ok){ return new Promise(async res=>{
   let last=0, acc=0; const bd=-dir;
   crew.map((m,i)=>Object.assign({i},m)).reverse().forEach(({el,r,i})=>{
     const tail=mode==='knuckle'||mode==='quad'?r.width*.4:0, x0=dir>0?sr.right-r.left+30+tail:-(r.right-sr.left+30+tail), fr=[]; let dur;
-    if(mode==='knuckle'||mode==='quad') swapWalker(el,walkerSVG(Lof(el),mode,bd));   // turned around, off-screen
+    if(mode==='knuckle'){ el._dir=bd; faceWay(el,bd); }   // turned around, off-screen
+    else if(mode==='quad') swapWalker(el,walkerSVG(Lof(el),mode,bd));
     if(mode==='brachiate'){ const g=geo[i], n=Math.max(2,Math.round(Math.abs(x0)/g.step)), st=-x0/n, Ts=640, Tw=300, Tj=380; dur=n*Ts+Tw+Tj;
       const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:g.o,easing:'ease-in-out'});
       for(let j=0;j<n;j++){ const t0=j*Ts, x=x0+st*j; k(t0,x,g.jy,bd*g.A); k(t0+Ts,x,g.jy,-bd*g.A); }
@@ -3195,10 +3243,10 @@ function locoEnding(c,ok){ return new Promise(async res=>{
       if(el.style.getPropertyValue('--ws')) el.style.setProperty('--ws',ms+'ms');
       var delay=acc; acc+=(r.width+16)/(G.step/ms); }
     const old=el.getAnimations(); el.animate(fr,{duration:dur,delay,fill:'both'}); old.forEach(a=>a.cancel());
-    setTimeout(()=>{ if(!ok()) return; el.getAnimations().forEach(a=>a.cancel()); toStand(el); },delay+dur+60);   // stand back up and wave
+    setTimeout(()=>{ if(!ok()) return; el.getAnimations().forEach(a=>a.cancel()); if(mode==='knuckle') walkToStand(el); else toStand(el); },delay+dur+60);   // stand back up and wave
     last=Math.max(last,delay+dur+120);
   });
-  await wait(last+250); if(!ok()) return res();
+  await wait(last+(mode==='knuckle'?900:250)); if(!ok()) return res();
   if(vine){ vine.animate([{opacity:1},{opacity:0}],{duration:500,fill:'forwards'}); setTimeout(()=>vine.remove(),520); }
   rehangBabies();
   res();
@@ -3891,7 +3939,7 @@ sfxSwish=function(fromDir){ if(!isAF()) return _sfxSwishAM(fromDir); if(!sfxRead
 sfxBaby=function(hang,pan){ if(!isAF()) return _sfxBabyAM(hang,pan); if(!sfxReady()) return; const t=AC.currentTime, d=sfxOut(4.5,pan);
   const o=sweepTone(d,'sine',170,260,t,.22,.3,['lowpass',900]); drumHit(d,t,{f0:150,dec:.12,vol:.12,click:.3}); for(let k=0;k<3;k++) noiseHit(d,t+.25+k*.1,{lo:4000,dur:.05,vol:.05}); };  // talking-drum "boop" + scampering
 sfxFamily=function(kind,sex,delay,pan){ if(!isAF()) return _sfxFamilyAM(kind,sex,delay,pan); if(!sfxReady()) return; const t=AC.currentTime+delay, d=sfxOut(1.6,pan);   // level-matched to the Americas pips
-  let f={adult:587,young:784,baby:1047}[kind]||700; if(sex==='m') f*=.89; if(sex==='f') f*=1.06; kalimbaPlink(d,f,t,.16); kalimbaPlink(d,f*1.5,t+.06,.05); };   // kalimba plinks, higher for younger
+  let f={adult:587,young:784,baby:1047}[kind]||700; if(sex==='m') f*=.89; if(sex==='f') f*=1.06; f=keyF(f); kalimbaPlink(d,f,t,.16); kalimbaPlink(d,keyF(f*1.5),t+.06,.05); };   // kalimba plinks, higher for younger
 sfxCatch=function(){ if(!isAF()) return _sfxCatchAM(); if(!sfxReady()) return; const d=sfxOut(2,0),t=AC.currentTime; kalimbaPlink(d,1047,t,.2); kalimbaPlink(d,1568,t+.07,.14); };
 let lastThrow=-1;
 sfxSnack=function(){ if(!isAF()) return _sfxSnackAM(); if(!sfxReady()) return; duckMusic(1.4);
@@ -4433,7 +4481,7 @@ sfxBaby=function(hang,pan){ if(!isAS()) return _babyAF(hang,pan); if(!sfxReady()
   sweepTone(d,'sine',1400,500,t,.55,.12);                                             // slide-whistle drop from the treetops
   const k=AC.createGain(); k.gain.value=1; k.connect(d); PERC.kotsuzumi(k,t+.6,true); };     // soft "pon" as it lands
 sfxFamily=function(kind,sex,delay,pan){ if(!isAS()) return _familyAF(kind,sex,delay,pan); if(!sfxReady()) return; const t=AC.currentTime+delay, d=sfxOut(1.7,pan);   // level-matched to the Americas pips
-  let f={adult:659,young:880,baby:1175}[kind]||784; if(sex==='m') f*=.89; if(sex==='f') f*=1.06; bellTone(d,f,t,.13,.7,0,[[1,1],[2.76,.25],[5.4,.08]]); };   // gamelan-bell plinks
+  let f={adult:659,young:880,baby:1175}[kind]||784; if(sex==='m') f*=.89; if(sex==='f') f*=1.06; f=keyF(f); bellTone(d,f,t,.13,.7,0,[[1,1],[2.76,.25],[5.4,.08]]); };   // gamelan-bell plinks
 sfxCatch=function(){ if(!isAS()) return _catchAF(); if(!sfxReady()) return; const d=sfxOut(2,0),t=AC.currentTime; bellTone(d,1319,t,.16,.6,0); bellTone(d,1760,t+.08,.12,.6,0); };
 let lastDrop=-1;
 sfxSnack=function(){ if(!isAS()) return _snackAF(); if(!sfxReady()) return; duckMusic(1.7);

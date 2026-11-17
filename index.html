@@ -2461,7 +2461,7 @@ function showCountry(id,sp){
   const [stName,stCol]=STATUS[c.st];
   const pct=Math.max(Math.min(1,c.sp/REG[C[id].reg].max)*100, c.sp?3:0);
   bubble.innerHTML=`<div class="bhead"><div class="bface">${monkeySVG(Object.assign({},c.look,{headOnly:true}))}</div><div class="btitle"><h2>${pinName(c)}</h2>
-    <div class="subrow"><div class="sub">📍 <b>${c.name}</b>${c.note?` · ${c.note}`:''}</div><button class="newbtn" title="Stop and pick another monkey">🐒 Select new monkey</button></div></div><div class="bflag" title="Flag of ${c.name}">${flagSVG(id)}</div></div><div class="bscroll">
+    <div class="subrow"><div class="sub">📍 <b>${c.name}</b>${c.note?` · ${c.note}`:''}</div><button class="newbtn" title="Stop and pick another primate">🐒 Select new primate</button></div></div><div class="bflag" title="Flag of ${c.name}">${flagSVG(id)}</div></div><div class="bscroll">
     <div class="stat"><span class="k">Primate species</span><span class="v">${c.spTxt}</span></div>
     <div class="bar"><div style="--w:${pct}%"></div></div>
     <div class="stat"><span class="k">${c.isPick?(APE_SP.has(c.sci)?(/Hylobates|Hoolock|Nomascus|Symphalangus/.test(c.sci)?'Ape (gibbon)':'Ape'):'Monkey'):'Star monkey'}</span><span class="v">${c.m}${c.sci?`<br><i>${c.sci}</i>`:''}</span></div>
@@ -2874,7 +2874,7 @@ async function chase(id){
     const r=8*dir;
     monkey.animate([{transform:'translate(0,0) rotate(0)'},{transform:`translate(${dir*W*.18}px,-30px) rotate(${r}deg)`},{transform:`translate(${dir*W*.36}px,0) rotate(${r}deg)`},{transform:`translate(${dir*W*.54}px,-30px) rotate(${r}deg)`},{transform:`translate(${dir*W*.8}px,0) rotate(${r}deg)`}],{duration:1000,easing:'ease-out',fill:'forwards'});
     pin.cancel();
-    const run=p.animate([{transform:`translate(${-dir*gap3}px,${midY}px)`},{transform:`translate(${dir*(W*1.1+250)}px,${L.kind==='bird'?-60:0}px)`}],{duration:L.human?1000:2200,delay:L.human?100:200,easing:L.human?'ease-in':'linear',fill:'both'});
+    const run=p.animate([{transform:`translate(${-dir*gap3}px,${midY}px)`},{transform:`translate(${L.human?dir*(W/2+p.offsetWidth/2+30):dir*(W*1.1+250)}px,${L.kind==='bird'?-60:0}px)`}],{duration:L.human?1150:2200,delay:L.human?100:200,easing:'linear',fill:'both'});   // the collector runs just past the edge at an even pace
     let bug=null, hand=null, f=null, regrow=false;
     if(trick && (f=monkey.querySelector('.food'))){
       const SR=()=>stage.getBoundingClientRect(), fr0=f.getBoundingClientRect(); hand={x:fr0.left-SR().left, y:fr0.top-SR().top};
@@ -2917,7 +2917,7 @@ async function chase(id){
       await wait(650); if(!ok()) return false; al.remove();
       run.play(); await run.finished.catch(()=>{}); if(!ok()) return false; p.remove();
       }
-    } else { await wait(L.human?650:2200); if(!ok()) return false;
+    } else { await wait(L.human?1300:2200); if(!ok()) return false;
       if(L.human){ if(!await scientistRescue(p,dir,W,mb,ok)) return false; }
       else p.remove(); }
     // monkey comes back to center from the opposite side, snack still in hand
@@ -4395,8 +4395,8 @@ VOICE.tallyho=(d,t)=>{ // a pompous "Tal-ly-HO!" (pitch and vowel shapes, no wor
 VGAIN['Victorian animal collector']=1.2;
 })();
 function scientistSVG(){
-  return `<svg viewBox="0 0 240 200"><defs><linearGradient id="sleg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0c8a4"/><stop offset=".8" stop-color="#f0c8a4"/><stop offset=".8" stop-color="#2a2a2a"/><stop offset="1" stop-color="#f4f4f0"/></linearGradient></defs>
-    <g class="legs"><rect x="84" y="128" width="12" height="62" rx="6" fill="url(#sleg)"/><rect x="104" y="128" width="12" height="62" rx="6" fill="url(#sleg)"/></g>
+  return `<svg viewBox="0 0 240 200"><defs><linearGradient id="sleg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0c8a4"/><stop offset=".66" stop-color="#f0c8a4"/><stop offset=".66" stop-color="#f2ede0"/><stop offset=".69" stop-color="#f2ede0"/><stop offset=".69" stop-color="#1c1c1e"/><stop offset=".86" stop-color="#1c1c1e"/><stop offset=".86" stop-color="#f2ede0"/><stop offset=".9" stop-color="#f2ede0"/><stop offset=".9" stop-color="#1c1c1e"/><stop offset=".915" stop-color="#1c1c1e"/><stop offset=".915" stop-color="#ece6d6"/><stop offset="1" stop-color="#ece6d6"/></linearGradient></defs>
+    <g class="legs"><rect x="83" y="128" width="14" height="64" rx="5" fill="url(#sleg)"/><rect x="103" y="128" width="14" height="64" rx="5" fill="url(#sleg)"/></g>
     <path d="M78 116 L122 116 L126 142 L104 142 L100 132 L96 142 L74 142Z" fill="#d6c196"/>
     <path d="M76 70 Q72 96 76 120 L124 120 Q128 96 124 70 Q112 60 100 60 Q88 60 76 70Z" fill="#5d7a48"/>
     <path d="M100 64 L100 118" stroke="#4a6438" stroke-width="1.4"/><g fill="#e8e2cc"><circle cx="100" cy="78" r="1.6"/><circle cx="100" cy="90" r="1.6"/><circle cx="100" cy="102" r="1.6"/><circle cx="100" cy="114" r="1.6"/></g>
@@ -4429,7 +4429,7 @@ async function scientistRescue(p,dir,W,mb,ok){ // a field scientist runs in and 
     setTimeout(()=>{ b.style.opacity='1'; el.classList.add('paused'); },delay+IN-100);
     setTimeout(()=>{ b.style.opacity='0'; el.classList.remove('paused'); },delay+IN+hold+150);
     return a; };
-  const a1=go(p,dir*far,mid1,-dir*far,HOLD,0,b1);
+  const near=W/2+p.offsetWidth/2+30, a1=go(p,dir*near,mid1,-dir*far,HOLD,0,b1);   // he turns right around at the edge and comes back
   const a2=go(s,dir*(far+80),mid2,-dir*(far-80),HOLD+1500,DL,b2);
   if(sfxReady()){ const d=sfxOut(1.4,0),t=AC.currentTime; [0,.12].forEach(dt=>sweepTone(d,'triangle',620,900,t+IN/1000+dt,.1,.08)); sweepTone(d,'triangle',300,700,t+(DL+IN)/1000,.3,.1); }
   await Promise.all([a1.finished,a2.finished]).catch(()=>{}); s.remove(); p.remove(); return ok();

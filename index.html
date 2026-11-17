@@ -4640,6 +4640,8 @@ Object.assign(PIN,{'Lemur catta':'https://neprimateconservancy.org/ring-tailed-l
  'Daubentonia madagascariensis':'https://neprimateconservancy.org/aye-aye/','Varecia variegata':'https://en.wikipedia.org/wiki/Black-and-white_ruffed_lemur','Varecia rubra':'https://en.wikipedia.org/wiki/Red_ruffed_lemur',
  'Microcebus murinus':'https://neprimateconservancy.org/gray-mouse-lemur/','Eulemur fulvus':'https://neprimateconservancy.org/brown-lemurs/','Eulemur coronatus':'https://neprimateconservancy.org/crowned-lemur/',
  'Hapalemur aureus':'https://neprimateconservancy.org/bamboo-lemurs/','Cheirogaleus medius':'https://neprimateconservancy.org/dwarf-and-mouse-lemurs/','Lepilemur ruficaudatus':'https://neprimateconservancy.org/red-tailed-sportive-lemur/'});
+// direct species pages rather than group pages
+Object.assign(PIN,{'Pan troglodytes':'https://neprimateconservancy.org/common-chimpanzee/','Pan paniscus':'https://neprimateconservancy.org/bonobo/','Gorilla gorilla':'https://neprimateconservancy.org/western-lowland/','Gorilla beringei':'https://neprimateconservancy.org/mountain-gorilla/','Hylobates lar':'https://neprimateconservancy.org/white-handed-gibbon/','Symphalangus syndactylus':'https://neprimateconservancy.org/siamang/','Hylobates muelleri':'https://neprimateconservancy.org/bornean-gibbon','Hoolock hoolock':'https://neprimateconservancy.org/western-hoolock-gibbon','Nomascus leucogenys':'https://neprimateconservancy.org/northern-white-cheeked-gibbon/','Hylobates pileatus':'https://neprimateconservancy.org/pileated-gibbon/','Nomascus hainanus':'https://neprimateconservancy.org/hainan-gibbon/','Varecia variegata':'https://neprimateconservancy.org/?p=88384','Varecia rubra':'https://neprimateconservancy.org/?p=88395','Eulemur fulvus':'https://neprimateconservancy.org/?p=109315','Hapalemur aureus':'https://neprimateconservancy.org/golden-bamboo-lemur/','Cheirogaleus medius':'https://neprimateconservancy.org/fat-tailed-dwarf-lemur/'});
 Object.assign(CALLS,{
  ringtail:(d,t)=>{ const syl=[]; [0,.42,.84].forEach(dt=>{ voice(d,t+dt,.3,[620,900,520],.16,{type:'triangle',h:[[1,1],[2,.35]],vib:[5,.02]}); syl.push([dt,.28]); }); return syl; },   // cat-like "meow" contact calls
  sifaka:(d,t)=>{ const syl=[]; [0,.7].forEach(dt=>{ noiseSweep(d,t+dt,.12,.25,'bandpass',2600,1800,1.6,.01); voice(d,t+dt+.13,.22,[520,420,360],.22,{type:'sawtooth',f:['bandpass',900,1.4],n:.2,nf:800}); syl.push([dt,.34]); }); return syl; },   // sneezy "shif-auk"
@@ -4664,8 +4666,8 @@ MUSIC.madagascar={label:'Salegy: valiha tube zither, kabosy guitar & rattles',bp
   tr:[['shaker','x.x.x.x.x.x.'],['handdrum','X..x.xX..x.x'],['bass','r..f..r..f..']]};
 LOUD.madagascar=1;
 MUSIC_ALT.madagascar=[MUSIC.madagascar,
- {label:'Tsapiky: racing electric guitar, drums & shaker (southwest)',bpm:150,steps:8,root:62,mode:'maj',prog:[0,0,4,4,3,3,4,0],lead:'soukous',reg:76,mel:M8c,
-  tr:[['conga','x.xXx.xX'],['shaker','xxxxxxxx'],['bass','r.rfr.f.']]},
+ {label:'Tsapiky: racing electric guitar, drums & shaker (southwest)',bpm:128,steps:8,root:62,mode:'maj',prog:[0,0,4,4,3,3,4,0],lead:'soukous',reg:76,mel:M8c,
+  tr:[['conga','x.xXx.xX'],['shaker','x.xxx.xx'],['bass','r.rfr.f.']]},
  {label:'Hira gasy: fiddle, flute & drums (highlands)',bpm:104,steps:8,root:60,mode:'maj',pent:'maj',prog:[0,0,3,4,0,3,4,0],lead:'fiddle',reg:72,mel:M8,
   tr:[['handdrum','X..xX.x.'],['clap','..x...x.'],['bass','r...f...']]}];
 PHEW_BY.madagascar='fr';

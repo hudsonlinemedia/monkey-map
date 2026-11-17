@@ -26,11 +26,25 @@
     header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:16px;row-gap:10px}
     header>h1{grid-column:1;grid-row:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(20px,2.5vw,32px)}
     header>.regions{grid-column:2;grid-row:1}
-    header>.modes{grid-column:1 / -1;grid-row:2;justify-self:start}
+    header>.modes{grid-column:1;grid-row:2;justify-self:start}
+    header>.search{grid-column:2;grid-row:2;width:300px;justify-self:end}
   }
   h1{margin:0;font-size:clamp(22px,3.2vw,32px);font-weight:700;letter-spacing:.3px}
   @media (max-width:820px){ h1{font-size:min(22px,4.6vw);white-space:nowrap;letter-spacing:0} }   /* one line in every region, so the menu never shifts */
   h1 span{color:var(--hi)}
+  .search{position:relative;flex:0 1 270px;min-width:190px}
+  .search input{width:100%;box-sizing:border-box;font:inherit;font-size:15px;border:0;border-radius:999px;padding:9px 16px;background:rgba(255,255,255,.92);color:var(--ink);outline:none}
+  .search input:focus{box-shadow:0 0 0 3px var(--hi)}
+  .sres{position:absolute;right:0;left:0;top:calc(100% + 6px);z-index:50;background:#fff;color:var(--ink);border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.35);overflow:hidden;display:none;max-height:min(60vh,430px);overflow-y:auto}
+  .sres.on{display:block}
+  .sres button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:#fff;font:inherit;font-size:14px;text-align:left;padding:6px 12px;cursor:pointer;color:var(--ink)}
+  .sres button:hover,.sres button.act{background:#fff3cf}
+  .sres svg{width:34px;height:32px;flex:none}
+  .sres .ico{width:34px;text-align:center;font-size:22px;flex:none}
+  .sres small{display:block;font-size:11.5px;opacity:.65}
+  .sres .none{padding:10px 14px;font-size:14px;opacity:.7}
+  .quiz .search{display:none}
+  @media (max-width:820px){ .search{flex:1 1 100%;order:3} }
   .modes{display:flex;gap:6px;background:rgba(255,255,255,.12);padding:4px;border-radius:999px}
   .modes button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:8px 16px;cursor:pointer;background:transparent;color:#fff}
   .modes button.on{background:var(--hi);color:#3a2a00}
@@ -543,6 +557,7 @@
   .striding .mleg2{animation-direction:alternate-reverse}
   .striding .restArm,.striding .restArm2{transform-box:fill-box;transform-origin:50% 6%;animation:wstride var(--ws,.4s) ease-in-out infinite alternate}
   .striding .restArm{animation-direction:alternate-reverse}
+  .gallop.striding .mleg2{animation-direction:alternate} .gallop.striding .restArm2{animation-direction:alternate-reverse}   /* galloping: front legs together, back legs together */
   @keyframes wstride{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
   .allfours .restArm,.allfours .restArm2{display:inline!important} .allfours .wave,.allfours .holdArm{display:none!important}
   .allfours .food,.allfours .bfood{opacity:0;transition:opacity .25s}
@@ -565,6 +580,7 @@
     <button id="randBtn" title="Meet a random monkey anywhere in the world" aria-label="Random monkey">🎲<span class="long"> Random</span></button>
     <button id="stopBtn" title="Stop everything (Space or Esc)" aria-label="Stop">⏹<span class="long"> Stop</span></button>
   </div>
+  <div class="search" id="search"><input id="searchIn" type="search" placeholder="🔍 Find a primate or country" autocomplete="off" aria-label="Find a primate or country"><div class="sres" id="sres" role="listbox"></div></div>
 </header>
 <noscript><div style="margin:10px 16px;padding:14px 16px;background:#fff3cf;color:#3a2a00;border:3px solid #2b2b2b;border-radius:16px;font-size:17px;line-height:1.4">
   <b>⚠️ You're seeing a preview, so the game can't run here.</b><br>
@@ -1492,7 +1508,7 @@ const CHIMP_GOODALL="In 1960, scientist Jane Goodall watched a chimpanzee at Gom
 const CHIMP_FACT="Chimpanzees use tools: they poke grass stems into termite mounds to “fish” for termites and crack nuts open with stone hammers. They share about 98% of their DNA with us.";
 const FACT_ANY={"Ateles geoffroyi": "Spider monkeys swing through the treetops using their long tails like a fifth hand. They have almost no thumbs, which turns their hands into perfect swinging hooks.", "Alouatta palliata": "Named for the golden \"mantle\" of long fur on its sides. Its deep roars carry for more than a mile through the forest, especially at dawn.", "Alouatta caraya": "Adult males are black and females are golden, so a couple looks like two different species. They rest for much of the day while they digest the leaves they eat.", "Saguinus geoffroyi": "It's the only tamarin that lives in Central America, and its range reaches just into northwestern Colombia.", "Papio anubis": "Olive baboons get their name from their greenish-gray fur, which looks olive-colored from a distance. They have the widest range of any baboon, stretching across Africa from Mali to Ethiopia and Tanzania.", "Piliocolobus badius": "Red colobus monkeys have a stomach with several chambers, like a cow's, full of helpful bacteria that break down tough leaves. Western red colobus need large, old forests, and hunting has made them rare.", "Procolobus verus": "The olive colobus is the smallest colobus monkey. Moms carry newborns in their mouths for the first few weeks, which is very unusual for a monkey. It often travels with other monkeys that help it spot danger.", "Cercopithecus erythrogaster": "Red-bellied monkeys live only in a small corner of West Africa. Some villages protect them in sacred forests, which has helped this rare monkey survive.", "Papio cynocephalus": "Yellow baboons are slim, long-legged baboons with yellowish fur. One group has been studied by scientists since 1971, one of the longest studies of any wild animal.", "Cercopithecus albogularis": "Samango monkeys have a white throat collar and are one of the few monkeys in eastern and southern Africa that live mostly in forest.", "Colobus angolensis": "The Angolan colobus has long white shoulder fur and a tail that turns white toward the tip. Despite its name, it is more common in countries east of Angola.", "Piliocolobus tephrosceles": "Where chimpanzees hunt red colobus monkeys, the colobus males band together and bravely chase the chimps away to protect their group.", "Cercocebus agilis": "Agile mangabeys live in swampy forests and give a loud \"whoop-gobble\" call to tell other groups where they are. Their strong teeth crack hard seeds and nuts.", "Papio ursinus": "Chacma baboons are the largest baboons. In dry places they can go for days without drinking, getting water from juicy plants and digging in dry riverbeds.", "Macaca mulatta": "Few primates besides humans live in so many places: rhesus macaques range from Afghanistan all the way to China's east coast, from mountain forests to busy cities.", "Semnopithecus schistaceus": "These langurs live high in Himalayan forests, where they can be found sitting in the snow. Langurs have huge, many-chambered stomachs that help them digest tough leaves.", "Trachypithecus phayrei": "In Bengali it's called the chashma bandor, the spectacled monkey, because of the white rings around its eyes. It lives in forests from Bangladesh and northeast India into Myanmar.", "Pygathrix nemaeus": "Nicknamed the queen of primates for its costume-like colors: a golden face, white whiskers, maroon legs, black hands and white forearms like long gloves. It lives in the forests of Vietnam, Laos and northeastern Cambodia.", "Pygathrix nigripes": "Black-shanked doucs are among the world's most colorful monkeys, with a bluish face, yellow eye-rings and black legs. They live only in southern Vietnam and eastern Cambodia.", "Presbytis femoralis": "Raffles' banded langurs live only in southern Peninsular Malaysia and Singapore, and just a few hundred are left. They're named after Stamford Raffles, who founded modern Singapore."};   // place-neutral facts for species seen outside their home country
 const SPECIES={};
-const SPKEYS=['m','sci','st','size','fact','food','foodTxt','alt','altTxt','pred','predE','pred2','pred2E','look','baby','babyNote'];
+const SPKEYS=['m','sci','st','size','fact','food','foodTxt','alt','altTxt','pred','predE','pred2','pred2E','pred2Alt','look','baby','babyNote'];
 Object.entries(C).forEach(([id,c])=>{ if(c.sci && !SPECIES[c.sci]){ const o={home:id}; SPKEYS.forEach(k=>o[k]=c[k]); SPECIES[c.sci]=o; } });
 let pickSp=null, CUR=null;
 const TOURIST=[['🍔','Burger'],['🍕','Pizza'],['🍟','Fries'],['🥤','Milkshake'],['🌭','Hot dog'],['🍦','Ice cream cone'],['🍩','Donut'],['🥨','Pretzel']];
@@ -1626,6 +1642,7 @@ function monkeySVG(L){
   s+=L.bigEars?`<circle cx="49" cy="92" r="13" fill="${face}"/><circle cx="151" cy="92" r="13" fill="${face}"/>`:`<circle cx="52" cy="90" r="8" fill="${face}"/><circle cx="148" cy="90" r="8" fill="${face}"/>`;
   if(L.gcrest) s+=`<path d="M64 74 Q66 26 100 22 Q134 26 136 74Z" fill="${L.gcrest}"/>`;
   s+=`<circle cx="100" cy="90" r="47" fill="${L.head||fur}"/>`;
+  if(L.flange){ const w=L.flangeW||1; s+=`<ellipse cx="${100-44*w}" cy="98" rx="${19*w}" ry="31" fill="${L.flange}"/><ellipse cx="${100+44*w}" cy="98" rx="${19*w}" ry="31" fill="${L.flange}"/><ellipse cx="${100-46*w}" cy="92" rx="${9*w}" ry="17" fill="rgba(255,255,255,.08)"/><ellipse cx="${100+46*w}" cy="92" rx="${9*w}" ry="17" fill="rgba(255,255,255,.08)"/>`; }   // a big male orangutan's cheek pads
   if(L.part) s+=`<path d="M56 80 Q58 50 97 48 Q76 60 56 80Z M144 80 Q142 50 103 48 Q124 60 144 80Z" fill="${L.part}"/><path d="M100 46 L100 58" stroke="${L.part}" stroke-width="2"/>`;
   if(L.ring) s+=`<ellipse cx="100" cy="99" rx="41" ry="40" fill="${L.ring}"/>`;
   if(L.topknot) s+=`<path d="M84 50 Q88 24 98 40 Q102 18 108 40 Q116 26 118 52 Q100 44 84 50Z" fill="${L.topknot}"/>`;
@@ -2012,7 +2029,7 @@ function stopAll(){ mouthTok++;
   stopMusic();
   clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++;
   stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch,.react,.airleaf,.flybug,.onsen').forEach(e=>e.remove()); clearTimeout(leafTimer);
-  monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours','walking','striding'); monkey.style.removeProperty('--ws');
+  monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours','walking','striding','gallop'); monkey.style.removeProperty('--ws');
   monkey.className='monkey'; monkey.innerHTML='';
   bubble.classList.remove('show','scared'); bubble.innerHTML='';
   hint.style.display='';
@@ -2246,7 +2263,7 @@ const PRED2={
  panama:['Ornate hawk-eagle','Boa constrictor','Ocelot','Margay','Black hawk-eagle','Spectacled owl']
 };
 function pickPred2(c,id){ if(c.pred2==='Victorian animal collector'){   // apes meet the collector about half the time, otherwise a natural predator
-    if(Math.random()<.5) return; const alt=/^(Pan|Gorilla)/.test(c.sci)?'African crowned eagle':(id==='india'||id==='bangladesh'||id==='myanmar'||id==='china'?'Burmese python':'Changeable hawk-eagle'); c.pred2=alt; c.pred2E=PEMO[alt]||'🐾'; return; }
+    if(Math.random()<.5) return; const alt=c.pred2Alt?c.pred2Alt:/^(Pan|Gorilla)/.test(c.sci)?'African crowned eagle':(id==='india'||id==='bangladesh'||id==='myanmar'||id==='china'?'Burmese python':'Changeable hawk-eagle'); c.pred2=alt; c.pred2E=PEMO[alt]||'🐾'; return; }
   const pool=(PRED2[id]||[c.pred2]).filter(p=>p&&p!==c.pred); if(!pool.length) return; c.pred2=pool[Math.floor(Math.random()*pool.length)]; c.pred2E=PEMO[c.pred2]||'🐾'; }
 
 
@@ -2458,7 +2475,7 @@ function floatEmoji(ch,dx,dy,cls){ const e=document.createElement('div'); e.clas
   const mb=parseFloat(monkey.style.bottom)||40, mh=monkey.offsetHeight, mw=monkey.offsetWidth;
   e.style.bottom=(mb+mh*dy)+'px'; e.style.marginLeft=(mw*dx)+'px'; stage.appendChild(e); setTimeout(()=>e.remove(),1500); }
 const REACT={
-  sweat:(snd)=>{ monkey.classList.add('tremble'); setTimeout(()=>monkey.classList.remove('tremble'),650); floatEmoji('💦',.28,.78,'drip');
+  sweat:(snd)=>{ floatEmoji('💦',.28,.78,'drip');
     if(snd&&sfxReady()){ const d=sfxOut(1.2,0),t=AC.currentTime; sweepTone(d,'sine',1400,900,t+.25,.2,.05); } },
   heart:(snd)=>{ floatEmoji('💓',.02,.28,'beat');
     if(snd&&sfxReady()){ const d=sfxOut(2.2,0),t=AC.currentTime; [0,.17,.62,.79].forEach((dt,i)=>sweepTone(d,'sine',i%2?150:175,110,t+dt,.13,i%2?.18:.26,['lowpass',600])); } },
@@ -2484,7 +2501,7 @@ const REACT={
     const sv=monkey.querySelector('svg'); sv&&sv.animate([{transform:'none'},{transform:`translateX(${dir>0?-6:6}px) rotate(${dir>0?-6:6}deg)`,offset:.25},{transform:`translateX(${dir>0?-6:6}px) rotate(${dir>0?-6:6}deg)`,offset:.55},{transform:'none'}],{duration:1200,easing:'ease-in-out'});
     if(snd&&sfxReady()){ const d=sfxOut(1.6,0),t=AC.currentTime; sweepTone(d,'triangle',700,1100,t+.15,.12,.08); sweepTone(d,'triangle',700,1100,t+.75,.12,.08); } },
   shiver:(snd)=>{ // knees knocking, teeth chattering
-    monkey.classList.add('tremble'); setTimeout(()=>monkey.classList.remove('tremble'),650); setTimeout(()=>{ monkey.classList.add('tremble'); setTimeout(()=>monkey.classList.remove('tremble'),650); },700);
+    const sv=monkey.querySelector('svg'); sv&&sv.animate([{transform:'none'},{transform:'translateX(-2px) rotate(-1.5deg)'},{transform:'translateX(2px) rotate(1.5deg)'},{transform:'translateX(-1.5px) rotate(-1deg)'},{transform:'translateX(1px) rotate(.6deg)'},{transform:'none'}],{duration:1100,easing:'ease-in-out'});   // a slow shudder, not a buzz
     floatEmoji('😬',.3,.85,'rise');
     if(snd&&sfxReady()){ const d=sfxOut(1.8,0),t=AC.currentTime; for(let i=0;i<9;i++) noiseSweep(d,t+i*.07,.025,.12,'bandpass',3200,3000,4,.002); } },
   victory:(snd)=>{ // a little hop for joy
@@ -2546,7 +2563,7 @@ function showCountry(id,sp){
     <div class="snack" id="snack">🍽 Snack time coming…<span></span></div>
     <div class="music"><span class="notes"><i></i><i></i><i></i></span> ♪ ${MUSIC[id].label}</div></div>`;
   playMusic(id);
-  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch,.airleaf,.flybug,.onsen,.confetti,.react').forEach(f=>f.remove()); clearTimeout(leafTimer); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours','walking','striding'); monkey.style.removeProperty('--ws');
+  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch,.airleaf,.flybug,.onsen,.confetti,.react').forEach(f=>f.remove()); clearTimeout(leafTimer); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours','walking','striding','gallop'); monkey.style.removeProperty('--ws');
   foodTimer=setTimeout(()=>serveFood(id),6000);
   clearTimeout(callTimer); callTimer=setTimeout(()=>{ if(currentId===id) monkeyCall(CUR); },2500);
   monkey.className='monkey'+(c.look.tiny?' tiny':'');
@@ -3069,6 +3086,21 @@ async function chase(id){
 /* ---------------- locomotion finale: the family leaves the way it really moves in the wild, then walks back home ---------------- */
 const LOCO_TXT={
  brachiate:['🌿 Brachiation','It swings hand over hand under the branches, crossing big gaps between trees in a single swing.'],
+ baboon:['🐾 Striding on all fours','Baboons spend much of the day on the ground. They stride along on flat palms, with the tail arched up near the base and hanging down like it is bent.'],
+ mandrill:['🐾 Walking on all fours','It forages mostly on the forest floor, walking on all fours and flipping over logs and leaves to find food.'],
+ vervet:['🐾 Walking on all fours','It forages on the ground in open woodland and savanna, then dashes up the nearest tree when danger comes.'],
+ lhoest:['🐾 Walking on all fours','It spends a lot of time on the forest floor, walking on all fours with its hooked tail held up behind.'],
+ mangabey:['🐾 Walking on all fours','It walks along the forest floor on all fours, poking through fallen leaves for nuts, seeds and insects.'],
+ groundwalk:['🐾 Walking on all fours','It walks and runs on all fours on the ground as easily as it climbs through the trees.'],
+ patas:['💨 Galloping','Patas monkeys are the fastest primates on the ground. On their long legs they gallop across the savanna at up to about 34 miles per hour.'],
+ gelada:['🌾 Shuffling','Geladas graze on grass high in the mountains of Ethiopia. They sit and shuffle along on their bottoms while plucking grass with both hands, then get up and walk on all fours.'],
+ proboscis:['🌊 Wading and swimming','Proboscis monkeys wade upright on two legs through rivers and swamps. They are great swimmers, with partly webbed feet, and often belly-flop from the trees into the water!'],
+ guenon:['🌿 Running along branches','It runs along the branches on all fours and leaps from tree to tree, using its long tail for balance.'],
+ leafmonkey:['🌿 Running and leaping','It runs along the branches on all fours and makes long leaps between trees, with its long tail streaming out behind for balance.'],
+ branchmacaque:['🌿 Running along branches','It runs along branches on all fours and climbs easily, but it is just as happy walking on the ground.'],
+ capuchin:['🌿 Running along branches','It scampers along branches on all fours, and can wrap the tip of its tail around a branch for extra grip.'],
+ squirrelmonkey:['🌿 Scampering','Squirrel monkeys race along the branches on all fours in big noisy troops, leaping quickly from tree to tree.'],
+ clamber:['🌳 Clambering','It climbs slowly through the trees using both hands and feet, and sways a whole tree back and forth to reach the next one.'],
  tailswing:['🌿 Arm-swinging','It swings arm over arm through the trees, using its strong tail as a fifth hand.'],
  knuckle:['✊ Knuckle-walking','On the ground it walks on all fours, leaning on the knuckles of its hands.'],
  sidehop:['💃 Sideways hopping','On the ground it bounds sideways on its strong back legs, with its arms up for balance.'],
@@ -3077,10 +3109,25 @@ const LOCO_TXT={
  quadtail:['🐾 Walking on all fours','It walks and runs on all fours along branches and on the ground, using its long tail for balance.'],
  quad:['🐾 Walking on all fours','It walks and runs on all fours along branches and on the ground.']};
 // [how it moves, which caption]
-const LOCO_ON=['Pan troglodytes','Pan paniscus','Gorilla gorilla','Gorilla beringei','Hylobates lar','Symphalangus syndactylus','Hylobates muelleri','Hoolock hoolock','Nomascus leucogenys','Hylobates pileatus','Nomascus hainanus'];   // experiment: chimps only for now
+const LOCO_ON=['Cercopithecus mitis','Cercopithecus mona','Cercopithecus diana','Cercopithecus campbelli','Cercopithecus roloway','Cercopithecus erythrogaster','Cercopithecus kandti','Cercopithecus neglectus','Cercopithecus albogularis','Rungwecebus kipunji','Trachypithecus geei','Trachypithecus laotum','Trachypithecus obscurus','Trachypithecus phayrei','Presbytis femoralis','Presbytis rubicunda','Pygathrix nemaeus','Pygathrix nigripes','Rhinopithecus roxellana','Rhinopithecus strykeri','Macaca fascicularis','Macaca silenus','Cebus imitator','Saimiri oerstedii','Saimiri boliviensis','Theropithecus gelada','Nasalis larvatus','Erythrocebus patas','Mandrillus sphinx','Mandrillus leucophaeus','Macaca sylvanus','Macaca mulatta','Macaca nigra','Macaca sinica','Macaca cyclopis','Cercocebus agilis','Cercocebus atys','Cercocebus galeritus','Allochrocebus lhoesti','Allochrocebus preussi','Cercopithecus lomamiensis','Chlorocebus aethiops','Chlorocebus pygerythrus','Chlorocebus sabaeus','Chlorocebus tantalus','Semnopithecus schistaceus','Papio anubis','Papio cynocephalus','Papio hamadryas','Papio kindae','Papio papio','Papio ursinus','Pongo pygmaeus','Pongo abelii','Pan troglodytes','Pan paniscus','Gorilla gorilla','Gorilla beringei','Hylobates lar','Symphalangus syndactylus','Hylobates muelleri','Hoolock hoolock','Nomascus leucogenys','Hylobates pileatus','Nomascus hainanus'];   // experiment: chimps only for now
 function locoOf(c){ const sp=c.sci, g=sp.split(' ')[0], L=c.look, tt=L.tailType||'curl';
   if(g==='Pan'||g==='Gorilla') return ['knuckle','knuckle'];
   if(['Hylobates','Symphalangus','Hoolock','Nomascus'].includes(g)) return ['brachiate','brachiate'];
+  if(['Cercopithecus','Rungwecebus'].includes(g)&&sp!=='Cercopithecus lomamiensis') return ['branch','guenon'];
+  if(['Trachypithecus','Presbytis','Pygathrix','Rhinopithecus'].includes(g)) return ['branch','leafmonkey'];
+  if(sp==='Macaca fascicularis'||sp==='Macaca silenus') return ['branch','branchmacaque'];
+  if(g==='Cebus') return ['branch','capuchin'];
+  if(g==='Saimiri') return ['branch','squirrelmonkey'];
+  if(g==='Erythrocebus') return ['gallop','patas'];
+  if(g==='Theropithecus') return ['walk','gelada'];
+  if(g==='Nasalis') return ['wade','proboscis'];
+  if(g==='Papio') return ['walk','baboon'];
+  if(g==='Mandrillus') return ['walk','mandrill'];
+  if(g==='Chlorocebus') return ['walk','vervet'];
+  if(g==='Allochrocebus') return ['walk','lhoest'];
+  if(g==='Cercocebus') return ['walk','mangabey'];
+  if(['Macaca','Semnopithecus'].includes(g)||sp==='Cercopithecus lomamiensis') return ['walk','groundwalk'];
+  if(g==='Pongo') return ['brachiate','clamber'];
   if(g==='Ateles'||g==='Brachyteles') return ['brachiate','tailswing'];
   if(g==='Propithecus'||g==='Indri'||g==='Lepilemur') return ['sidehop','sidehop'];
   if(sp==='Lemur catta') return ['quad','ringtail'];
@@ -3143,38 +3190,60 @@ function foldWalker(w,unfold,dur){ if(!w) return Promise.resolve(); w.classList.
   return Promise.all(ps).then(()=>{ if(unfold){ w.classList.remove('still'); w.querySelectorAll('.mfa,.mfh,.mtor,.mnh,.mna').forEach(g=>g.getAnimations().forEach(a=>a.cancel())); } }); }
 // the standing figure itself folds into the walk - no swapping drawings, no fades
 // [origin, translate x, translate y, rotate, scale x, scale y] for walking to the right; walking left mirrors it
-const SFOLD={mbody:[100,185,-78,-9,-14,1.7,1], fL:[80,226,-104,0,0,1,1], fL2:[120,226,-116,0,0,1,1],
-  fA:[66,165,-6,-15,-8,1.15,1.75], fA2:[134,165,-50,-9,-9,1.15,1.65]};
-function sfoldT(k,dir){
-  if(dir>0){ const [ox,oy,tx,ty,r,sx,sy]=SFOLD[k]; return [`${ox}px ${oy}px`,`translate(${tx}px,${ty}px) rotate(${r}deg) scale(${sx},${sy})`]; }
-  const tw={fL:'fL2',fL2:'fL',fA:'fA2',fA2:'fA'}[k]||k, [ox,oy,tx,ty,r,sx,sy]=SFOLD[tw];   // walking left: each side takes its mirror twin's pose
+// [origin x, origin y, translate x, translate y, rotate, scale x, scale y] for walking to the right; walking left mirrors it
+const SFOLDS={
+ knuckle:{mbody:[100,185,-78,-9,-14,1.7,1], fL:[80,226,-104,0,0,1,1], fL2:[120,226,-116,0,0,1,1],
+  fA:[66,165,-6,-15,-8,1.15,1.75], fA2:[134,165,-50,-9,-9,1.15,1.65]},
+ // monkeys on flat palms: the back levels out, front legs come straight down under the shoulders, the tail swings round to the rump
+ walk:{mbody:[100,185,-70,-6,-3,1.75,.86], fL:[80,226,-100,0,0,1,1.15], fL2:[120,226,-120,0,0,1,1.15],
+  fA:[66,165,8,-6,-6,1.1,1.55], fA2:[134,165,-46,-4,-4,1.1,1.5]}};
+const SFOLD_TAIL={walk:{o:'124px 202px', r:'translate(-162px,-26px) scale(-1,1)', l:'translate(114px,-26px)'}};   // the tail moves to the back end, still curving away from the body
+function sfoldT(k,dir,set){ const F=SFOLDS[set||'knuckle'];
+  if(dir>0){ const [ox,oy,tx,ty,r,sx,sy]=F[k]; return [`${ox}px ${oy}px`,`translate(${tx}px,${ty}px) rotate(${r}deg) scale(${sx},${sy})`]; }
+  const tw={fL:'fL2',fL2:'fL',fA:'fA2',fA2:'fA'}[k]||k, [ox,oy,tx,ty,r,sx,sy]=F[tw];   // walking left: each side takes its mirror twin's pose
   return [`${200-ox}px ${oy}px`,`translate(${-tx}px,${ty}px) rotate(${-r}deg) scale(${sx},${sy})`]; }
-function sfold(sv,dir,on,dur){ const ps=[];
-  for(const k in SFOLD){ const g=sv.querySelector('.'+k); if(!g) continue; const [o,t]=sfoldT(k,dir);
-    g.getAnimations().forEach(a=>a.cancel());
+function sfold(sv,dir,on,dur,set){ const ps=[], F=SFOLDS[set||'knuckle'], go=(g,o,t)=>{ g.getAnimations().filter(a=>!(a instanceof CSSAnimation)).forEach(a=>a.cancel());
     const a=g.animate([{transform:on?'none':t,transformOrigin:o,transformBox:'view-box'},{transform:on?t:'none',transformOrigin:o,transformBox:'view-box'}],{duration:dur,easing:'cubic-bezier(.45,0,.3,1)',fill:'forwards'});
-    ps.push(a.finished.catch(()=>{})); }
+    ps.push(a.finished.catch(()=>{})); };
+  for(const k in F){ const g=sv.querySelector('.'+k); if(!g) continue; const [o,t]=sfoldT(k,dir,set); go(g,o,t); }
+  const T=SFOLD_TAIL[set], tg=T&&sv.querySelector('g.tail,g.tailh'); if(tg) go(tg,T.o,dir>0?T.r:T.l);
   return Promise.all(ps); }
 const ARMDOWN={wave:['134px 165px','rotate(152deg)'], holdArm:['68px 168px','rotate(-144deg)']};
 function armsDown(sv,down,dur){ const ps=[]; for(const k in ARMDOWN){ const g=sv.querySelector('.'+k); if(!g) continue; const [o,t]=ARMDOWN[k];
     g.getAnimations().filter(a=>a instanceof CSSAnimation===false).forEach(a=>a.cancel());
     ps.push(g.animate([{transform:down?'rotate(0deg)':t,transformOrigin:o,transformBox:'view-box'},{transform:down?t:'rotate(0deg)',transformOrigin:o,transformBox:'view-box'}],{duration:dur,easing:'ease-in-out',fill:down?'forwards':'none'}).finished.catch(()=>{})); }
   return Promise.all(ps); }
-async function standToWalk(el,dir,ms){ const sv=el.querySelector(':scope > svg'); if(!sv) return;
+function geladaPluck(el,T){ const sv=el.querySelector(':scope > svg'); if(!sv) return;   // sits and shuffles, both hands plucking grass in turn
+  el.querySelectorAll('.food,.bfood').forEach(f=>f.animate([{opacity:1},{opacity:0}],{duration:250,fill:'forwards'}));
+  armsDown(sv,true,280).then(()=>{ el.classList.add('walking');
+    [['fA','66px 165px',1],['fA2','134px 165px',-1]].forEach(([k,o,s],i)=>{ const g=sv.querySelector('.'+k); if(g) g.animate([{transform:'rotate(0deg)'},{transform:`rotate(${s*-28}deg) translateY(6px)`},{transform:'rotate(0deg)'}].map(f=>Object.assign(f,{transformOrigin:o,transformBox:'view-box'})),{duration:420,delay:i*210,iterations:Math.max(1,Math.floor((T-300)/420)),easing:'ease-in-out'}); }); }); }
+async function wadeIn(el,dir,ms,Tw,ok){ const sv=el.querySelector(':scope > svg'); if(!sv) return; el._set='walk';   // wades in upright with arms raised, then flops forward and swims
   el.style.setProperty('--ws',ms+'ms');
   el.querySelectorAll('.food,.bfood').forEach(f=>f.animate([{opacity:1},{opacity:0}],{duration:250,fill:'forwards'}));
-  await armsDown(sv,true,300);                // the waving arm and the snack arm come down to its sides...
+  el.classList.add('striding'); await wait(Tw); if(!ok()) return;
+  el.classList.remove('striding'); await armsDown(sv,true,200); el.classList.add('walking');
+  sfold(sv,dir,true,420,'walk'); setTimeout(()=>{ if(!ok()) return; splashAt(el); el.classList.add('striding'); },380); }
+function splashAt(el){ const sr=stage.getBoundingClientRect(), r=el.getBoundingClientRect(), x=r.left+r.width/2-sr.left; sfxSplash(0,el===monkey?1:.6);
+  for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='onsen'; const big=el===monkey?1:.6;
+    d.style.cssText=`left:${x}px;bottom:${(parseFloat(monkey.style.bottom)||40)+44}px;width:${(6+Math.random()*6)*big}px;height:${(6+Math.random()*6)*big}px;border-radius:50%;background:#bfe8f0;z-index:6`;
+    stage.appendChild(d); const a=(Math.random()-.5)*Math.PI*.9, v=40+Math.random()*50;
+    d.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${Math.sin(a)*v*big}px,${-Math.cos(a)*v*big}px)`,opacity:1,offset:.5},{transform:`translate(${Math.sin(a)*v*1.5*big}px,10px)`,opacity:0}],{duration:650,easing:'ease-out'}).finished.then(()=>d.remove()); } }
+async function standToWalk(el,dir,ms,set){ const sv=el.querySelector(':scope > svg'); if(!sv) return; el._set=set||'knuckle';
+  el.style.setProperty('--ws',ms+'ms');
+  el.querySelectorAll('.food,.bfood').forEach(f=>f.animate([{opacity:1},{opacity:0}],{duration:250,fill:'forwards'}));
+  if(!el.classList.contains('walking')) await armsDown(sv,true,300);                // the waving arm and the snack arm come down to its sides...
   el.classList.add('walking');                 // ...where the resting arms take over in exactly the same spot
-  await sfold(sv,dir,true,540);                // body tips forward and stretches back, hands reach the ground
+  await sfold(sv,dir,true,540,el._set);                // body tips forward and stretches back, hands reach the ground
   el.classList.add('striding'); }
-function faceWay(el,dir){ const sv=el.querySelector(':scope > svg'); if(sv) sfold(sv,dir,true,1); }
+function faceWay(el,dir){ const sv=el.querySelector(':scope > svg'); if(sv) sfold(sv,dir,true,1,el._set); }
 async function walkToStand(el){ const sv=el.querySelector(':scope > svg'); if(!sv) return;
-  el.classList.remove('striding');
-  await sfold(sv,el._dir||1,false,540);        // rises back up onto its feet
+  el.classList.remove('striding','gallop');
+  await sfold(sv,el._dir||1,false,540,el._set);        // rises back up onto its feet
   el.classList.remove('walking');
   await armsDown(sv,false,320);                // arms come back up to wave and hold the snack
   el.querySelectorAll('.food,.bfood').forEach(f=>{ f.getAnimations().forEach(a=>a.cancel()); f.animate([{opacity:0},{opacity:1}],{duration:250}); });
   ['mbody','fL','fL2','fA','fA2'].forEach(k=>{ const g=sv.querySelector('.'+k); if(g) g.getAnimations().forEach(a=>a.cancel()); });
+  const tg=sv.querySelector('g.tail,g.tailh'); if(tg) tg.getAnimations().filter(a=>!(a instanceof CSSAnimation)).forEach(a=>a.cancel());
   el.style.removeProperty('--ws'); }
 // smooth hand-off between standing and walking: the head stays put, the bodies cross-fade
 function syncBob(from,to){ try{ const a=from&&from.querySelector('.bob')&&from.querySelector('.bob').getAnimations()[0], b=to&&to.querySelector('.bob')&&to.querySelector('.bob').getAnimations()[0]; if(a&&b) b.currentTime=a.currentTime; }catch(e){} }   // keep the two heads bobbing in step so they line up exactly
@@ -3193,7 +3262,7 @@ async function toStand(el){ const w=el.querySelector(':scope > svg.walker'), sv=
   el.style.removeProperty('--ws'); delete el._stand; }
 // one flowing swing: the hand rides the vine at an even pace while the body sways like a pendulum (no stops between handholds)
 function brachFrames(x0,x1,g,dir,lead,land,v){
-  const fr=[], A=g.A, Ts=760, n=Math.max(2,Math.round(Math.abs(x1-x0)/(v?v*Ts:g.step))), Tr=lead?620:0, Td=land?640:0, Tsw=n*Ts, dur=Tr+Tsw+Td, S=12;
+  const fr=[], A=g.A, Ts=g.Ts||760, n=Math.max(2,Math.round(Math.abs(x1-x0)/(v?v*Ts:g.step))), Tr=lead?620:0, Td=land?640:0, Tsw=n*Ts, dur=Tr+Tsw+Td, S=12;
   const k=(t,x,y,rot)=>fr.push({offset:Math.min(1,t/dur),transform:`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${rot.toFixed(2)}deg)`,transformOrigin:g.o,easing:'linear'});
   const sw=u=>dir*A*Math.cos(Math.PI*u);   // sway angle along the swing (u counts handholds)
   if(lead){ for(let j=0;j<=S;j++){ const p=j/S, up=1-Math.pow(1-p,3)+Math.sin(p*Math.PI)*.06;   // a springy leap up to the vine, winding back into the first swing
@@ -3224,46 +3293,89 @@ function locoEnding(c,ok){ return new Promise(async res=>{
     stage.appendChild(vine); vine.animate([{opacity:0},{opacity:1}],{duration:500,fill:'forwards'});
     await wait(550); if(!ok()) return res();
   }
+  const SC=c.sci==='Theropithecus gelada'?1700:0;   // geladas shuffle along on their bottoms, plucking grass, before they walk off
+  let water=null; const MB=parseFloat(monkey.style.bottom)||40, depthOf=(el,r)=>Math.max(10,((parseFloat(el.style.bottom)||MB)-MB)-52+.36*r.height);   // swim low enough that only the head shows
+  if(mode==='wade'){   // a river rises across the front of the scene: they wade in upright, then belly-flop and swim
+    const mb=parseFloat(monkey.style.bottom)||40; water=document.createElement('div'); water.className='onsen water';
+    water.style.cssText=`left:0;right:0;bottom:0;height:${mb+52}px;z-index:5`;
+    water.innerHTML=`<svg viewBox="0 0 400 60" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><path d="M0 8 Q25 2 50 8 T100 8 T150 8 T200 8 T250 8 T300 8 T350 8 T400 8 L400 60 L0 60Z" fill="#5fa8c0" opacity=".88"/><path class="swell" d="M10 16 q8 -4 16 0 M80 22 q8 -4 16 0 M160 15 q8 -4 16 0 M240 24 q8 -4 16 0 M320 17 q8 -4 16 0" stroke="#fff" stroke-width="1.6" fill="none" opacity=".6"/><path d="M0 8 Q25 2 50 8 T100 8 T150 8 T200 8 T250 8 T300 8 T350 8 T400 8" stroke="#d8f2f6" stroke-width="2.4" fill="none"/></svg>`;
+    stage.appendChild(water); water.animate([{transform:'translateY(100%)'},{transform:'translateY(0)'}],{duration:700,easing:'ease-out',fill:'forwards'});
+    await wait(700); if(!ok()) return res();
+  }
+  let branch=null, BY=0;
+  if(mode==='branch'){   // a long branch grows across the scene at mid-height for them to run along
+    const P=crew.find(m=>m.el===monkey)||crew[0], LIFT=Math.round(Math.min(110,Math.max(70,sr.height*.17)));   // high enough to read as up in the trees (they pass in front of the bubble if they must)
+    BY=P.r.bottom-sr.top-LIFT-4;
+    branch=document.createElement('div'); branch.className='onsen'; branch.style.cssText=`left:-10px;right:-10px;top:${BY}px;height:22px;z-index:1`;
+    let lv=''; for(let x=12;x<400;x+=38){ const up=(x/38|0)%2; lv+=`<ellipse cx="${x}" cy="${up?2:16}" rx="8" ry="3.4" fill="${up?'#5f8f4a':'#6fa458'}" transform="rotate(${up?-30:30} ${x} ${up?2:16})"/>`; }
+    branch.innerHTML=`<svg viewBox="0 0 400 22" preserveAspectRatio="none" style="width:100%;height:100%;overflow:visible"><path d="M-10 9 Q100 5 200 9 T410 8" stroke="#6b4a2e" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M-10 7 Q100 3 200 7 T410 6" stroke="#8a6440" stroke-width="2.5" fill="none" opacity=".7"/><path d="M120 8 q14 -14 30 -16 M290 9 q-12 12 -28 14" stroke="#6b4a2e" stroke-width="3" fill="none" stroke-linecap="round"/>${lv}</svg>`;
+    stage.appendChild(branch); branch.animate([{opacity:0,transform:'scaleX(.2)'},{opacity:1,transform:'scaleX(1)'}],{duration:550,easing:'ease-out',fill:'forwards'});
+    await wait(560); if(!ok()) return res();
+  }
+  const LEAPLEN=(tk==='leafmonkey'&&mode==='branch')?Math.round(Math.max(150,sr.width*.38)):0;   // leaf monkeys leap out of (and into) the frame
+  const liftOf=r=>mode==='branch'?Math.max(0,r.bottom-sr.top-BY-4):0;
   if(mode==='brachiate') crew.forEach(({el})=>{ el._z=el.style.zIndex; el.style.zIndex='6'; });   // swinging high: keep them in front of the info bubble
-  const G={knuckle:{step:34,ms:c.sci.startsWith('Gorilla')?470:390,hop:4},quad:{step:36,ms:300,hop:5},sidehop:{step:80,ms:540,hop:56}}[mode];
+  const G={branch:{step:42,ms:/^(Cebus|Saimiri)/.test(c.sci)?220:270,hop:4},wade:{step:40,ms:440,hop:3},gallop:{step:64,ms:250,hop:15},walk:{step:36,ms:/^Mandrillus/.test(c.sci)?390:/^Chlorocebus/.test(c.sci)?280:/^Papio/.test(c.sci)?340:310,hop:3},knuckle:{step:34,ms:c.sci.startsWith('Gorilla')?470:390,hop:4},quad:{step:36,ms:300,hop:5},sidehop:{step:80,ms:540,hop:56}}[mode];
   // per-member swing geometry for brachiation (pivot on the raised hand)
   const geo=crew.map(({el,r})=>{ if(mode!=='brachiate') return null; const sv=el.querySelector('svg').getBoundingClientRect(), A=34;
-    return {A, o:`${sv.left+sv.width*.81-r.left}px ${sv.top+sv.height*.416-r.top}px`, jy:vineY-(sv.top+sv.height*.416-sr.top), step:2*sv.height*.32*Math.sin(A*Math.PI/180)}; });
+    return {A, Ts:c.sci.startsWith('Pongo')?1150:760, o:`${sv.left+sv.width*.81-r.left}px ${sv.top+sv.height*.416-r.top}px`, jy:vineY-(sv.top+sv.height*.416-sr.top), step:2*sv.height*.32*Math.sin(A*Math.PI/180)}; });
   let longest=0;
   crew.forEach(({el,r},i)=>{
-    const tail=mode==='knuckle'||mode==='quad'?r.width*.4:0, dist=dir>0?sr.right-r.left+30+tail:-(r.right-sr.left+30+tail), fr=[]; let dur, delay;
-    if(mode==='brachiate'){ const g=geo[i], f=brachFrames(0,dist,g,dir,true,false); delay=i*420; dur=f.dur; fr.push(...f.fr);
-    } else { const n=Math.ceil(Math.abs(dist)/G.step), Tl=mode==='knuckle'?880:300; delay=i*260; dur=Tl+n*G.ms;
+    const tail=(mode==='walk'||mode==='gallop'||mode==='branch'||mode==='wade')?r.width*.75:mode==='knuckle'||mode==='quad'?r.width*.4:0, dist=dir>0?sr.right-r.left+30+tail:-(r.right-sr.left+30+tail), fr=[]; let dur, delay;
+    if(mode==='brachiate'){ const g=geo[i], v=Math.max(...geo.map(q=>q.step/(q.Ts||760))), D=crew.reduce((t,m)=>t+m.r.width,0)/crew.length*1.9+50;
+      // everyone swings at the same pace, and each one waits until it is an even gap behind the one ahead
+      const sOf=m=>dir*(m.r.left+m.r.width/2), s0=sOf(crew[0]); delay=Math.max(0,(sOf(crew[i])-s0+i*D)/v);
+      const f=brachFrames(0,dist,g,dir,true,false,v); dur=f.dur; fr.push(...f.fr);
+    } else { const edge=dir>0?sr.right-(r.left+r.width/2):(r.left+r.width/2)-sr.left, LP=LEAPLEN?Math.max(120,Math.abs(dist)-Math.max(0,edge-.6*r.width)):0, TLp=LP?Math.min(900,520+LP*.8):0, n=Math.ceil(Math.max(0,Math.abs(dist)-LP)/G.step), Tl=mode==='wade'?0:(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch')?880+SC:300; dur=Tl+n*G.ms+TLp;
+      { const v=G.step/G.ms, D=crew.reduce((t,m)=>t+m.r.width,0)/crew.length*((mode==='walk'||mode==='gallop'||mode==='branch')?2.1:1.7)+40, sOf=m=>dir*(m.r.left+m.r.width/2);   // same pace, even gaps between them
+        delay=Math.max(0,(sOf(crew[i])-sOf(crew[0])+i*D)/v); }
       const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:'50% 100%',easing:mode==='sidehop'?'ease-out':'ease-in-out'});
-      k(0,0,0,0); k(Tl,0,0,0);
-      for(let j=0;j<n;j++){ const t0=Tl+j*G.ms, x=dir*G.step*j, w=mode==='sidehop'?-dir*6:0;
-        k(t0+G.ms*.5,x+dir*G.step*.5,-G.hop,w); k(t0+G.ms,x+dir*G.step,0,0); }
-      if(mode==='knuckle') setTimeout(()=>{ if(!ok()) return; el._dir=dir; standToWalk(el,dir,G.ms); },delay);   // folds down onto its knuckles, then sets off
+      k(0,0,0,0);
+      let x0=0, y0=0, tS=0;
+      if(SC){ for(let j=0;j<4;j++){ k(SC/4*(j+.5),dir*(14*j+7),-3,0); k(SC/4*(j+1),dir*14*(j+1),0,0); } x0=dir*56; }   // four little bottom-shuffles
+      if(mode==='wade'){ const Tw=1600, Tf=520; for(let j=0;j<4;j++){ k(Tw/4*(j+.5),dir*(16*j+8),-2,(j%2?3:-3)); k(Tw/4*(j+1),dir*16*(j+1),0,0); }   // upright wading, swaying
+        const DP=depthOf(el,r); k(Tw+Tf*.4,dir*76,-10,0); k(Tw+Tf,dir*90,DP,0); x0=dir*90; y0=DP; tS=Tw+Tf; dur=tS+n*G.ms; fr.forEach(f=>f.offset=f.offset*(Tl+n*G.ms)/dur); }   // ...and belly-flop!
+      if(mode==='branch'){ const L=liftOf(r), Tj=440; k(Tl,0,0,0); k(Tl+Tj*.55,dir*18,-L-26,0); k(Tl+Tj,dir*36,-L,0); x0=dir*36; y0=-L; tS=Tl+Tj; dur=tS+n*G.ms+TLp; fr.forEach(f=>f.offset=f.offset*(Tl+n*G.ms+TLp)/dur); }   // springs up onto the branch
+      else if(mode!=='wade') k(Tl,x0,y0,0);
+      for(let j=0;j<n;j++){ const t0=Math.max(Tl,tS)+j*G.ms, x=x0+dir*G.step*j, w=mode==='sidehop'?-dir*6:mode==='gallop'?-dir*4:0;
+        k(t0+G.ms*.5,x+dir*G.step*.5,y0-G.hop,w); k(t0+G.ms,x+dir*G.step,y0,0); }
+      if(LP){ const xe=x0+dir*G.step*n, t0=Math.max(Tl,tS)+n*G.ms; k(t0+TLp*.5,xe+dir*LP*.5,y0-90,-dir*8); k(t0+TLp,xe+dir*LP,y0-30,-dir*4); }   // a long flying leap out of the frame
+      if(SC) setTimeout(()=>{ if(!ok()) return; geladaPluck(el,SC); },delay);
+      if(mode==='wade') setTimeout(()=>{ if(!ok()) return; el._dir=dir; wadeIn(el,dir,G.ms,1600,ok); },delay);
+      else if(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch') setTimeout(()=>{ if(!ok()) return; el._dir=dir; if(mode==='gallop') el.classList.add('gallop'); standToWalk(el,dir,G.ms,mode==='gallop'||mode==='branch'?'walk':mode); },delay+SC);   // folds down onto its knuckles, then sets off
       else if(mode!=='sidehop') setTimeout(()=>{ if(!ok()) return; el.style.setProperty('--ws',G.ms+'ms'); toWalker(el,walkerSVG(Lof(el),mode,dir)); },Math.max(0,delay+Tl-260));   // turn side-on, hands down to the ground
     }
     el.classList.remove('pop','hop');
+    if(mode!=='brachiate'){ if(!('_z' in el)) el._z=el.style.zIndex; el.style.zIndex=String((mode==='branch'?6:2)+i); }   // whoever follows is drawn in front, so a trailing rump never covers a face
     el.animate(fr,{duration:dur,delay,fill:'forwards'});
     longest=Math.max(longest,dur+delay);
   });
   await wait(longest+500); if(!ok()) return res();
   // ...then they come back in from the other side, the same way, spaced out so nobody passes through anybody
-  let last=0, acc=0; const bd=-dir;
-  crew.map((m,i)=>Object.assign({i},m)).reverse().forEach(({el,r,i})=>{
-    const tail=mode==='knuckle'||mode==='quad'?r.width*.4:0, x0=dir>0?sr.right-r.left+30+tail:-(r.right-sr.left+30+tail), fr=[]; let dur;
-    if(mode==='knuckle'){ el._dir=bd; faceWay(el,bd); }   // turned around, off-screen
+  let last=0, acc=0, prevArrive=-1e9; const bd=-dir;
+  crew.map((m,i)=>Object.assign({i},m)).reverse().forEach(({el,r,i},q)=>{
+    if(mode!=='brachiate') el.style.zIndex=String((mode==='branch'?6:2)+q);
+    const tail=(mode==='walk'||mode==='gallop'||mode==='branch'||mode==='wade')?r.width*.75:mode==='knuckle'||mode==='quad'?r.width*.4:0, x0=dir>0?sr.right-r.left+30+tail:-(r.right-sr.left+30+tail), fr=[]; let dur;
+    if(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch'||mode==='wade'){ el._dir=bd; faceWay(el,bd); }   // turned around, off-screen
     else if(mode==='quad') swapWalker(el,walkerSVG(Lof(el),mode,bd));
-    if(mode==='brachiate'){ const g=geo[i], v=Math.max(...geo.map(q=>q.step))/760, f=brachFrames(x0,0,g,bd,false,true,v); dur=f.dur; fr.push(...f.fr);   // everyone swings home at the same pace...
+    if(mode==='brachiate'){ const g=geo[i], v=Math.max(...geo.map(q=>q.step/(q.Ts||760))), f=brachFrames(x0,0,g,bd,false,true,v); dur=f.dur; fr.push(...f.fr);   // everyone swings home at the same pace...
       var delay=acc; acc+=(crew.reduce((t,m)=>t+m.r.width,0)/crew.length*1.9+50)/v;   // ...evenly spaced, with room for the swaying bodies between them
-    } else { const ms=G.ms*.75, n=Math.max(2,Math.round(Math.abs(x0)/G.step)), st=-x0/n; dur=n*ms;
+    } else { const ms=G.ms*.75, sd=Math.sign(x0), land=(sd>0?sr.right-.6*r.width:sr.left+.6*r.width)-(r.left+r.width/2), LP=LEAPLEN?Math.max(120,Math.abs(x0-land)):0, TLp=LP?Math.min(900,520+LP*.8):0, xL=LEAPLEN?x0-sd*LP:x0, n=Math.max(2,Math.round(Math.abs(xL)/G.step)), st=-xL/n, Y=mode==='wade'?depthOf(el,r):mode==='branch'?-liftOf(r):0, Tu=mode==='wade'?700:mode==='branch'?420:0; dur=TLp+n*ms+Tu;
       const k=(t,x,y)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px)`,easing:mode==='sidehop'?'ease-out':'ease-in-out'});
-      k(0,x0,0); for(let j=0;j<n;j++){ k((j+.5)*ms,x0+st*(j+.5),-G.hop); k((j+1)*ms,x0+st*(j+1),0); }
+      if(LP){ k(0,x0,Y-30); k(TLp*.5,(x0+xL)/2,Y-90); }   // leaps into the frame and lands on the branch
+      k(TLp,xL,Y); for(let j=0;j<n;j++){ k(TLp+(j+.5)*ms,xL+st*(j+.5),Y-G.hop); k(TLp+(j+1)*ms,xL+st*(j+1),Y); }
+      if(Tu&&mode==='branch') k(TLp+n*ms+Tu*.45,0,Y-14);   // hops down off the branch
+      if(Tu) k(dur,0,0);   // climbs back up out of the water
       if(el.style.getPropertyValue('--ws')) el.style.setProperty('--ws',ms+'ms');
-      var delay=acc; acc+=(r.width*1.5+30)/(G.step/ms); }
+      var delay=acc; acc+=(crew.reduce((t,m)=>t+m.r.width,0)/crew.length*((mode==='walk'||mode==='gallop'||mode==='branch')?2.1:1.7)+40)/(G.step/ms); }   // even gaps coming home too
+    if(mode!=='brachiate'){ const need=prevArrive+1000-dur; if(need>delay){ acc+=need-delay; delay=need; } prevArrive=delay+dur; }   // the one ahead is back on its feet before the next one walks up behind it
     const old=el.getAnimations(); el.animate(fr,{duration:dur,delay,fill:'both'}); old.forEach(a=>a.cancel());
-    setTimeout(()=>{ if(!ok()) return; el.getAnimations().forEach(a=>a.cancel()); if(mode==='knuckle') walkToStand(el); else toStand(el); },delay+dur+60);   // stand back up and wave
+    setTimeout(()=>{ if(!ok()) return; el.getAnimations().forEach(a=>a.cancel()); if(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch'||mode==='wade') walkToStand(el); else toStand(el); },delay+dur-(mode==='wade'?600:-60));   // stand back up and wave
     last=Math.max(last,delay+dur+120);
   });
-  await wait(last+(mode==='knuckle'?900:250)); if(!ok()) return res();
+  await wait(last+(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch'||mode==='wade'?900:250)); if(!ok()) return res();
+  if(branch){ branch.animate([{opacity:1},{opacity:0}],{duration:500,fill:'forwards'}); setTimeout(()=>branch.remove(),520); }
+  if(water){ water.animate([{transform:'translateY(0)'},{transform:'translateY(100%)'}],{duration:700,easing:'ease-in',fill:'forwards'}); setTimeout(()=>water.remove(),720); }
   if(vine){ vine.animate([{opacity:1},{opacity:0}],{duration:500,fill:'forwards'}); setTimeout(()=>vine.remove(),520); }
   crew.forEach(({el})=>{ if('_z' in el){ el.style.zIndex=el._z; delete el._z; } });
   rehangBabies();
@@ -4473,7 +4585,7 @@ const AS_DROP=[   // the snack floats down (0 – 1.2 s)
   (d,t)=>{ const o=sweepTone(d,'sine',1600,700,t,1,.07); noiseSweep(d,t,1,.06,'bandpass',2200,900,2,.2); },                             // soft falling whistle
   (d,t)=>{ [0,.3,.6,.9].forEach((dt,i)=>noiseSweep(d,t+dt,.22,.08,'bandpass',3000-i*300,1800,1.6,.06)); }                              // swaying leaf rustles
 ];
-const AS_DROPGAIN=[2.6,2.8,2.4,2.6];
+const AS_DROPGAIN=[2.18,1.15,2.16,3.4];   // measured and evened out, a bit softer than before
 const AS_LAND=[   // the catch (at 1.2 s)
   (d,t)=>{ woodHit(d,t+1.2,950,.3); woodHit(d,t+1.32,1150,.18); },                                                                         // temple wood block "tok-tok"
   (d,t)=>{ bellTone(d,880,t+1.2,.16,1.4,0,[[1,1],[1.012,.7],[2.7,.25]]); },                                                                // singing-bowl "ding"
@@ -4481,7 +4593,7 @@ const AS_LAND=[   // the catch (at 1.2 s)
   (d,t)=>{ bendPluck(d,659,t+1.2,.5,0,{vol:.18,decay:.9,bright:3400,bend:2}); },                                                           // koto pluck that bends up
   (d,t)=>{ drumHit(d,t+1.2,{f0:150,dec:.12,vol:.35,click:.6}); bellTone(d,1568,t+1.24,.06,.4,0); }                                        // little drum + bell
 ];
-const AS_LANDGAIN=[2.2,2.4,2.2,2.2,2.2];
+const AS_LANDGAIN=[1.95,1.13,2.44,1.11,2.73];
 const AS_PHEW=[
   (d,t)=>{ voicedSigh(d,t,210,140,.9,.18); bellTone(d,440,t+.5,.07,1.4,0,[[1,1],[1.01,.7]]); },                                           // sigh + singing bowl
   (d,t)=>{ noiseSweep(d,t,.9,.3,'bandpass',1300,600,1.4,.08); sweepTone(d,'sine',700,560,t+.1,.7,.04); },                                  // breathy flute-like "fuuu"
@@ -4503,7 +4615,7 @@ sfxFamily=function(kind,sex,delay,pan){ if(!isAS()) return _familyAF(kind,sex,de
   let f={adult:659,young:880,baby:1175}[kind]||784; if(sex==='m') f*=.89; if(sex==='f') f*=1.06; f=keyF(f); bellTone(d,f,t,.13,.7,0,[[1,1],[2.76,.25],[5.4,.08]]); };   // gamelan-bell plinks
 sfxCatch=function(){ if(!isAS()) return _catchAF(); if(!sfxReady()) return; const d=sfxOut(2,0),t=AC.currentTime; bellTone(d,1319,t,.16,.6,0); bellTone(d,1760,t+.08,.12,.6,0); };
 let lastDrop=-1;
-sfxSnack=function(){ if(!isAS()) return _snackAF(); if(!sfxReady()) return; duckMusic(1.7);
+sfxSnack=function(){ if(!isAS()) return _snackAF(); if(!sfxReady()) return; duckMusic(1.3);
   let j; do{ j=Math.floor(Math.random()*AS_DROP.length); }while(j===lastDrop); lastDrop=j; AS_DROP[j](sfxOut(1.2*AS_DROPGAIN[j],-.2),AC.currentTime);
   const k=Math.floor(Math.random()*AS_LAND.length); AS_LAND[k](sfxOut(1.2*AS_LANDGAIN[k],-.2),AC.currentTime); };
 /* the snack drifts down from the treetops like a falling leaf, with petals floating off it */
@@ -4802,6 +4914,45 @@ Object.assign(CALLS,{
 Object.assign(CALLGAIN,{gibbon:1.1,siamang:1.2});
 })();
 
+/* ---------------- orangutans: the great apes of Borneo and Sumatra ---------------- */
+(()=>{
+const base={ape:true,thick:true,humanEyes:true,tailType:'stub',bigEars:false};
+const O={
+ 'Pongo pygmaeus':{m:'Bornean orangutan',st:'CR',size:'about 70–200 lb',
+   fact:"Orangutans spend almost their whole lives high in the trees. Every evening they bend and weave branches into a fresh leafy nest to sleep in, sometimes with a leafy roof for rain.",
+   food:'⟦fs_greenfig⟧',foodTxt:'Wild figs',alt:['⟦fs_wildmango⟧','🍃'],altTxt:'Wild mangoes & young leaves',
+   babyNote:"A baby rides on mom for years and stays with her for about 7 or 8 years, one of the longest childhoods of any animal.",
+   pred:'Sunda clouded leopard',predE:'🐆',pred2:'Victorian animal collector',pred2E:'🎩',pred2Alt:'Reticulated python',
+   baby:{flange:null,sac:null,face:'#c89a84',muzzle:'#d8ac94'},
+   look:Object.assign({fur:'#a8481a',head:'#a8481a',face:'#4e3a30',muzzle:'#6a5044',belly:'#b8582a',hand:'#3e2e26',feet:'#3e2e26',flange:'#4e3a30',flangeW:1.05,sac:'#b8602e',brow:'#3e2e26'},base)},
+ 'Pongo abelii':{m:'Sumatran orangutan',st:'CR',size:'about 70–200 lb',
+   fact:"Sumatran orangutans are expert tool users: they poke sticks into tree holes to fish out insects and honey, and use twigs to pry the seeds out of spiky fruit.",
+   food:'⟦fs_greenfig⟧',foodTxt:'Wild figs',alt:['🐜','🍃'],altTxt:'Insects & young leaves',
+   babyNote:"A baby rides on mom for years and stays with her for about 7 or 8 years, one of the longest childhoods of any animal.",
+   pred:'Tiger',predE:'🐅',pred2:'Victorian animal collector',pred2E:'🎩',pred2Alt:'Sunda clouded leopard',
+   baby:{flange:null,sac:null,beard:false,face:'#c89a84',muzzle:'#d8ac94'},
+   look:Object.assign({fur:'#cc6a2a',head:'#cc6a2a',face:'#5a463a',muzzle:'#76594a',belly:'#d67a38',hand:'#4a382e',feet:'#4a382e',flange:'#6a5244',flangeW:.8,sac:'#d07a3a',beard:true,brow:'#4a382e'},base)}};
+Object.entries(O).forEach(([sp,o])=>{ SPECIES[sp]=Object.assign({home:'indonesia',sci:sp},o); APE_SP.add(sp); });
+Object.assign(RANGES,{'Pongo pygmaeus':['indonesia','malaysia'],'Pongo abelii':['indonesia']});
+Object.assign(FAVS,{'Pongo pygmaeus':[['⟦fs_greenfig⟧','Wild figs'],['⟦fs_wildmango⟧','Wild mangoes'],['🍃','Young leaves'],['🐜','Termites']],
+ 'Pongo abelii':[['⟦fs_greenfig⟧','Wild figs'],['⟦fs_wildmango⟧','Wild mangoes'],['🍃','Young leaves'],['🐜','Insects']]});
+const obs=[['⟦fs_wildmango⟧','wild mangoes'],['🍃','young leaves'],['🐜','termites'],['🌸','flowers']];
+Object.assign(BABYSNACKS,{'Pongo pygmaeus':obs,'Pongo abelii':obs});
+Object.assign(PIN,{'Pongo pygmaeus':'https://neprimateconservancy.org/bornean-orangutan/','Pongo abelii':'https://neprimateconservancy.org/sumatran-orangutan/'});
+Object.assign(FTYPES,{mombaby:['🤱 Mom and baby','Adults mostly live alone. A mom raises one baby at a time, for many years.']});
+const fam=t=>({dim:'bigM',dimTxt:'Grown males can be twice as heavy as females, and big males grow wide cheek pads and a throat pouch for their long calls.',type:'mombaby',
+  m:[A('Male (cheek pads)'),A('Mom',{flange:null,sac:null,beard:false}),Y('Young',{flange:null,sac:null,beard:false}),Bb('Baby')],t});
+Object.assign(FAMILY,{'Pongo pygmaeus':fam('Adults mostly travel and eat alone. A mom raises one baby at a time and keeps it close for about 7 or 8 years. Big males roam on their own and announce themselves with booming long calls.'),
+ 'Pongo abelii':fam('Adults mostly travel alone, but Sumatran orangutans often meet up in fig trees full of fruit. A mom raises one baby at a time for about 7 or 8 years.')});
+CALLOF['Pongo pygmaeus']='longcall'; CALLOF['Pongo abelii']='longcall';
+Object.assign(CALLS,{
+ longcall:(d,t)=>{ // the big male's "long call": rumbling grumbles that swell into deep bellows from the throat pouch, then fade into sighs
+   const syl=[], P=[[0,.22,150,.14],[.34,.26,170,.18],[.72,.34,200,.24],[1.16,.4,230,.28],[1.66,.42,240,.3],[2.2,.36,210,.24],[2.7,.3,170,.16]];
+   P.forEach(([dt,dur,f,v])=>{ voice(d,t+dt,dur,[f*.85,f*1.12,f*.9],v,{type:'sawtooth',h:[[1,1],[2,.55],[3,.28]],f:['bandpass',f*2.6,1.1],n:.12,nf:f*3}); sweepTone(d,'sine',f*.5,f*.42,t+dt,dur,.22,['lowpass',300]); syl.push([dt,dur]); });
+   return syl; }});
+Object.assign(CALLGAIN,{longcall:1.25});
+})();
+
 /* ---------------- Madagascar: lemurs, the fossa, and six scenes ---------------- */
 const LEMUR_SP=new Set();
 const MAD_THEME={'Lemur catta':'mspiny','Propithecus verreauxi':'mbaob','Lepilemur ruficaudatus':'mbaob','Indri indri':'mrain','Varecia variegata':'mrain','Hapalemur aureus':'mrain',
@@ -4979,6 +5130,40 @@ function setRegion(r){
   if(mode==='quiz') startQuiz(); else qb.innerHTML=introText();
 }
 document.querySelectorAll('#regions button').forEach(b=>b.onclick=()=>{ if(!b.disabled) setRegion(b.dataset.r); });
+
+/* ---------------- search: type a primate (common or scientific name) or a country, and jump straight there ---------------- */
+(()=>{
+const inp=document.getElementById('searchIn'), box=document.getElementById('sres'); let IDX=null, hits=[], act=0;
+const REGEMO={am:'🌎',af:'🌍',as:'🌏'}, REGNAME={am:'Americas',af:'Africa',as:'Asia'};
+const norm=t=>String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[’'`]/g,'');
+function build(){ IDX=[]; const seen=new Set();
+  Object.entries(SPECIES).forEach(([sp,o])=>{ if(!C[o.home]) return; seen.add(sp); IDX.push({kind:'sp',sp,name:o.m,sci:sp,reg:C[o.home].reg||'am',look:o.look,key:norm(o.m+' '+sp)}); });
+  Object.entries(C).forEach(([id,c])=>{ if(!c.name) return; IDX.push({kind:'c',id,name:c.name,reg:c.reg||'am',key:norm(c.name)});
+    if(c.sci&&!seen.has(c.sci)&&c.m){ seen.add(c.sci); IDX.push({kind:'sp',sp:c.sci,id,name:c.m,sci:c.sci,reg:c.reg||'am',look:c.look,key:norm(c.m+' '+c.sci)}); } }); }
+function score(e,q){ const k=e.key; if(k.startsWith(q)) return 0; if((' '+k).includes(' '+q)) return 1; if(k.includes(q)) return 2; return 9; }
+function find(q){ if(!IDX) build(); q=norm(q).trim(); if(!q) return [];
+  const words=q.split(/\s+/);
+  return IDX.map(e=>({e,s:words.every(w=>e.key.includes(w))?score(e,q):9})).filter(x=>x.s<9).sort((a,b)=>a.s-b.s||(a.e.kind===b.e.kind?0:a.e.kind==='sp'?-1:1)||a.e.name.localeCompare(b.e.name)).slice(0,10).map(x=>x.e); }
+function render(){ const q=inp.value; hits=find(q); act=0;
+  if(!q.trim()){ box.classList.remove('on'); return; }
+  box.innerHTML=hits.length?hits.map((e,i)=>`<button type="button" data-i="${i}" class="${i?'':'act'}" role="option">${e.kind==='sp'?monkeySVG(e.look).replace('viewBox="0 0 200 250"','viewBox="26 0 148 150"'):`<span class="ico">${REGEMO[e.reg]}</span>`}<span>${e.name}<small>${e.kind==='sp'?`<i>${e.sci}</i> · ${REGNAME[e.reg]}`:`Country · ${REGNAME[e.reg]}`}</small></span></button>`).join(''):'<div class="none">No primates or countries match that.</div>';
+  box.classList.add('on'); }
+function go(e){ if(!e) return; box.classList.remove('on'); inp.value=''; inp.blur();
+  if(mode!=='explore'){ const ex=document.getElementById('mExplore'); if(ex) ex.click(); }
+  if(REGION!==e.reg) setRegion(e.reg);
+  if(e.kind==='c'){ showCountry(e.id); }
+  else { const home=e.id||(SPECIES[e.sp]&&SPECIES[e.sp].home), where=(RANGES[e.sp]||[home]).filter(id=>C[id]&&(C[id].reg||'am')===e.reg), id=where.includes(home)?home:(where[0]||home);
+    showCountry(id, C[id]&&C[id].sci===e.sp?undefined:e.sp); }
+  const st=document.getElementById('stage'); if(st&&isPhone&&isPhone()) st.scrollIntoView({behavior:'smooth',block:'start'}); }
+inp.addEventListener('input',render);
+inp.addEventListener('focus',()=>{ if(inp.value.trim()) render(); });
+inp.addEventListener('keydown',ev=>{ if(ev.key==='ArrowDown'||ev.key==='ArrowUp'){ if(!hits.length) return; ev.preventDefault(); act=(act+(ev.key==='ArrowDown'?1:hits.length-1))%hits.length; box.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('act',i===act)); box.querySelector('.act').scrollIntoView({block:'nearest'}); }
+  else if(ev.key==='Enter'){ ev.preventDefault(); go(hits[act]); }
+  else if(ev.key==='Escape'){ box.classList.remove('on'); inp.blur(); }
+  ev.stopPropagation(); });   // typing here shouldn't trigger the game's keyboard shortcuts
+box.addEventListener('mousedown',ev=>{ const b=ev.target.closest('button'); if(b){ ev.preventDefault(); go(hits[+b.dataset.i]); } });
+document.addEventListener('mousedown',ev=>{ if(!ev.target.closest('#search')) box.classList.remove('on'); });
+})();
 const qb=document.getElementById('quizbar');
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function nextTarget(){

@@ -557,6 +557,9 @@
   .striding .mleg2{animation-direction:alternate-reverse}
   .striding .restArm,.striding .restArm2{transform-box:fill-box;transform-origin:50% 6%;animation:wstride var(--ws,.4s) ease-in-out infinite alternate}
   .striding .restArm{animation-direction:alternate-reverse}
+  .fcape{display:none} .flying .fcape{display:inline;transform-box:fill-box;transform-origin:50% 0;animation:furflow .22s ease-in-out infinite alternate}
+  @keyframes furflow{from{transform:skewX(calc(var(--fd,1)*48deg)) scaleY(1.12)}to{transform:skewX(calc(var(--fd,1)*30deg)) scaleY(.96)}}   /* fur streams out behind and ripples */
+  .flying .restArm,.flying .restArm2{animation:none!important;transition:transform .15s} .flying .restArm{transform:rotate(-62deg)} .flying .restArm2{transform:rotate(58deg)}   /* arms flung wide mid-leap */
   .gallop.striding .mleg2{animation-direction:alternate} .gallop.striding .restArm2{animation-direction:alternate-reverse}   /* galloping: front legs together, back legs together */
   @keyframes wstride{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
   .allfours .restArm,.allfours .restArm2{display:inline!important} .allfours .wave,.allfours .holdArm{display:none!important}
@@ -1194,7 +1197,7 @@ const C_AF={
    fact:"Hamadryas baboons live in a society with layers: families join into clans, clans join into bands, and hundreds gather on the same cliffs to sleep at night.",
    food:'🌸',foodTxt:"Acacia flowers & seeds",alt:['🌱','🦗'],altTxt:"Roots & insects",pred:'Leopard',predE:'🐆',pred2:'Spotted hyena',pred2E:'🐾',
    baby:{fur:'#1d1a18',belly:'#2a2420',hand:'#1d1a18',mane:null,face:'#e7b9a0'},babyNote:"Babies are born black, then turn brown. Only grown males get the silver cape.",
-   look:{fur:'#c8c4bc',face:'#e09a98',belly:'#d4d0c8',hand:'#5a5450',feet:'#5a5450',snout:1.1,snoutC:'#e09a98',mane:'#dcd8d0',bigMane:true,tailType:'arch'}},
+   look:{fur:'#c8c4bc',face:'#e09a98',belly:'#d4d0c8',hand:'#5a5450',feet:'#5a5450',snout:1.1,snoutC:'#e09a98',mane:'#dcd8d0',bigMane:true,tailType:'arch',tuft:'#bcb8b0',tuftS:true}},
  djibouti:{name:'Djibouti',sp:2,spTxt:'2',
    m:'Hamadryas baboon',sci:'Papio hamadryas',st:'LC',size:'about 22–66 lb',
    fact:"In Djibouti's hot, rocky deserts, hamadryas baboons sleep on steep cliffs to stay safe from leopards and hyenas, then walk for miles each day to find food and water.",
@@ -1268,7 +1271,7 @@ const C_AF={
    fact:"Despite its name, the Angolan colobus is rare in Angola and more common in countries farther east. It has long white shoulder fur and a tail that turns white toward the tip.",
    food:'🍃',foodTxt:"Leaves",alt:['🌰','🍇'],altTxt:"Seeds & fruit",pred:'Leopard',predE:'🐆',pred2:'African crowned eagle',pred2E:'🦅',
    baby:{fur:'#f4f2ec',belly:'#f4f2ec',hand:'#f4f2ec',face:'#e7b9a0',ring:null,cape:null,tail:'#f4f2ec',tailTip:null},babyNote:"Babies are born pure white! They turn black and white at about 3 months old.",
-   look:{fur:'#141414',face:'#2a2420',belly:'#1d1d1d',hand:'#141414',ring:'#f4f2ec',cape:'#f4f2ec',smallCape:true,tail:'#141414',tailTip:'#f4f2ec',tailType:'hang',longtail:true}},
+   look:{fur:'#141414',face:'#2a2420',belly:'#1d1d1d',hand:'#141414',ring:'#f4f2ec',cape:'#f4f2ec',smallCape:true,tail:'#141414',tailTip:'#f4f2ec',tuft:'#f4f2ec',tuftS:true,tailType:'hang',longtail:true}},
  zambia:{name:'Zambia',sp:12,spTxt:'12',
    m:'Kinda baboon',sci:'Papio kindae',st:'LC',size:'about 22–35 lb',
    fact:"Kinda baboons are the smallest of all baboons, with pale yellow fur and pinkish skin around the eyes. They live in the woodlands of Zambia, Angola, Tanzania and DR Congo.",
@@ -1584,12 +1587,13 @@ function monkeySVG(L){
   else { tcls='tailh'; tpath=L.longtail?'M126 200 C180 196 200 222 194 249':'M126 202 C172 200 190 222 186 249'; }
   if(tpath){
   if(tt==='hang'||tt==='tailh') tend=L.longtail?[194,252]:[186,252];
+  if(tt==='arch') tend=[176,251];
   s+=`<g class="${tcls}"><path d="${tpath}" stroke="${tailC}" stroke-width="${tw}" fill="none" stroke-linecap="round"/>`;
   if(tt==='bushy'||L.fluffyTail) s+=`<path d="${tpath}" stroke="${tailC}" stroke-width="${tw+12}" stroke-dasharray=".1 8" stroke-linecap="round" fill="none"/>`;   // soft, fluffy edge
   if(L.fatTail) s+=`<path d="${tpath}" pathLength="100" stroke-dasharray="0 16 50 34" stroke="${tailC}" stroke-width="${Math.round(tw*2.5)}" fill="none" stroke-linecap="round"/>`;   // fat stored at the base
   if(L.tailTip) s+=`<path d="${tpath}" pathLength="100" stroke-dasharray="0 72 28" stroke="${L.tailTip}" stroke-width="${tw}" fill="none" stroke-linecap="round"/>`;
   if(L.rings) s+=`<path d="${tpath}" pathLength="100" stroke-dasharray="5 7" stroke="${L.rings}" stroke-width="${tw}" fill="none"/>`;
-  if(L.tuft&&tend) s+=`<ellipse cx="${tend[0]}" cy="${tend[1]-4}" rx="${tt==='tuft'?9:11}" ry="${tt==='tuft'?13:19}" fill="${L.tuft}"/>`;
+  if(L.tuft&&tend) s+=`<ellipse cx="${tend[0]}" cy="${tend[1]-4}" rx="${L.tuftS?6:tt==='tuft'?9:11}" ry="${L.tuftS?10:tt==='tuft'?13:19}" fill="${L.tuft}"/>`;   // tuftS: just a small brush at the tip
   s+=`</g>`; }
   }
   // legs/feet
@@ -1603,7 +1607,10 @@ function monkeySVG(L){
   if(L.sac) s+=`<ellipse cx="100" cy="146" rx="22" ry="15" fill="${L.sac}"/><ellipse cx="94" cy="142" rx="7" ry="4" fill="#fff" opacity=".2"/>`;
   if(L.chest) s+=`<path d="M86 160 Q100 172 114 160 Q108 178 114 196 Q100 186 86 196 Q92 178 86 160Z" fill="${L.chest}"/>`;
   if(L.cape){ const d=L.smallCape?208:236;
-    s+=`<path d="M66 150 C42 170 38 206 52 ${d} C58 212 64 188 72 166Z" fill="${L.cape}"/><path d="M134 150 C158 170 162 206 148 ${d} C142 212 136 188 128 166Z" fill="${L.cape}"/>`; }
+    s+=`<path d="M66 150 C42 170 38 206 52 ${d} C58 212 64 188 72 166Z" fill="${L.cape}"/><path d="M134 150 C158 170 162 206 148 ${d} C142 212 136 188 128 166Z" fill="${L.cape}"/>`;
+    // long mantle fur that only shows in a leap, streaming out behind like a cape
+    let st=''; for(let i=0;i<10;i++){ const x=56+i*9.8, len=34+(i%3)*8; st+=`<path d="M${x.toFixed(1)} 200 q-5 ${len*.35} 1 ${len*.62} q5 ${len*.25} -2 ${len*.38}" stroke="${L.cape}" stroke-width="${i%2?6:7.5}" fill="none" stroke-linecap="round"/>`; }
+    s+=`<g class="fcape">${st}</g>`; }
   s+=`</g>`;
   if(L.plush){ // a floppy orange orangutan plush, hugged against the monkey's side
     const o='#c8641e', od='#a84e16';
@@ -2029,7 +2036,7 @@ function stopAll(){ mouthTok++;
   stopMusic();
   clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++;
   stage.querySelectorAll('.predator,.phew,.alert,.baby,.confetti,.branch,.react,.airleaf,.flybug,.onsen').forEach(e=>e.remove()); clearTimeout(leafTimer);
-  monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours','walking','striding','gallop'); monkey.style.removeProperty('--ws');
+  monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours','walking','striding','gallop','flying'); monkey.style.removeProperty('--ws');
   monkey.className='monkey'; monkey.innerHTML='';
   bubble.classList.remove('show','scared'); bubble.innerHTML='';
   hint.style.display='';
@@ -2563,7 +2570,7 @@ function showCountry(id,sp){
     <div class="snack" id="snack">🍽 Snack time coming…<span></span></div>
     <div class="music"><span class="notes"><i></i><i></i><i></i></span> ♪ ${MUSIC[id].label}</div></div>`;
   playMusic(id);
-  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch,.airleaf,.flybug,.onsen,.confetti,.react').forEach(f=>f.remove()); clearTimeout(leafTimer); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours','walking','striding','gallop'); monkey.style.removeProperty('--ws');
+  clearTimeout(foodTimer); clearTimeout(chaseTimer); clearTimeout(callTimer); chaseToken++; stage.querySelectorAll('.predator,.phew,.alert,.baby,.branch,.airleaf,.flybug,.onsen,.confetti,.react').forEach(f=>f.remove()); clearTimeout(leafTimer); monkey.getAnimations().forEach(a=>a.cancel()); monkey.classList.remove('running','allfours','walking','striding','gallop','flying'); monkey.style.removeProperty('--ws');
   foodTimer=setTimeout(()=>serveFood(id),6000);
   clearTimeout(callTimer); callTimer=setTimeout(()=>{ if(currentId===id) monkeyCall(CUR); },2500);
   monkey.className='monkey'+(c.look.tiny?' tiny':'');
@@ -3070,7 +3077,7 @@ async function chase(id){
         stage.appendChild(b); positionHang();
       } else {
         b.className='baby pop holding'; b.style.bottom=(mb+8)+'px';
-        b.innerHTML=monkeySVG(L)+`<div class="bfood${/🌾|🎋|🍃|🌿/.test(c.alt[k])?' flipx':''}"><span class="fe">${emo(c.alt[k])}</span></div>`;
+        b.innerHTML=monkeySVG(L)+`<div class="bfood${STALKY.test(c.alt[k])?' flipx':''}"><span class="fe">${emo(c.alt[k])}</span></div>`;
         if(isAF()){ b.className='baby holding'; stage.appendChild(b); babyRunIn(b,!n,isPhone()?160:260); } else if(isAS()){ b.className='baby holding'; stage.appendChild(b); babyDropIn(b,!n); } else stage.appendChild(b);
       }
     }, n*450);
@@ -3100,6 +3107,9 @@ const LOCO_TXT={
  branchmacaque:['🌿 Running along branches','It runs along branches on all fours and climbs easily, but it is just as happy walking on the ground.'],
  capuchin:['🌿 Running along branches','It scampers along branches on all fours, and can wrap the tip of its tail around a branch for extra grip.'],
  squirrelmonkey:['🌿 Scampering','Squirrel monkeys race along the branches on all fours in big noisy troops, leaping quickly from tree to tree.'],
+ colobus:['🌿 Leaping','Colobus monkeys make huge leaps between trees, with their arms spread wide and their long fur flying out like a cape.'],
+ redcolobus:['🌿 Leaping','It runs along big branches and leaps across gaps in the canopy, arms out to grab the next branch as it lands.'],
+ saki:['🌿 Leaping','Sakis are great leapers. They bound along branches and can jump up to about 30 feet from tree to tree.'],
  clamber:['🌳 Clambering','It climbs slowly through the trees using both hands and feet, and sways a whole tree back and forth to reach the next one.'],
  tailswing:['🌿 Arm-swinging','It swings arm over arm through the trees, using its strong tail as a fifth hand.'],
  knuckle:['✊ Knuckle-walking','On the ground it walks on all fours, leaning on the knuckles of its hands.'],
@@ -3109,12 +3119,15 @@ const LOCO_TXT={
  quadtail:['🐾 Walking on all fours','It walks and runs on all fours along branches and on the ground, using its long tail for balance.'],
  quad:['🐾 Walking on all fours','It walks and runs on all fours along branches and on the ground.']};
 // [how it moves, which caption]
-const LOCO_ON=['Cercopithecus mitis','Cercopithecus mona','Cercopithecus diana','Cercopithecus campbelli','Cercopithecus roloway','Cercopithecus erythrogaster','Cercopithecus kandti','Cercopithecus neglectus','Cercopithecus albogularis','Rungwecebus kipunji','Trachypithecus geei','Trachypithecus laotum','Trachypithecus obscurus','Trachypithecus phayrei','Presbytis femoralis','Presbytis rubicunda','Pygathrix nemaeus','Pygathrix nigripes','Rhinopithecus roxellana','Rhinopithecus strykeri','Macaca fascicularis','Macaca silenus','Cebus imitator','Saimiri oerstedii','Saimiri boliviensis','Theropithecus gelada','Nasalis larvatus','Erythrocebus patas','Mandrillus sphinx','Mandrillus leucophaeus','Macaca sylvanus','Macaca mulatta','Macaca nigra','Macaca sinica','Macaca cyclopis','Cercocebus agilis','Cercocebus atys','Cercocebus galeritus','Allochrocebus lhoesti','Allochrocebus preussi','Cercopithecus lomamiensis','Chlorocebus aethiops','Chlorocebus pygerythrus','Chlorocebus sabaeus','Chlorocebus tantalus','Semnopithecus schistaceus','Papio anubis','Papio cynocephalus','Papio hamadryas','Papio kindae','Papio papio','Papio ursinus','Pongo pygmaeus','Pongo abelii','Pan troglodytes','Pan paniscus','Gorilla gorilla','Gorilla beringei','Hylobates lar','Symphalangus syndactylus','Hylobates muelleri','Hoolock hoolock','Nomascus leucogenys','Hylobates pileatus','Nomascus hainanus'];   // experiment: chimps only for now
+const LOCO_ON=['Colobus angolensis','Colobus guereza','Colobus polykomos','Colobus satanas','Piliocolobus badius','Piliocolobus tephrosceles','Procolobus verus','Pithecia pithecia','Cercopithecus mitis','Cercopithecus mona','Cercopithecus diana','Cercopithecus campbelli','Cercopithecus roloway','Cercopithecus erythrogaster','Cercopithecus kandti','Cercopithecus neglectus','Cercopithecus albogularis','Rungwecebus kipunji','Trachypithecus geei','Trachypithecus laotum','Trachypithecus obscurus','Trachypithecus phayrei','Presbytis femoralis','Presbytis rubicunda','Pygathrix nemaeus','Pygathrix nigripes','Rhinopithecus roxellana','Rhinopithecus strykeri','Macaca fascicularis','Macaca silenus','Cebus imitator','Saimiri oerstedii','Saimiri boliviensis','Theropithecus gelada','Nasalis larvatus','Erythrocebus patas','Mandrillus sphinx','Mandrillus leucophaeus','Macaca sylvanus','Macaca mulatta','Macaca nigra','Macaca sinica','Macaca cyclopis','Cercocebus agilis','Cercocebus atys','Cercocebus galeritus','Allochrocebus lhoesti','Allochrocebus preussi','Cercopithecus lomamiensis','Chlorocebus aethiops','Chlorocebus pygerythrus','Chlorocebus sabaeus','Chlorocebus tantalus','Semnopithecus schistaceus','Papio anubis','Papio cynocephalus','Papio hamadryas','Papio kindae','Papio papio','Papio ursinus','Pongo pygmaeus','Pongo abelii','Pan troglodytes','Pan paniscus','Gorilla gorilla','Gorilla beringei','Hylobates lar','Symphalangus syndactylus','Hylobates muelleri','Hoolock hoolock','Nomascus leucogenys','Hylobates pileatus','Nomascus hainanus'];   // experiment: chimps only for now
 function locoOf(c){ const sp=c.sci, g=sp.split(' ')[0], L=c.look, tt=L.tailType||'curl';
   if(g==='Pan'||g==='Gorilla') return ['knuckle','knuckle'];
   if(['Hylobates','Symphalangus','Hoolock','Nomascus'].includes(g)) return ['brachiate','brachiate'];
   if(['Cercopithecus','Rungwecebus'].includes(g)&&sp!=='Cercopithecus lomamiensis') return ['branch','guenon'];
   if(['Trachypithecus','Presbytis','Pygathrix','Rhinopithecus'].includes(g)) return ['branch','leafmonkey'];
+  if(g==='Colobus') return ['branch','colobus'];
+  if(g==='Piliocolobus'||g==='Procolobus') return ['branch','redcolobus'];
+  if(g==='Pithecia') return ['branch','saki'];
   if(sp==='Macaca fascicularis'||sp==='Macaca silenus') return ['branch','branchmacaque'];
   if(g==='Cebus') return ['branch','capuchin'];
   if(g==='Saimiri') return ['branch','squirrelmonkey'];
@@ -3197,7 +3210,9 @@ const SFOLDS={
  // monkeys on flat palms: the back levels out, front legs come straight down under the shoulders, the tail swings round to the rump
  walk:{mbody:[100,185,-70,-6,-3,1.75,.86], fL:[80,226,-100,0,0,1,1.15], fL2:[120,226,-120,0,0,1,1.15],
   fA:[66,165,8,-6,-6,1.1,1.55], fA2:[134,165,-46,-4,-4,1.1,1.5]}};
-const SFOLD_TAIL={walk:{o:'124px 202px', r:'translate(-162px,-26px) scale(-1,1)', l:'translate(114px,-26px)'}};   // the tail moves to the back end, still curving away from the body
+const SFOLD_TAIL={walk:{o:'124px 202px', r:'translate(-162px,-26px) scale(-1,1)', l:'translate(114px,-26px)'},
+  walkgrip:{o:'124px 202px', r:'translate(-160px,-10px) scale(-1,-1) rotate(-20deg)', l:'translate(112px,-10px) scale(1,-1) rotate(-20deg)'}};   // capuchins: tail curled down and hooked under the branch
+SFOLDS.walkgrip=SFOLDS.walk;   // the tail moves to the back end, still curving away from the body
 function sfoldT(k,dir,set){ const F=SFOLDS[set||'knuckle'];
   if(dir>0){ const [ox,oy,tx,ty,r,sx,sy]=F[k]; return [`${ox}px ${oy}px`,`translate(${tx}px,${ty}px) rotate(${r}deg) scale(${sx},${sy})`]; }
   const tw={fL:'fL2',fL2:'fL',fA:'fA2',fA2:'fA'}[k]||k, [ox,oy,tx,ty,r,sx,sy]=F[tw];   // walking left: each side takes its mirror twin's pose
@@ -3312,7 +3327,8 @@ function locoEnding(c,ok){ return new Promise(async res=>{
     stage.appendChild(branch); branch.animate([{opacity:0,transform:'scaleX(.2)'},{opacity:1,transform:'scaleX(1)'}],{duration:550,easing:'ease-out',fill:'forwards'});
     await wait(560); if(!ok()) return res();
   }
-  const LEAPLEN=(tk==='leafmonkey'&&mode==='branch')?Math.round(Math.max(150,sr.width*.38)):0;   // leaf monkeys leap out of (and into) the frame
+  const LEAPLEN=(['leafmonkey','colobus','redcolobus','saki'].includes(tk)&&mode==='branch')?Math.round(Math.max(150,sr.width*.38)):0;   // leaf monkeys leap out of (and into) the frame
+  const SPREAD=['colobus','redcolobus','saki'].includes(tk);   // big leapers fling their arms wide in the air
   const liftOf=r=>mode==='branch'?Math.max(0,r.bottom-sr.top-BY-4):0;
   if(mode==='brachiate') crew.forEach(({el})=>{ el._z=el.style.zIndex; el.style.zIndex='6'; });   // swinging high: keep them in front of the info bubble
   const G={branch:{step:42,ms:/^(Cebus|Saimiri)/.test(c.sci)?220:270,hop:4},wade:{step:40,ms:440,hop:3},gallop:{step:64,ms:250,hop:15},walk:{step:36,ms:/^Mandrillus/.test(c.sci)?390:/^Chlorocebus/.test(c.sci)?280:/^Papio/.test(c.sci)?340:310,hop:3},knuckle:{step:34,ms:c.sci.startsWith('Gorilla')?470:390,hop:4},quad:{step:36,ms:300,hop:5},sidehop:{step:80,ms:540,hop:56}}[mode];
@@ -3330,7 +3346,7 @@ function locoEnding(c,ok){ return new Promise(async res=>{
        Tl=mode==='wade'?0:(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch')?880+SC:300; dur=Tl+n*G.ms+TLp;
       { const v=G.step/G.ms, D=crew.reduce((t,m)=>t+m.r.width,0)/crew.length*((mode==='walk'||mode==='gallop'||mode==='branch')?2.1:1.7)+40, sOf=m=>dir*(m.r.left+m.r.width/2);   // same pace, even gaps between them
         delay=Math.max(0,(sOf(crew[i])-sOf(crew[0])+i*D)/v); }
-      const k=(t,x,y,rot)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:'50% 100%',easing:mode==='sidehop'?'ease-out':'ease-in-out'});
+      const k=(t,x,y,rot,e)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px) rotate(${rot}deg)`,transformOrigin:'50% 100%',easing:e||(mode==='sidehop'?'ease-out':'ease-in-out')});
       k(0,0,0,0);
       let x0=0, y0=0, tS=0;
       if(SC){ for(let j=0;j<4;j++){ k(SC/4*(j+.5),dir*(14*j+7),-3,0); k(SC/4*(j+1),dir*14*(j+1),0,0); } x0=dir*56; }   // four little bottom-shuffles
@@ -3340,10 +3356,12 @@ function locoEnding(c,ok){ return new Promise(async res=>{
       else if(mode!=='wade') k(Tl,x0,y0,0);
       for(let j=0;j<n;j++){ const t0=Math.max(Tl,tS)+j*G.ms, x=x0+dir*G.step*j, w=mode==='sidehop'?-dir*6:mode==='gallop'?-dir*4:0;
         k(t0+G.ms*.5,x+dir*G.step*.5,y0-G.hop,w); k(t0+G.ms,x+dir*G.step,y0,0); }
-      if(LP){ const xe=x0+dir*G.step*n, t0=Math.max(Tl,tS)+n*G.ms; k(t0+TLp*.5,xe+dir*LP*.5,y0-90,-dir*8); k(t0+TLp,xe+dir*LP,y0-30,-dir*4); }   // a long flying leap out of the frame
+      if(LP){ const xe=x0+dir*G.step*n, t0=Math.max(Tl,tS)+n*G.ms, Tc=120, Ta=TLp-Tc, H=82, S=14;   // a long flying leap out of the frame: a quick crouch, then one smooth arc
+        k(t0+Tc,xe+dir*4,y0+5,0,'linear'); if(SPREAD) setTimeout(()=>{ if(ok()){ el.style.setProperty('--fd',-dir); el.classList.add('flying'); } },delay+t0+Tc);
+        for(let j=1;j<=S;j++){ const p=j/S; k(t0+Tc+Ta*p, xe+dir*(4+(LP-4)*p), y0+5*(1-p)-30*p-4*H*p*(1-p), -dir*9*Math.sin(Math.PI*p), 'linear'); } }
       if(SC) setTimeout(()=>{ if(!ok()) return; geladaPluck(el,SC); },delay);
       if(mode==='wade') setTimeout(()=>{ if(!ok()) return; el._dir=dir; wadeIn(el,dir,G.ms,1600,ok); },delay);
-      else if(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch') setTimeout(()=>{ if(!ok()) return; el._dir=dir; if(mode==='gallop') el.classList.add('gallop'); standToWalk(el,dir,G.ms,mode==='gallop'||mode==='branch'?'walk':mode); },delay+SC);   // folds down onto its knuckles, then sets off
+      else if(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch') setTimeout(()=>{ if(!ok()) return; el._dir=dir; if(mode==='gallop') el.classList.add('gallop'); standToWalk(el,dir,G.ms,mode==='branch'&&/^Cebus/.test(c.sci)?'walkgrip':mode==='gallop'||mode==='branch'?'walk':mode); },delay+SC);   // folds down onto its knuckles, then sets off
       else if(mode!=='sidehop') setTimeout(()=>{ if(!ok()) return; el.style.setProperty('--ws',G.ms+'ms'); toWalker(el,walkerSVG(Lof(el),mode,dir)); },Math.max(0,delay+Tl-260));   // turn side-on, hands down to the ground
     }
     el.classList.remove('pop','hop');
@@ -3362,14 +3380,16 @@ function locoEnding(c,ok){ return new Promise(async res=>{
     if(mode==='brachiate'){ const g=geo[i], v=Math.max(...geo.map(q=>q.step/(q.Ts||760))), f=brachFrames(x0,0,g,bd,false,true,v); dur=f.dur; fr.push(...f.fr);   // everyone swings home at the same pace...
       var delay=acc; acc+=(crew.reduce((t,m)=>t+m.r.width,0)/crew.length*1.9+50)/v;   // ...evenly spaced, with room for the swaying bodies between them
     } else { const ms=G.ms*.75, sd=Math.sign(x0), land=(sd>0?sr.right-.6*r.width:sr.left+.6*r.width)-(r.left+r.width/2), LP=LEAPLEN?Math.max(120,Math.abs(x0-land)):0, TLp=LP?Math.min(900,520+LP*.8):0, xL=LEAPLEN?x0-sd*LP:x0, n=Math.max(2,Math.round(Math.abs(xL)/G.step)), st=-xL/n, Y=mode==='wade'?depthOf(el,r):mode==='branch'?-liftOf(r):0, Tu=mode==='wade'?700:mode==='branch'?420:0; dur=TLp+n*ms+Tu;
-      const k=(t,x,y)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px)`,easing:mode==='sidehop'?'ease-out':'ease-in-out'});
-      if(LP){ k(0,x0,Y-30); k(TLp*.5,(x0+xL)/2,Y-90); }   // leaps into the frame and lands on the branch
+      const k=(t,x,y,e)=>fr.push({offset:t/dur,transform:`translate(${x}px,${y}px)`,easing:e||(mode==='sidehop'?'ease-out':'ease-in-out')});
+      el._flyT=LP&&SPREAD?TLp:0;
+      if(LP){ const H=82, S=14; for(let j=0;j<S;j++){ const p=j/S; k(TLp*p, x0+(xL-x0)*p, Y-30*(1-p)-4*H*p*(1-p), j===S-1?'ease-out':'linear'); } }   // leaps into the frame in one smooth arc and lands on the branch
       k(TLp,xL,Y); for(let j=0;j<n;j++){ k(TLp+(j+.5)*ms,xL+st*(j+.5),Y-G.hop); k(TLp+(j+1)*ms,xL+st*(j+1),Y); }
       if(Tu&&mode==='branch') k(TLp+n*ms+Tu*.45,0,Y-14);   // hops down off the branch
       if(Tu) k(dur,0,0);   // climbs back up out of the water
       if(el.style.getPropertyValue('--ws')) el.style.setProperty('--ws',ms+'ms');
       var delay=acc; acc+=(crew.reduce((t,m)=>t+m.r.width,0)/crew.length*((mode==='walk'||mode==='gallop'||mode==='branch')?2.1:1.7)+40)/(G.step/ms); }   // even gaps coming home too
-    if(mode!=='brachiate'){ const need=prevArrive+1000-dur; if(need>delay){ acc+=need-delay; delay=need; } prevArrive=delay+dur; }   // the one ahead is back on its feet before the next one walks up behind it
+    if(mode!=='brachiate'){ const need=prevArrive+1000-dur; if(need>delay){ acc+=need-delay; delay=need; } prevArrive=delay+dur; }
+    el.classList.remove('flying'); if(el._flyT){ const d0=delay, T=el._flyT; setTimeout(()=>{ if(ok()){ el.style.setProperty('--fd',-bd); el.classList.add('flying'); } },d0); setTimeout(()=>el.classList.remove('flying'),d0+T); }   // arms wide while sailing back in   // the one ahead is back on its feet before the next one walks up behind it
     const old=el.getAnimations(); el.animate(fr,{duration:dur,delay,fill:'both'}); old.forEach(a=>a.cancel());
     setTimeout(()=>{ if(!ok()) return; el.getAnimations().forEach(a=>a.cancel()); if(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch'||mode==='wade') walkToStand(el); else toStand(el); },delay+dur-(mode==='wade'?600:-60));   // stand back up and wave
     last=Math.max(last,delay+dur+120);
@@ -3499,6 +3519,7 @@ function splashAt(x,y,k=1){ for(let i=0;i<9;i++){ const d=document.createElement
     d.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${(Math.cos(a)*v).toFixed(0)}px,${(Math.sin(a)*v).toFixed(0)}px) scale(.6)`,opacity:.9,offset:.5},{transform:`translate(${(Math.cos(a)*v*1.4).toFixed(0)}px,${(Math.sin(a)*v*.2+30).toFixed(0)}px) scale(.3)`,opacity:0}],{duration:700,easing:'ease-out',fill:'forwards'});
     setTimeout(()=>d.remove(),750); } }
 /* ---------------- howlers: a big pile of leaves ---------------- */
+const STALKY=/🌾|🎋|🍃|🌿|⟦(fl_orchid|fl_almond|fl_sakura|fl_bombax|fl_butea|fl_acacia|fs_grewia)⟧/;   // snacks drawn with the stalk off to the left: mirror them so the hand holds the stalk
 const isLeafy=c=>!!(c.sci&&c.sci.startsWith('Alouatta')&&(c.food==='🍃'||c.food==='🌿'));
 function lotsTxt(t){ const m=t.match(/^(?:ramón )?leaves(.*)$/i); let tail=m?m[1].replace(/\s*—\s*lots of them\s*/i,' ').trim():'';
   if(tail && !/^[,—]/.test(tail)) tail='— '+tail; return 'Lots of leaves'+(tail?(tail[0]===','?tail:' '+tail):''); }
@@ -3560,7 +3581,7 @@ function serveFood(id){
   const leafy=isLeafy(c);
   row.innerHTML=`<span class="k">Favorite food</span><span class="v">${emo(c.food)} ${leafy?'Leaves':c.foodTxt}</span>`;
   if(sn) sn.replaceWith(row); else bubble.querySelector('.fact').before(row);
-  const f=document.createElement('div'); f.className='food'+(/🌾|🎋|🍃|🌿/.test(c.food)?' flipx':''); f.innerHTML=`<span class="fe">${emo(c.food)}</span>`;
+  const f=document.createElement('div'); f.className='food'+(STALKY.test(c.food)?' flipx':''); f.innerHTML=`<span class="fe">${emo(c.food)}</span>`;
   if(isAF()){ monkey.appendChild(f); tossSnack(f); } else if(isAS()){ monkey.appendChild(f); floatSnack(f); } else { snackTrail(); monkey.appendChild(f); } monkey.classList.add('holding'); sfxSnack();
   if(leafy) addLeafStack(f,c,row);
   monkey.classList.remove('pop','hop'); void monkey.offsetWidth; monkey.classList.add('hop');

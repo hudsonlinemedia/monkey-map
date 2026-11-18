@@ -3110,6 +3110,15 @@ const LOCO_TXT={
  colobus:['🌿 Leaping','Colobus monkeys make huge leaps between trees, with their arms spread wide and their long fur flying out like a cape.'],
  redcolobus:['🌿 Leaping','It runs along big branches and leaps across gaps in the canopy, arms out to grab the next branch as it lands.'],
  saki:['🌿 Leaping','Sakis are great leapers. They bound along branches and can jump up to about 30 feet from tree to tree.'],
+ howler:['🌿 Slow and steady','Howlers creep slowly along the branches on all fours, always holding on with their grippy tail. They rest for most of the day to save energy.'],
+ tamarin:['🐿️ Scampering','It scampers along the branches like a squirrel, gripping the bark with its claw-like nails, and leaps quickly from twig to twig.'],
+ nightmonkey:['🌙 Scampering in the dark','At night it scampers and leaps along the branches on all fours, with its huge eyes helping it see in the dark.'],
+ ayeaye:['🌙 Creeping and tapping','At night it creeps slowly along the branches, tapping the wood with its long middle finger and listening for grubs inside.'],
+ ruffed:['🌿 Running along branches','It runs along high branches on all fours, and sometimes hangs upside down by its feet to reach fruit.'],
+ mouselemur:['🐭 Scurrying','It scurries and hops through the thin branches at night, quick as a mouse.'],
+ eulemur:['🌿 Running and leaping','It runs along the branches on all fours and makes quick leaps from tree to tree.'],
+ bamboolemur:['🎋 Climbing and leaping','It climbs and leaps among the bamboo stalks, gripping them with its hands and feet.'],
+ dwarflemur:['🌙 Creeping','It creeps slowly along the branches on all fours. It stores fat in its tail and sleeps through the dry season.'],
  clamber:['🌳 Clambering','It climbs slowly through the trees using both hands and feet, and sways a whole tree back and forth to reach the next one.'],
  tailswing:['🌿 Arm-swinging','It swings arm over arm through the trees, using its strong tail as a fifth hand.'],
  knuckle:['✊ Knuckle-walking','On the ground it walks on all fours, leaning on the knuckles of its hands.'],
@@ -3119,7 +3128,7 @@ const LOCO_TXT={
  quadtail:['🐾 Walking on all fours','It walks and runs on all fours along branches and on the ground, using its long tail for balance.'],
  quad:['🐾 Walking on all fours','It walks and runs on all fours along branches and on the ground.']};
 // [how it moves, which caption]
-const LOCO_ON=['Colobus angolensis','Colobus guereza','Colobus polykomos','Colobus satanas','Piliocolobus badius','Piliocolobus tephrosceles','Procolobus verus','Pithecia pithecia','Cercopithecus mitis','Cercopithecus mona','Cercopithecus diana','Cercopithecus campbelli','Cercopithecus roloway','Cercopithecus erythrogaster','Cercopithecus kandti','Cercopithecus neglectus','Cercopithecus albogularis','Rungwecebus kipunji','Trachypithecus geei','Trachypithecus laotum','Trachypithecus obscurus','Trachypithecus phayrei','Presbytis femoralis','Presbytis rubicunda','Pygathrix nemaeus','Pygathrix nigripes','Rhinopithecus roxellana','Rhinopithecus strykeri','Macaca fascicularis','Macaca silenus','Cebus imitator','Saimiri oerstedii','Saimiri boliviensis','Theropithecus gelada','Nasalis larvatus','Erythrocebus patas','Mandrillus sphinx','Mandrillus leucophaeus','Macaca sylvanus','Macaca mulatta','Macaca nigra','Macaca sinica','Macaca cyclopis','Cercocebus agilis','Cercocebus atys','Cercocebus galeritus','Allochrocebus lhoesti','Allochrocebus preussi','Cercopithecus lomamiensis','Chlorocebus aethiops','Chlorocebus pygerythrus','Chlorocebus sabaeus','Chlorocebus tantalus','Semnopithecus schistaceus','Papio anubis','Papio cynocephalus','Papio hamadryas','Papio kindae','Papio papio','Papio ursinus','Pongo pygmaeus','Pongo abelii','Pan troglodytes','Pan paniscus','Gorilla gorilla','Gorilla beringei','Hylobates lar','Symphalangus syndactylus','Hylobates muelleri','Hoolock hoolock','Nomascus leucogenys','Hylobates pileatus','Nomascus hainanus'];   // experiment: chimps only for now
+const LOCO_ON=['Lemur catta','Propithecus verreauxi','Indri indri','Lepilemur ruficaudatus','Daubentonia madagascariensis','Varecia variegata','Varecia rubra','Microcebus murinus','Eulemur fulvus','Eulemur coronatus','Hapalemur aureus','Cheirogaleus medius','Alouatta caraya','Alouatta palliata','Alouatta pigra','Alouatta seniculus','Aotus azarae','Ateles geoffroyi','Ateles paniscus','Cebuella pygmaea','Leontopithecus rosalia','Saguinus geoffroyi','Saguinus imperator','Saguinus midas','Saguinus oedipus','Colobus angolensis','Colobus guereza','Colobus polykomos','Colobus satanas','Piliocolobus badius','Piliocolobus tephrosceles','Procolobus verus','Pithecia pithecia','Cercopithecus mitis','Cercopithecus mona','Cercopithecus diana','Cercopithecus campbelli','Cercopithecus roloway','Cercopithecus erythrogaster','Cercopithecus kandti','Cercopithecus neglectus','Cercopithecus albogularis','Rungwecebus kipunji','Trachypithecus geei','Trachypithecus laotum','Trachypithecus obscurus','Trachypithecus phayrei','Presbytis femoralis','Presbytis rubicunda','Pygathrix nemaeus','Pygathrix nigripes','Rhinopithecus roxellana','Rhinopithecus strykeri','Macaca fascicularis','Macaca silenus','Cebus imitator','Saimiri oerstedii','Saimiri boliviensis','Theropithecus gelada','Nasalis larvatus','Erythrocebus patas','Mandrillus sphinx','Mandrillus leucophaeus','Macaca sylvanus','Macaca mulatta','Macaca nigra','Macaca sinica','Macaca cyclopis','Cercocebus agilis','Cercocebus atys','Cercocebus galeritus','Allochrocebus lhoesti','Allochrocebus preussi','Cercopithecus lomamiensis','Chlorocebus aethiops','Chlorocebus pygerythrus','Chlorocebus sabaeus','Chlorocebus tantalus','Semnopithecus schistaceus','Papio anubis','Papio cynocephalus','Papio hamadryas','Papio kindae','Papio papio','Papio ursinus','Pongo pygmaeus','Pongo abelii','Pan troglodytes','Pan paniscus','Gorilla gorilla','Gorilla beringei','Hylobates lar','Symphalangus syndactylus','Hylobates muelleri','Hoolock hoolock','Nomascus leucogenys','Hylobates pileatus','Nomascus hainanus'];   // experiment: chimps only for now
 function locoOf(c){ const sp=c.sci, g=sp.split(' ')[0], L=c.look, tt=L.tailType||'curl';
   if(g==='Pan'||g==='Gorilla') return ['knuckle','knuckle'];
   if(['Hylobates','Symphalangus','Hoolock','Nomascus'].includes(g)) return ['brachiate','brachiate'];
@@ -3130,6 +3139,9 @@ function locoOf(c){ const sp=c.sci, g=sp.split(' ')[0], L=c.look, tt=L.tailType|
   if(g==='Pithecia') return ['branch','saki'];
   if(sp==='Macaca fascicularis'||sp==='Macaca silenus') return ['branch','branchmacaque'];
   if(g==='Cebus') return ['branch','capuchin'];
+  if(g==='Alouatta') return ['branch','howler'];
+  if(['Saguinus','Leontopithecus','Cebuella'].includes(g)) return ['branch','tamarin'];
+  if(g==='Aotus') return ['branch','nightmonkey'];
   if(g==='Saimiri') return ['branch','squirrelmonkey'];
   if(g==='Erythrocebus') return ['gallop','patas'];
   if(g==='Theropithecus') return ['walk','gelada'];
@@ -3143,7 +3155,13 @@ function locoOf(c){ const sp=c.sci, g=sp.split(' ')[0], L=c.look, tt=L.tailType|
   if(g==='Pongo') return ['brachiate','clamber'];
   if(g==='Ateles'||g==='Brachyteles') return ['brachiate','tailswing'];
   if(g==='Propithecus'||g==='Indri'||g==='Lepilemur') return ['sidehop','sidehop'];
-  if(sp==='Lemur catta') return ['quad','ringtail'];
+  if(sp==='Lemur catta') return ['walk','ringtail'];
+  if(g==='Daubentonia') return ['branch','ayeaye'];
+  if(g==='Varecia') return ['branch','ruffed'];
+  if(g==='Microcebus') return ['branch','mouselemur'];
+  if(g==='Eulemur') return ['branch','eulemur'];
+  if(g==='Hapalemur') return ['branch','bamboolemur'];
+  if(g==='Cheirogaleus') return ['branch','dwarflemur'];
   return ['quad',['curl','semi','hook'].includes(tt)?'quadgrab':['stub','short'].includes(tt)?'quad':'quadtail']; }
 // side-on body for walking: drawn in the standing monkey's own units, so the head keeps the same size and spot; the body turns the way it walks
 function walkerSVG(L,mode,dir){
@@ -3327,11 +3345,11 @@ function locoEnding(c,ok){ return new Promise(async res=>{
     stage.appendChild(branch); branch.animate([{opacity:0,transform:'scaleX(.2)'},{opacity:1,transform:'scaleX(1)'}],{duration:550,easing:'ease-out',fill:'forwards'});
     await wait(560); if(!ok()) return res();
   }
-  const LEAPLEN=(['leafmonkey','colobus','redcolobus','saki'].includes(tk)&&mode==='branch')?Math.round(Math.max(150,sr.width*.38)):0;   // leaf monkeys leap out of (and into) the frame
+  const LEAPLEN=(['leafmonkey','colobus','redcolobus','saki','eulemur','bamboolemur'].includes(tk)&&mode==='branch')?Math.round(Math.max(150,sr.width*.38)):0;   // leaf monkeys leap out of (and into) the frame
   const SPREAD=['colobus','redcolobus','saki'].includes(tk);   // big leapers fling their arms wide in the air
   const liftOf=r=>mode==='branch'?Math.max(0,r.bottom-sr.top-BY-4):0;
   if(mode==='brachiate') crew.forEach(({el})=>{ el._z=el.style.zIndex; el.style.zIndex='6'; });   // swinging high: keep them in front of the info bubble
-  const G={branch:{step:42,ms:/^(Cebus|Saimiri)/.test(c.sci)?220:270,hop:4},wade:{step:40,ms:440,hop:3},gallop:{step:64,ms:250,hop:15},walk:{step:36,ms:/^Mandrillus/.test(c.sci)?390:/^Chlorocebus/.test(c.sci)?280:/^Papio/.test(c.sci)?340:310,hop:3},knuckle:{step:34,ms:c.sci.startsWith('Gorilla')?470:390,hop:4},quad:{step:36,ms:300,hop:5},sidehop:{step:80,ms:540,hop:56}}[mode];
+  const G={branch:/^(Alouatta|Daubentonia|Cheirogaleus)/.test(c.sci)?{step:/^Daubentonia/.test(c.sci)?22:26,ms:/^Daubentonia/.test(c.sci)?600:520,hop:2}:/^(Saguinus|Leontopithecus|Cebuella|Aotus|Microcebus)/.test(c.sci)?{step:34,ms:170,hop:9}:{step:42,ms:/^(Cebus|Saimiri)/.test(c.sci)?220:270,hop:4},wade:{step:40,ms:440,hop:3},gallop:{step:64,ms:250,hop:15},walk:{step:36,ms:/^Mandrillus/.test(c.sci)?390:/^Chlorocebus/.test(c.sci)?280:/^Papio/.test(c.sci)?340:310,hop:3},knuckle:{step:34,ms:c.sci.startsWith('Gorilla')?470:390,hop:4},quad:{step:36,ms:300,hop:5},sidehop:{step:80,ms:540,hop:56}}[mode];
   // per-member swing geometry for brachiation (pivot on the raised hand)
   const geo=crew.map(({el,r})=>{ if(mode!=='brachiate') return null; const sv=el.querySelector('svg').getBoundingClientRect(), A=34;
     return {A, Ts:c.sci.startsWith('Pongo')?1150:760, o:`${sv.left+sv.width*.81-r.left}px ${sv.top+sv.height*.416-r.top}px`, jy:vineY-(sv.top+sv.height*.416-sr.top), step:2*sv.height*.32*Math.sin(A*Math.PI/180)}; });
@@ -3361,7 +3379,8 @@ function locoEnding(c,ok){ return new Promise(async res=>{
         for(let j=1;j<=S;j++){ const p=j/S; k(t0+Tc+Ta*p, xe+dir*(4+(LP-4)*p), y0+5*(1-p)-30*p-4*H*p*(1-p), -dir*9*Math.sin(Math.PI*p), 'linear'); } }
       if(SC) setTimeout(()=>{ if(!ok()) return; geladaPluck(el,SC); },delay);
       if(mode==='wade') setTimeout(()=>{ if(!ok()) return; el._dir=dir; wadeIn(el,dir,G.ms,1600,ok); },delay);
-      else if(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch') setTimeout(()=>{ if(!ok()) return; el._dir=dir; if(mode==='gallop') el.classList.add('gallop'); standToWalk(el,dir,G.ms,mode==='branch'&&/^Cebus/.test(c.sci)?'walkgrip':mode==='gallop'||mode==='branch'?'walk':mode); },delay+SC);   // folds down onto its knuckles, then sets off
+      else if(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch') setTimeout(()=>{ if(!ok()) return; el._dir=dir; if(mode==='gallop') el.classList.add('gallop'); if(mode==='branch'&&/^(Saguinus|Leontopithecus|Cebuella|Aotus|Microcebus)/.test(c.sci)) el.classList.add('gallop');   // little bounding scamper: legs in pairs
+        standToWalk(el,dir,G.ms,mode==='branch'&&/^(Cebus|Alouatta)/.test(c.sci)?'walkgrip':mode==='gallop'||mode==='branch'?'walk':mode); },delay+SC);   // folds down onto its knuckles, then sets off
       else if(mode!=='sidehop') setTimeout(()=>{ if(!ok()) return; el.style.setProperty('--ws',G.ms+'ms'); toWalker(el,walkerSVG(Lof(el),mode,dir)); },Math.max(0,delay+Tl-260));   // turn side-on, hands down to the ground
     }
     el.classList.remove('pop','hop');

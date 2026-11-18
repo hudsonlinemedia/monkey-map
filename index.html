@@ -1588,9 +1588,18 @@ function monkeySVG(L){
   if(tpath){
   if(tt==='hang'||tt==='tailh') tend=L.longtail?[194,252]:[186,252];
   if(tt==='arch') tend=[176,251];
+  if(L.fatTail){   // dwarf lemur: one smooth tapered tail, fat at the base and thin toward a curled tip (no bulges)
+    const P=[[126,203],[172,203],[196,228],[186,246],[180,256],[166,254],[170,243]];   // two cubic segments: down, then a little curl
+    const bz=(a,b,c,d,t)=>{ const u=1-t; return [u*u*u*a[0]+3*u*u*t*b[0]+3*u*t*t*c[0]+t*t*t*d[0], u*u*u*a[1]+3*u*u*t*b[1]+3*u*t*t*c[1]+t*t*t*d[1]]; };
+    const pts=[]; for(let i=0;i<=24;i++) pts.push(bz(P[0],P[1],P[2],P[3],i/24)); for(let i=1;i<=10;i++) pts.push(bz(P[3],P[4],P[5],P[6],i/10));
+    const L1=[],L2=[]; pts.forEach((q,i)=>{ const a=pts[Math.max(0,i-1)], b=pts[Math.min(pts.length-1,i+1)], dx=b[0]-a[0], dy=b[1]-a[1], n=Math.hypot(dx,dy)||1, f=i/(pts.length-1), w=tw*(1.35-1.0*Math.pow(f,.85));
+      L1.push([q[0]-dy/n*w,q[1]+dx/n*w]); L2.push([q[0]+dy/n*w,q[1]-dx/n*w]); });
+    const e=pts[pts.length-1], rr=tw*.35;
+    s+=`<g class="${tcls}"><path d="M${L1.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')} A${rr} ${rr} 0 0 1 ${L2[L2.length-1][0].toFixed(1)} ${L2[L2.length-1][1].toFixed(1)} L${L2.reverse().map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')}Z" fill="${tailC}"/><circle cx="126" cy="203" r="${(tw*1.3).toFixed(1)}" fill="${tailC}"/>`;   // rounded where it joins the body
+  } else
   s+=`<g class="${tcls}"><path d="${tpath}" stroke="${tailC}" stroke-width="${tw}" fill="none" stroke-linecap="round"/>`;
   if(tt==='bushy'||L.fluffyTail) s+=`<path d="${tpath}" stroke="${tailC}" stroke-width="${tw+12}" stroke-dasharray=".1 8" stroke-linecap="round" fill="none"/>`;   // soft, fluffy edge
-  if(L.fatTail) s+=`<path d="${tpath}" pathLength="100" stroke-dasharray="0 16 50 34" stroke="${tailC}" stroke-width="${Math.round(tw*2.5)}" fill="none" stroke-linecap="round"/>`;   // fat stored at the base
+  if(false) s+=[[0,46,2.7],[0,62,2.2],[0,76,1.65]].map(([a,b,k])=>`<path d="${tpath}" pathLength="100" stroke-dasharray="${b} ${100-b}" stroke-dashoffset="${-a}" stroke="${tailC}" stroke-width="${Math.round(tw*k)}" fill="none" stroke-linecap="round"/>`).join('');   // fat stored in the tail: thickest at the base, tapering like a carrot
   if(L.tailTip) s+=`<path d="${tpath}" pathLength="100" stroke-dasharray="0 72 28" stroke="${L.tailTip}" stroke-width="${tw}" fill="none" stroke-linecap="round"/>`;
   if(L.rings) s+=`<path d="${tpath}" pathLength="100" stroke-dasharray="5 7" stroke="${L.rings}" stroke-width="${tw}" fill="none"/>`;
   if(L.tuft&&tend) s+=`<ellipse cx="${tend[0]}" cy="${tend[1]-4}" rx="${L.tuftS?6:tt==='tuft'?9:11}" ry="${L.tuftS?10:tt==='tuft'?13:19}" fill="${L.tuft}"/>`;   // tuftS: just a small brush at the tip
@@ -3230,7 +3239,10 @@ const SFOLDS={
   fA:[66,165,8,-6,-6,1.1,1.55], fA2:[134,165,-46,-4,-4,1.1,1.5]}};
 const SFOLD_TAIL={walk:{o:'124px 202px', r:'translate(-162px,-26px) scale(-1,1)', l:'translate(114px,-26px)'},
   walkgrip:{o:'124px 202px', r:'translate(-160px,-10px) scale(-1,-1) rotate(-20deg)', l:'translate(112px,-10px) scale(1,-1) rotate(-20deg)'}};   // capuchins: tail curled down and hooked under the branch
-SFOLDS.walkgrip=SFOLDS.walk;   // the tail moves to the back end, still curving away from the body
+SFOLDS.walkgrip=SFOLDS.walk;
+// creeping dwarf lemurs: low, short-legged crouch; the whole animal also sits a little lower on the branch (CREEP_DROP)
+SFOLDS.creep={mbody:[100,185,-62,2,-2,1.62,.84], fL:[80,226,-92,-6,0,1.1,.78], fL2:[120,226,-112,-6,0,1.1,.78], fA:[66,165,6,4,-14,1.15,1.22], fA2:[134,165,-44,6,-10,1.15,1.18]};
+SFOLD_TAIL.creep=SFOLD_TAIL.walk; const CREEP_DROP=14;   // the tail moves to the back end, still curving away from the body
 function sfoldT(k,dir,set){ const F=SFOLDS[set||'knuckle'];
   if(dir>0){ const [ox,oy,tx,ty,r,sx,sy]=F[k]; return [`${ox}px ${oy}px`,`translate(${tx}px,${ty}px) rotate(${r}deg) scale(${sx},${sy})`]; }
   const tw={fL:'fL2',fL2:'fL',fA:'fA2',fA2:'fA'}[k]||k, [ox,oy,tx,ty,r,sx,sy]=F[tw];   // walking left: each side takes its mirror twin's pose
@@ -3347,7 +3359,7 @@ function locoEnding(c,ok){ return new Promise(async res=>{
   }
   const LEAPLEN=(['leafmonkey','colobus','redcolobus','saki','eulemur','bamboolemur'].includes(tk)&&mode==='branch')?Math.round(Math.max(150,sr.width*.38)):0;   // leaf monkeys leap out of (and into) the frame
   const SPREAD=['colobus','redcolobus','saki'].includes(tk);   // big leapers fling their arms wide in the air
-  const liftOf=r=>mode==='branch'?Math.max(0,r.bottom-sr.top-BY-4):0;
+  const liftOf=r=>mode==='branch'?Math.max(0,r.bottom-sr.top-BY-4-(/^Cheirogaleus/.test(c.sci)?CREEP_DROP*r.height/262:0)):0;
   if(mode==='brachiate') crew.forEach(({el})=>{ el._z=el.style.zIndex; el.style.zIndex='6'; });   // swinging high: keep them in front of the info bubble
   const G={branch:/^(Alouatta|Daubentonia|Cheirogaleus)/.test(c.sci)?{step:/^Daubentonia/.test(c.sci)?22:26,ms:/^Daubentonia/.test(c.sci)?600:520,hop:2}:/^(Saguinus|Leontopithecus|Cebuella|Aotus|Microcebus)/.test(c.sci)?{step:34,ms:170,hop:9}:{step:42,ms:/^(Cebus|Saimiri)/.test(c.sci)?220:270,hop:4},wade:{step:40,ms:440,hop:3},gallop:{step:64,ms:250,hop:15},walk:{step:36,ms:/^Mandrillus/.test(c.sci)?390:/^Chlorocebus/.test(c.sci)?280:/^Papio/.test(c.sci)?340:310,hop:3},knuckle:{step:34,ms:c.sci.startsWith('Gorilla')?470:390,hop:4},quad:{step:36,ms:300,hop:5},sidehop:{step:80,ms:540,hop:56}}[mode];
   // per-member swing geometry for brachiation (pivot on the raised hand)
@@ -3380,7 +3392,7 @@ function locoEnding(c,ok){ return new Promise(async res=>{
       if(SC) setTimeout(()=>{ if(!ok()) return; geladaPluck(el,SC); },delay);
       if(mode==='wade') setTimeout(()=>{ if(!ok()) return; el._dir=dir; wadeIn(el,dir,G.ms,1600,ok); },delay);
       else if(mode==='knuckle'||mode==='walk'||mode==='gallop'||mode==='branch') setTimeout(()=>{ if(!ok()) return; el._dir=dir; if(mode==='gallop') el.classList.add('gallop'); if(mode==='branch'&&/^(Saguinus|Leontopithecus|Cebuella|Aotus|Microcebus)/.test(c.sci)) el.classList.add('gallop');   // little bounding scamper: legs in pairs
-        standToWalk(el,dir,G.ms,mode==='branch'&&/^(Cebus|Alouatta)/.test(c.sci)?'walkgrip':mode==='gallop'||mode==='branch'?'walk':mode); },delay+SC);   // folds down onto its knuckles, then sets off
+        standToWalk(el,dir,G.ms,mode==='branch'&&/^Cheirogaleus/.test(c.sci)?'creep':mode==='branch'&&/^(Cebus|Alouatta)/.test(c.sci)?'walkgrip':mode==='gallop'||mode==='branch'?'walk':mode); },delay+SC);   // folds down onto its knuckles, then sets off
       else if(mode!=='sidehop') setTimeout(()=>{ if(!ok()) return; el.style.setProperty('--ws',G.ms+'ms'); toWalker(el,walkerSVG(Lof(el),mode,dir)); },Math.max(0,delay+Tl-260));   // turn side-on, hands down to the ground
     }
     el.classList.remove('pop','hop');
